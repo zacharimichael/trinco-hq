@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import type { FormData, Screen, TaskDef } from "@/lib/tasks";
 import type { AppState, SignatureRecord } from "@/lib/model";
 import { useStore } from "@/lib/store";
+import { buildSignedPdf } from "@/lib/signedPdf";
 
 type Complete = (draft: AppState, data: FormData) => void;
 type Open = (def: TaskDef, complete: Complete) => void;
@@ -46,6 +47,9 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
   const [sig, setSig] = useState<{ method: "drawn" | "typed"; value: string } | null>(null);
   const [agree, setAgree] = useState(false);
   const [result, setResult] = useState<ReturnType<TaskDef["done"]> | null>(null);
+  const [busy, setBusy] = useState(false);
+  const docRef = useRef<HTMLDivElement>(null);
+  const docText = useRef("");
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -57,18 +61,36 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
   const last = i === screens.length - 1;
   const set = (k: string, v: string | string[]) => setData((d) => ({ ...d, [k]: v }));
 
-  function finish() {
+  async function finish() {
     const res = def.done(data);
+    const signedAt = new Date();
+    let pdf: string | undefined, hash: string | undefined;
+    if (sig && res.doc) {
+      setBusy(true);
+      const out = await buildSignedPdf({
+        title: res.doc, text: docText.current || res.doc, signer: { name: state.profile.name, email: state.profile.email },
+        signature: sig, signedAt, userAgent: navigator.userAgent, agency: state.agency.name,
+      });
+      pdf = out.dataUrl;
+      hash = out.hash;
+    }
     update((draft) => {
       complete(draft, data);
-      const now = new Date().toISOString();
-      if (res.doc) draft.docs.push({ name: res.doc, date: now });
-      if (sig && res.doc) {
-        const rec: SignatureRecord = { document: res.doc, signer: draft.profile.name, method: sig.method, value: sig.value, consent: true, signedAt: now, userAgent: navigator.userAgent };
+      const now = signedAt.toISOString();
+      if (res.doc) draft.docs.push({ name: res.doc, date: now, pdf });
+      if (sig && res.doc && hash) {
+        const rec: SignatureRecord = { document: res.doc, documentSha256: hash, signer: draft.profile.name, method: sig.method, value: sig.value, consent: true, signedAt: now, userAgent: navigator.userAgent };
         draft.signatures.push(rec);
       }
     });
+    setBusy(false);
     setResult(res);
+  }
+
+  function next() {
+    if (sc.type === "doc" && docRef.current) docText.current = docRef.current.innerText;
+    if (last) void finish();
+    else setI(i + 1);
   }
 
   if (result)
@@ -78,6 +100,7 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
           <div className="bigok">✓</div>
           <h2 id="m-title">Done</h2>
           <p style={{ margin: 0 }}>{result.msg}</p>
+          {state.docs.at(-1)?.pdf && <p className="muted" style={{ margin: 0, fontSize: 14 }}>Signed copy saved to Documents.</p>}
           <button className="btn" id="m-close" type="button" autoFocus onClick={onClose}>Back to my list</button>
         </div>
       </div>
@@ -105,7 +128,7 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
           </div>
         ))}
 
-        {sc.type === "doc" && <div className="doc">{sc.body(data)}</div>}
+        {sc.type === "doc" && <div className="doc" ref={docRef}>{sc.body(data)}</div>}
 
         {sc.type === "pick" && (<>
           {sc.note && <p className="muted" style={{ margin: 0 }}>{sc.note}</p>}
@@ -144,7 +167,7 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
 
         <div className="actions">
           <button className="btn ghost" id="m-back" type="button" onClick={() => (i ? setI(i - 1) : onClose())}>{i ? "Back" : "Cancel"}</button>
-          <button className="btn" id="m-next" type="button" disabled={!signReady} onClick={() => (last ? finish() : setI(i + 1))}>{nextLabel}</button>
+          <button className="btn" id="m-next" type="button" disabled={!signReady || busy} onClick={next}>{busy ? "Signing…" : nextLabel}</button>
         </div>
       </div>
     </div>

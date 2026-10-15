@@ -53,7 +53,7 @@ export default function TodoPage() {
         <div className="card sec">
           <h2>Documents</h2>
           {docs.map((d, i) => (
-            <div className="todo" key={d.name + i}><span className="mark list">✎</span><span className="grow"><b>{d.name}</b><small>Saved {fmt(d.date)}</small></span></div>
+            <div className="todo" key={d.name + i}><span className="mark list">✎</span><span className="grow"><b>{d.name}</b><small>Saved {fmt(d.date)}</small></span>{d.pdf && <a className="btn ghost" href={d.pdf} download={`${d.name}.pdf`}>Signed PDF</a>}</div>
           ))}
           <p className="muted" style={{ margin: 0, fontSize: 14 }}>Everything you sign, pay or book is saved here automatically.</p>
         </div>

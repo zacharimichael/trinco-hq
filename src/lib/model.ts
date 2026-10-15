@@ -22,11 +22,14 @@ export interface Athlete {
 export interface Doc {
   name: string;
   date: string;
+  /** Signed PDF as a data URL in demo mode; a storage path once Supabase is connected. */
+  pdf?: string;
 }
 
 /** Signature evidence kept with every e-signed document (ESIGN / UETA audit trail). */
 export interface SignatureRecord {
   document: string;
+  documentSha256: string;
   signer: string;
   method: "drawn" | "typed";
   value: string;
