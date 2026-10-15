@@ -1,150 +1,138 @@
--- Trin Co HQ: core schema. Every row belongs to a firm, and row-level security
--- keeps each firm's data private. Owners see their whole firm; agents see their own work.
+-- Trin Co HQ database. Paste this whole file into Supabase → SQL Editor → Run.
+--
+-- Each firm has members (one owner, many agents). Each member's licensing
+-- progress, athletes and documents live in member_state.data, the same shape
+-- the app uses (see src/lib/model.ts). Row-level security keeps every firm
+-- private: agents see their own work, owners see their whole firm.
 
-create extension if not exists "pgcrypto";
-
-create table firms (
+create table if not exists firms (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   default_split int not null default 70 check (default_split between 0 and 100),
-  stripe_customer_id text,
+  -- Firm-wide data the owner manages, such as deals.
+  data jsonb not null default '{}',
   subscription_status text not null default 'trialing',
+  stripe_customer_id text,
   created_at timestamptz not null default now()
 );
 
-create type member_role as enum ('owner', 'agent');
-create type member_stage as enum ('invited', 'signing_agreement', 'getting_licensed', 'active');
-
-create table members (
+create table if not exists members (
   id uuid primary key default gen_random_uuid(),
   firm_id uuid not null references firms(id) on delete cascade,
   user_id uuid unique references auth.users(id) on delete set null,
-  role member_role not null default 'agent',
-  stage member_stage not null default 'invited',
-  name text not null,
   email text not null,
-  phone text,
-  address text,
-  dob date,
+  name text not null,
+  role text not null default 'agent' check (role in ('owner', 'agent')),
+  -- 0 invited, 1 signing agency agreement, 2 getting licensed, 3 active
+  stage int not null default 0 check (stage between 0 and 3),
   split int check (split between 0 and 100),
   created_at timestamptz not null default now(),
   unique (firm_id, email)
 );
 
--- One row per completed step, e.g. ('FL', 'fl_app') or ('FL', 'fl_approved').
-create table license_steps (
+create table if not exists member_state (
+  member_id uuid primary key references members(id) on delete cascade,
+  data jsonb not null default '{}',
+  updated_at timestamptz not null default now()
+);
+
+-- Signature evidence. Append-only: there are no update or delete policies.
+create table if not exists signatures (
+  id uuid primary key default gen_random_uuid(),
   member_id uuid not null references members(id) on delete cascade,
-  state char(2) not null,
-  step_id text not null,
-  data jsonb not null default '{}',
-  completed_at timestamptz not null default now(),
-  primary key (member_id, step_id)
-);
-
-create table athletes (
-  id uuid primary key default gen_random_uuid(),
-  firm_id uuid not null references firms(id) on delete cascade,
-  agent_id uuid not null references members(id),
-  name text not null,
-  email text,
-  school text not null,
-  state char(2) not null,
-  sport text,
-  contract_signed_at timestamptz,
-  created_at timestamptz not null default now()
-);
-
-create table athlete_steps (
-  athlete_id uuid not null references athletes(id) on delete cascade,
-  step_id text not null,
-  data jsonb not null default '{}',
-  completed_at timestamptz not null default now(),
-  primary key (athlete_id, step_id)
-);
-
--- Every signed, paid or booked item. The PDF lives in storage; the signature evidence lives here.
-create table documents (
-  id uuid primary key default gen_random_uuid(),
-  firm_id uuid not null references firms(id) on delete cascade,
-  member_id uuid references members(id),
-  athlete_id uuid references athletes(id),
-  name text not null,
-  storage_path text,
-  created_at timestamptz not null default now()
-);
-
-create table signatures (
-  id uuid primary key default gen_random_uuid(),
-  document_id uuid not null references documents(id) on delete cascade,
-  signer_name text not null,
-  signer_email text not null,
-  method text not null check (method in ('drawn', 'typed', 'docusign')),
+  document text not null,
+  document_sha256 text not null,
+  method text not null check (method in ('drawn', 'typed')),
   value text not null,
   consent boolean not null check (consent),
-  ip inet,
   user_agent text,
-  document_sha256 text not null,
   signed_at timestamptz not null default now()
 );
 
-create table deals (
-  id uuid primary key default gen_random_uuid(),
-  firm_id uuid not null references firms(id) on delete cascade,
-  athlete_id uuid not null references athletes(id),
-  agent_id uuid not null references members(id),
-  brand text not null,
-  amount_cents bigint not null check (amount_cents >= 0),
-  fee_pct numeric(5,2) not null check (fee_pct between 0 and 100),
-  status text not null default 'pending' check (status in ('pending', 'paid')),
-  paid_at timestamptz,
-  created_at timestamptz not null default now()
-);
-
--- Helpers for row-level security.
-create function my_member() returns members language sql stable security definer set search_path = public as $$
-  select * from members where user_id = auth.uid() limit 1
+-- Helpers (security definer so policies don't recurse into members).
+create or replace function my_member_id() returns uuid
+language sql stable security definer set search_path = public as $$
+  select id from members where user_id = auth.uid() limit 1
 $$;
-create function is_owner(f uuid) returns boolean language sql stable security definer set search_path = public as $$
+
+create or replace function my_firm_id() returns uuid
+language sql stable security definer set search_path = public as $$
+  select firm_id from members where user_id = auth.uid() limit 1
+$$;
+
+create or replace function am_owner(f uuid) returns boolean
+language sql stable security definer set search_path = public as $$
   select exists (select 1 from members where user_id = auth.uid() and firm_id = f and role = 'owner')
+$$;
+
+-- Called once by a new owner: creates the firm and makes them its owner.
+create or replace function create_firm(p_firm_name text, p_owner_name text) returns uuid
+language plpgsql security definer set search_path = public as $$
+declare f uuid; m uuid;
+begin
+  if auth.uid() is null then raise exception 'not signed in'; end if;
+  if exists (select 1 from members where user_id = auth.uid()) then raise exception 'already in a firm'; end if;
+  insert into firms (name) values (p_firm_name) returning id into f;
+  insert into members (firm_id, user_id, email, name, role, stage)
+    values (f, auth.uid(), coalesce(auth.jwt() ->> 'email', ''), p_owner_name, 'owner', 3) returning id into m;
+  insert into member_state (member_id) values (m);
+  return f;
+end $$;
+
+-- Called on every sign-in: links an invited agent's account to their invite by email.
+create or replace function claim_invite() returns uuid
+language plpgsql security definer set search_path = public as $$
+declare m uuid;
+begin
+  if auth.uid() is null then return null; end if;
+  select id into m from members where user_id = auth.uid();
+  if m is not null then return m; end if;
+  update members set user_id = auth.uid(), stage = greatest(stage, 1)
+    where user_id is null and lower(email) = lower(auth.jwt() ->> 'email')
+    returning id into m;
+  if m is not null then
+    insert into member_state (member_id) values (m) on conflict do nothing;
+  end if;
+  return m;
+end $$;
+
+-- Called when an agent signs the agency agreement: moves them on to getting licensed.
+create or replace function sign_agency_agreement() returns void
+language sql security definer set search_path = public as $$
+  update members set stage = 2 where user_id = auth.uid() and stage < 2
 $$;
 
 alter table firms enable row level security;
 alter table members enable row level security;
-alter table license_steps enable row level security;
-alter table athletes enable row level security;
-alter table athlete_steps enable row level security;
-alter table documents enable row level security;
+alter table member_state enable row level security;
 alter table signatures enable row level security;
-alter table deals enable row level security;
 
-create policy firm_read on firms for select using (id = (my_member()).firm_id);
-create policy firm_owner_write on firms for update using (is_owner(id));
+drop policy if exists firms_read on firms;
+create policy firms_read on firms for select using (id = my_firm_id());
+drop policy if exists firms_owner_update on firms;
+create policy firms_owner_update on firms for update using (am_owner(id)) with check (am_owner(id));
 
-create policy members_read on members for select using (firm_id = (my_member()).firm_id);
-create policy members_owner_write on members for all using (is_owner(firm_id)) with check (is_owner(firm_id));
-create policy members_self_update on members for update using (user_id = auth.uid());
+drop policy if exists members_read on members;
+create policy members_read on members for select using (firm_id = my_firm_id());
+drop policy if exists members_owner_insert on members;
+create policy members_owner_insert on members for insert with check (am_owner(firm_id) and role = 'agent');
+drop policy if exists members_owner_update on members;
+create policy members_owner_update on members for update using (am_owner(firm_id)) with check (am_owner(firm_id));
+drop policy if exists members_owner_delete on members;
+create policy members_owner_delete on members for delete using (am_owner(firm_id) and role = 'agent');
 
-create policy license_own on license_steps for all
-  using (member_id = (my_member()).id or is_owner((select firm_id from members m where m.id = member_id)))
-  with check (member_id = (my_member()).id);
+drop policy if exists state_read on member_state;
+create policy state_read on member_state for select
+  using (member_id = my_member_id() or am_owner((select firm_id from members where id = member_id)));
+drop policy if exists state_write on member_state;
+create policy state_write on member_state for insert with check (member_id = my_member_id());
+drop policy if exists state_update on member_state;
+create policy state_update on member_state for update using (member_id = my_member_id()) with check (member_id = my_member_id());
 
-create policy athletes_access on athletes for all
-  using (agent_id = (my_member()).id or is_owner(firm_id))
-  with check (firm_id = (my_member()).firm_id);
+drop policy if exists sig_insert on signatures;
+create policy sig_insert on signatures for insert with check (member_id = my_member_id());
+drop policy if exists sig_read on signatures;
+create policy sig_read on signatures for select
+  using (member_id = my_member_id() or am_owner((select firm_id from members where id = member_id)));
 
-create policy athlete_steps_access on athlete_steps for all
-  using (exists (select 1 from athletes a where a.id = athlete_id and (a.agent_id = (my_member()).id or is_owner(a.firm_id))))
-  with check (exists (select 1 from athletes a where a.id = athlete_id and a.agent_id = (my_member()).id));
-
-create policy documents_access on documents for all
-  using (member_id = (my_member()).id or is_owner(firm_id))
-  with check (firm_id = (my_member()).firm_id);
-
--- Signatures are append-only: no update or delete policy.
-create policy signatures_read on signatures for select
-  using (exists (select 1 from documents d where d.id = document_id and (d.member_id = (my_member()).id or is_owner(d.firm_id))));
-create policy signatures_insert on signatures for insert
-  with check (exists (select 1 from documents d where d.id = document_id and d.member_id = (my_member()).id));
-
-create policy deals_access on deals for select using (agent_id = (my_member()).id or is_owner(firm_id));
-create policy deals_owner_write on deals for all using (is_owner(firm_id)) with check (is_owner(firm_id));
+grant execute on function create_firm(text, text), claim_invite(), sign_agency_agreement() to authenticated;

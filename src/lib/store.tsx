@@ -1,16 +1,22 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import type { AppState } from "./model";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import type { AppState, Deal, Me, SignatureRecord, TeamMember } from "./model";
 import { DAY, startOfToday } from "./rules";
+import { supabase } from "./supabase";
 
 /**
- * App state. Today this runs in demo mode and saves to the browser.
- * When Supabase is connected, load() and save() switch to the database
- * (see supabase/migrations) and nothing in the screens changes.
+ * App state, in one of two modes:
+ * - demo: example data saved in this browser only.
+ * - live: signed in; each member's work is saved to Supabase (member_state),
+ *   firm data (name, split, deals) to firms, and the team comes from members.
  */
-const KEY = "trinco-hq";
+const DEMO_KEY = "trinco-hq";
+const DEMO_FLAG = "trinco-hq-demo";
 const VERSION = 1;
+
+export type Mode = "loading" | "signed-out" | "needs-firm" | "demo" | "live";
 
 function seed(): AppState {
   const today = startOfToday().getTime();
@@ -43,9 +49,9 @@ function seed(): AppState {
   };
 }
 
-function load(): AppState {
+function loadDemo(): AppState {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(DEMO_KEY);
     if (raw) {
       const s = JSON.parse(raw) as AppState;
       if (s.v === VERSION) return s;
@@ -54,24 +60,124 @@ function load(): AppState {
   return seed();
 }
 
-type Ctx = { state: AppState; update: (fn: (draft: AppState) => void) => void; reset: () => void };
+/** The parts of AppState each member owns, stored in member_state.data. */
+type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs">;
+const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs });
+
+type MemberRow = { id: string; email: string; name: string; role: "owner" | "agent"; stage: number; split: number | null; user_id: string | null };
+
+async function loadLive(session: Session): Promise<AppState | null> {
+  await supabase.rpc("claim_invite");
+  const { data: mine } = await supabase.from("members").select("id, firm_id, email, name, role, stage, split").eq("user_id", session.user.id).maybeSingle();
+  if (!mine) return null;
+
+  const [{ data: firm }, { data: members }, { data: states }] = await Promise.all([
+    supabase.from("firms").select("name, default_split, data").eq("id", mine.firm_id).single(),
+    supabase.from("members").select("id, email, name, role, stage, split, user_id").eq("firm_id", mine.firm_id).order("created_at"),
+    supabase.from("member_state").select("member_id, data"),
+  ]);
+  const stateOf = (id: string) => (states ?? []).find((r) => r.member_id === id)?.data as Partial<MemberData> | undefined;
+  const own = stateOf(mine.id) ?? {};
+
+  const team: TeamMember[] =
+    mine.role === "owner"
+      ? ((members ?? []) as MemberRow[])
+          .filter((m) => m.id !== mine.id)
+          .map((m) => {
+            const d = stateOf(m.id) ?? {};
+            return {
+              id: m.id, name: m.name, email: m.email, stage: m.stage, split: m.split ?? firm?.default_split ?? 70, done: d.done ?? {},
+              athletes: (d.athletes ?? []).map((a) => ({ name: a.name, school: a.school, sport: a.sport, state: a.state, contract: a.done?.contract ? "Signed" : "Not sent" })),
+            };
+          })
+      : [];
+
+  const me: Me = { memberId: mine.id, role: mine.role, stage: mine.stage };
+  return {
+    v: VERSION,
+    me,
+    agency: { name: firm?.name ?? "Your agency", split: firm?.default_split ?? 70 },
+    profile: { name: mine.name, email: mine.email, phone: "", address: "", dob: "", ...own.profile },
+    done: own.done ?? {},
+    athletes: own.athletes ?? [],
+    docs: own.docs ?? [],
+    signatures: [],
+    team,
+    deals: ((firm?.data as { deals?: Deal[] } | null)?.deals ?? []),
+  };
+}
+
+type Ctx = {
+  state: AppState;
+  mode: Mode;
+  email: string | null;
+  update: (fn: (draft: AppState) => void) => void;
+  reset: () => void;
+  startDemo: () => void;
+  signOut: () => Promise<void>;
+  createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
+  inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
+  recordSignature: (rec: SignatureRecord) => void;
+};
 const StoreContext = createContext<Ctx | null>(null);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>(seed);
-  const [ready, setReady] = useState(false);
+  const [mode, setMode] = useState<Mode>("loading");
+  const [session, setSession] = useState<Session | null>(null);
+  const saved = useRef<{ member: string; firm: string; stage: number }>({ member: "", firm: "", stage: 0 });
 
-  useEffect(() => {
-    setState(load());
-    setReady(true);
+  const enterLive = useCallback(async (s: Session) => {
+    setSession(s);
+    const live = await loadLive(s);
+    if (!live) return setMode("needs-firm");
+    saved.current = { member: JSON.stringify(memberData(live)), firm: JSON.stringify({ deals: live.deals }), stage: live.me?.stage ?? 0 };
+    setState(live);
+    setMode("live");
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
-    try {
-      localStorage.setItem(KEY, JSON.stringify(state));
-    } catch {}
-  }, [state, ready]);
+    let demo = false;
+    try { demo = localStorage.getItem(DEMO_FLAG) === "1"; } catch {}
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) void enterLive(data.session);
+      else if (demo) { setState(loadDemo()); setMode("demo"); }
+      else setMode("signed-out");
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
+      if (event === "SIGNED_IN" && s) void enterLive(s);
+      if (event === "SIGNED_OUT") { setSession(null); setMode("signed-out"); }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [enterLive]);
+
+  // Save after every change: demo to this browser, live to the database.
+  useEffect(() => {
+    if (mode === "demo") {
+      try { localStorage.setItem(DEMO_KEY, JSON.stringify(state)); } catch {}
+      return;
+    }
+    if (mode !== "live" || !state.me) return;
+    const me = state.me;
+    const t = setTimeout(async () => {
+      // Signing the agency agreement on the to-do list moves an agent from stage 1 to 2.
+      if (me.stage === 2 && saved.current.stage === 1) {
+        const { error } = await supabase.rpc("sign_agency_agreement");
+        if (!error) saved.current.stage = 2;
+      }
+      const m = JSON.stringify(memberData(state));
+      if (m !== saved.current.member) {
+        const { error } = await supabase.from("member_state").upsert({ member_id: me.memberId, data: memberData(state), updated_at: new Date().toISOString() });
+        if (!error) saved.current.member = m;
+      }
+      const f = JSON.stringify({ deals: state.deals });
+      if (me.role === "owner" && f !== saved.current.firm) {
+        const { error } = await supabase.from("firms").update({ data: { deals: state.deals } }).eq("id", (await supabase.rpc("my_firm_id")).data);
+        if (!error) saved.current.firm = f;
+      }
+    }, 600);
+    return () => clearTimeout(t);
+  }, [state, mode]);
 
   const update = useCallback((fn: (draft: AppState) => void) => {
     setState((prev) => {
@@ -80,9 +186,44 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       return next;
     });
   }, []);
-  const reset = useCallback(() => setState(seed()), []);
 
-  return <StoreContext.Provider value={{ state, update, reset }}>{children}</StoreContext.Provider>;
+  const value: Ctx = {
+    state, mode, email: session?.user.email ?? null, update,
+    reset: () => setState(seed()),
+    startDemo: () => {
+      try { localStorage.setItem(DEMO_FLAG, "1"); } catch {}
+      setState(loadDemo());
+      setMode("demo");
+    },
+    signOut: async () => {
+      try { localStorage.removeItem(DEMO_FLAG); } catch {}
+      await supabase.auth.signOut();
+      setMode("signed-out");
+    },
+    createFirm: async (firmName, ownerName) => {
+      const { error } = await supabase.rpc("create_firm", { p_firm_name: firmName, p_owner_name: ownerName });
+      if (error) return error.message;
+      if (session) await enterLive(session);
+      return null;
+    },
+    inviteAgent: async (name, email, split) => {
+      if (mode !== "live") return null;
+      const { data: firmId } = await supabase.rpc("my_firm_id");
+      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name, email: email.toLowerCase(), split, role: "agent", stage: 0 }).select("id").single();
+      if (error) return error.message;
+      update((d) => { d.team.push({ id: data.id, name, email, stage: 0, split, done: {}, athletes: [] }); });
+      return null;
+    },
+    recordSignature: (rec) => {
+      if (mode !== "live" || !state.me) return;
+      void supabase.from("signatures").insert({
+        member_id: state.me.memberId, document: rec.document, document_sha256: rec.documentSha256,
+        method: rec.method, value: rec.value, consent: true, user_agent: rec.userAgent, signed_at: rec.signedAt,
+      });
+    },
+  };
+
+  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
 
 export function useStore() {

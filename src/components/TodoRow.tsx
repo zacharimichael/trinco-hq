@@ -19,6 +19,8 @@ export function TodoRow({ t }: { t: Todo }) {
         const a = draft.athletes.find((x) => x.id === t.athleteId)!;
         a.done[task.id] = true;
         if (task.id === "contract") a.signed = new Date().toISOString();
+      } else if (task.id === "agency_agreement") {
+        if (draft.me) draft.me.stage = 2;
       } else draft.done[task.id] = true;
     });
   };

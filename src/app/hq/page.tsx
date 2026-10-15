@@ -9,9 +9,12 @@ import { useStore } from "@/lib/store";
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 
 export default function HqPage() {
-  const { state, update } = useStore();
+  const { state, update, mode, inviteAgent } = useStore();
+  const live = mode === "live";
   const run = useTaskRunner();
   const { agency } = state;
+  if (live && state.me?.role !== "owner")
+    return <section className="view"><h1>HQ</h1><p className="muted">Only the agency owner can see HQ.</p></section>;
 
   const me: TeamMember = {
     id: "me", name: "You", email: state.profile.email, stage: 3, split: 100, done: state.done,
@@ -58,9 +61,18 @@ export default function HqPage() {
           </>) },
           { type: "sign", title: "Sign", what: "the agency agreement" },
         ],
-        done: (d) => ({ msg: `Invite sent to ${d.email || "the new agent"}. They'll sign here, then their licensing checklist starts automatically.`, doc: `Agency agreement: ${d.name}` }),
+        done: (d) => {
+          if (live) void inviteAgent(String(d.name || "New agent"), String(d.email || ""), Number(d.split) || agency.split);
+          return {
+            msg: live
+              ? `${d.name || "Your new agent"} is added. Ask them to sign in at this site with ${d.email || "their email"}, and they'll be taken straight to the agreement.`
+              : `Invite sent to ${d.email || "the new agent"}. They'll sign here, then their licensing checklist starts automatically.`,
+            doc: `Agency agreement: ${d.name}`,
+          };
+        },
       },
       (draft, d) => {
+        if (live) return;
         draft.team.push({ id: `t${Date.now()}`, name: String(d.name || "New agent"), email: String(d.email || ""), stage: 0, split: Number(d.split) || agency.split, done: {}, athletes: [] });
       },
     );
@@ -98,7 +110,7 @@ export default function HqPage() {
                   <div className="pcard" key={t.id}>
                     <b>{t.name}</b>
                     {i === 2 && <small>{TRACKED.map((c) => <span key={c}><span className={`dot ${status(c, t.done).key}`} /> {c} </span>)}</small>}
-                    {i < 2 && t.id !== "me" && (
+                    {i < 2 && t.id !== "me" && !live && (
                       <button className="linkbtn" data-advance={t.id} onClick={() => update((d) => { d.team.find((m) => m.id === t.id)!.stage++; })}>
                         Demo: {i === 0 ? "they opened the invite" : "they signed"}
                       </button>

@@ -32,7 +32,7 @@ function total(lines: [string, number][]) {
 }
 
 function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complete; onClose: () => void }) {
-  const { state, update } = useStore();
+  const { state, update, recordSignature } = useStore();
   const [screens] = useState<Screen[]>(() => def.screens());
   const [i, setI] = useState(0);
   const [data, setData] = useState<FormData>(() => {
@@ -74,15 +74,16 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
       pdf = out.dataUrl;
       hash = out.hash;
     }
+    const now = signedAt.toISOString();
+    const rec: SignatureRecord | null = sig && res.doc && hash
+      ? { document: res.doc, documentSha256: hash, signer: state.profile.name, method: sig.method, value: sig.value, consent: true, signedAt: now, userAgent: navigator.userAgent }
+      : null;
     update((draft) => {
       complete(draft, data);
-      const now = signedAt.toISOString();
       if (res.doc) draft.docs.push({ name: res.doc, date: now, pdf });
-      if (sig && res.doc && hash) {
-        const rec: SignatureRecord = { document: res.doc, documentSha256: hash, signer: draft.profile.name, method: sig.method, value: sig.value, consent: true, signedAt: now, userAgent: navigator.userAgent };
-        draft.signatures.push(rec);
-      }
+      if (rec) draft.signatures.push(rec);
     });
+    if (rec) recordSignature(rec);
     setBusy(false);
     setResult(res);
   }

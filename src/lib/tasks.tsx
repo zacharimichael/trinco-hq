@@ -139,6 +139,22 @@ export function athleteTasks(a: Athlete, p: Profile): TaskDef[] {
   return t;
 }
 
+export function agencyAgreementTask(s: AppState): TaskDef {
+  return {
+    id: "agency_agreement", title: `Sign the ${s.agency.name} agency agreement`, cta: "Sign",
+    screens: () => [
+      { type: "doc", title: "Review the agency agreement", body: () => (<>
+        <h4>Independent Agent Agreement</h4>
+        <p><b>Agency:</b> {s.agency.name}<br /><b>Agent:</b> {s.profile.name} · {s.profile.email}</p>
+        <p>The agent represents athletes for NIL on behalf of the agency and keeps {s.agency.split}% of commissions on deals they close. The agency keeps the rest.</p>
+        <p>The agent must hold every required state license or registration, use the agency&apos;s contracts and follow every rule in this app. The agency can end this agreement if the agent falls out of compliance.</p>
+      </>) },
+      sign("the agency agreement"),
+    ],
+    done: () => ({ msg: "Signed. Your licensing checklist is ready on your map.", doc: `${s.agency.name} agency agreement` }),
+  };
+}
+
 export interface Todo {
   key: string;
   title: string;
@@ -153,6 +169,8 @@ export interface Todo {
 export function todos(s: AppState): Todo[] {
   const out: Todo[] = [];
   const lt = licenseTasks(s.profile);
+  if (s.me?.role === "agent" && s.me.stage <= 1)
+    out.push({ key: "agency_agreement", title: `Sign the ${s.agency.name} agency agreement`, where: s.agency.name, due: null, task: agencyAgreementTask(s) });
   for (const code of Object.keys(RULES)) {
     for (const st of section(code, "get_licensed")?.steps ?? []) {
       const def = lt[st.id];

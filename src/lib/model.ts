@@ -59,8 +59,16 @@ export interface Deal {
   status: "Paid" | "Pending";
 }
 
+export interface Me {
+  memberId: string;
+  role: "owner" | "agent";
+  stage: number;
+}
+
 export interface AppState {
   v: number;
+  /** Set when signed in. Absent in demo mode. */
+  me?: Me;
   agency: { name: string; split: number };
   profile: Profile;
   done: Done;
