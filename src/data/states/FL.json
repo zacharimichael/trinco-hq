@@ -1,0 +1,147 @@
+{
+  "state": "FL",
+  "name": "Florida",
+  "license_required": true,
+  "regulator": {
+    "name": "Florida Department of Business and Professional Regulation (DBPR)",
+    "phone": "850-487-1395",
+    "website": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+  },
+  "last_researched": "2026-10-15",
+  "attorney_reviewed": false,
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "fl_app",
+          "text": "Fill out Form DBPR AA-4101",
+          "detail": "Application for Licensure as an Athlete Agent. You must be 18+.",
+          "type": "form",
+          "form": "DBPR AA-4101",
+          "source": "https://www.law.cornell.edu/regulations/florida/Fla-Admin-Code-Ann-R-61-35-004"
+        },
+        {
+          "id": "fl_prints",
+          "text": "Get fingerprinted",
+          "detail": "Electronic fingerprints for the state and FBI background check. The cost depends on the vendor.",
+          "type": "task",
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        },
+        {
+          "id": "fl_fee",
+          "text": "Pay $630",
+          "detail": "$250 application + $375 license + $5 unlicensed activity fee.",
+          "type": "payment",
+          "amount_usd": 630,
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        },
+        {
+          "id": "fl_submit",
+          "text": "Submit your application",
+          "detail": "Online at myfloridalicense.com, or mail to: DBPR Central Intake Unit, 2601 Blair Stone Road, Tallahassee, FL 32399-0783.",
+          "type": "task",
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        },
+        {
+          "id": "fl_temp",
+          "text": "Optional: ask for a temporary license",
+          "detail": "Written request with your name, address and SSN. It is good for 60 days and can't be extended.",
+          "type": "optional",
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "fl_nil_notice",
+          "text": "Tell the athletic director before you first contact the athlete about NIL",
+          "type": "notice",
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        },
+        {
+          "id": "fl_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's calculated, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://flsenate.gov/Laws/Statutes/2017/0468.454"
+        },
+        {
+          "id": "fl_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://flsenate.gov/Laws/Statutes/2017/0468.454"
+        },
+        {
+          "id": "fl_separate",
+          "text": "Use separate contracts for NIL and for pro or athletic representation",
+          "type": "contract",
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        },
+        {
+          "id": "fl_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://flsenate.gov/Laws/Statutes/2017/0468.454"
+        },
+        {
+          "id": "fl_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://flsenate.gov/Laws/Statutes/2017/0468.454"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "fl_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://flsenate.gov/Laws/Statutes/2017/0468.4565"
+        },
+        {
+          "id": "fl_changes",
+          "text": "Report a new address or name with Form DBPR AA-4102",
+          "type": "form",
+          "form": "DBPR AA-4102",
+          "source": "https://www.law.cornell.edu/regulations/florida/Fla-Admin-Code-Ann-R-61-35-004"
+        },
+        {
+          "id": "fl_never",
+          "text": "Never give gifts or money to recruit athletes, or pay coaches or school staff for referrals",
+          "type": "rule",
+          "source": "https://ipmall.law.unh.edu/sites/default/files/hosted_resources/SportsEntLaw_Institute/Agent%20Contracts%20Between%20Players%20&%20Their%20Agents/Florida%20Statutes_Athlete%20Agents,%20Chapter%20468,%20Part%20IX.pdf"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "fl_renew",
+          "text": "Renew by May 31 and pay $225",
+          "detail": "Every even year. The next renewal is May 31, 2028. The state emails you 90 to 120 days before. No classes are required.",
+          "type": "deadline",
+          "amount_usd": 225,
+          "due_rule": "May 31 of each even year",
+          "source": "https://www2.myfloridalicense.com/athlete-agents/faqs/"
+        }
+      ]
+    }
+  ],
+  "review_notes": [
+    "The contract, records and licensing statute text was pulled from the 2017 edition of the Florida Statutes. The 2026 text should be checked for changes.",
+    "Penalties exist (acting unlicensed and missing the athletic director notice have historically been felonies), but the current penalty sections were not reviewed yet."
+  ]
+}

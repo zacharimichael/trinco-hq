@@ -1,0 +1,87 @@
+{
+  "state": "MA",
+  "name": "Massachusetts",
+  "license_required": false,
+  "regulator": null,
+  "last_researched": "2026-10-15",
+  "attorney_reviewed": false,
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "ma_none",
+          "text": "No state license needed",
+          "detail": "Massachusetts has no athlete agent law. A bill that would have required one (H1930) was sent to study on March 26, 2026.",
+          "type": "info",
+          "source": "https://www.billtrack50.com/billdetail/1865467"
+        },
+        {
+          "id": "ma_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Many schools have their own agent sign-up, for example UMass and Holy Cross.",
+          "type": "task",
+          "source": "https://umassathletics.com/sports/2016/9/28/agents"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "ma_sparta_warning",
+          "text": "Warn the athlete in writing that signing could affect their eligibility",
+          "detail": "This is required by federal law (SPARTA) in every state.",
+          "type": "contract",
+          "source": "https://leopoldus.com/nil/tennessee"
+        },
+        {
+          "id": "ma_no_backdate",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://leopoldus.com/nil/tennessee"
+        },
+        {
+          "id": "ma_hs",
+          "text": "High school athletes: make sure they give their school a copy of your agreement",
+          "detail": "This is an MIAA rule.",
+          "type": "task",
+          "source": "https://ecckersports.com/massachusetts/"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "ma_never",
+          "text": "Never make false promises or give gifts or money to recruit athletes",
+          "detail": "This is a federal SPARTA rule.",
+          "type": "rule",
+          "source": "https://leopoldus.com/nil/tennessee"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. Not yet law.",
+      "impact": "It would require every NIL agent to register in a state, cap fees at 5% and create public agent databases.",
+      "source": "https://www.bhfs.com/wp-content/uploads/2026/10/Section-by-Section-Review_Protect-College-Sports-Act-of-2026.pdf"
+    },
+    {
+      "item": "MA H1930 (student-athlete NIL rights)",
+      "status": "Sent to study on March 26, 2026 (H5281). It could come back next session.",
+      "impact": "It would require agent registration and cap fees at 15%.",
+      "source": "https://www.billtrack50.com/billdetail/1865467"
+    }
+  ],
+  "review_notes": [
+    "The SPARTA requirements were taken from a secondary summary. They should be checked against 15 U.S.C. 7801-7807."
+  ]
+}
