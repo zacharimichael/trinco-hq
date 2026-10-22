@@ -2,7 +2,7 @@
 
 import { useTaskRunner } from "@/components/TaskRunner";
 import { STAGES, type TeamMember } from "@/lib/model";
-import { DAY, dueText, RULES, startOfToday, status, TRACKED } from "@/lib/rules";
+import { DAY, dueText, myStates, RULES, startOfToday, status } from "@/lib/rules";
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 
@@ -20,8 +20,10 @@ export default function HqPage() {
     id: "me", name: "You", email: state.profile.email, stage: 3, split: 100, done: state.done,
     athletes: state.athletes.map((a) => ({ name: a.name, school: a.school, sport: a.sport, state: a.state, contract: a.done.contract ? "Signed" : "Not sent" })),
   };
-  // An agent who is getting licensed goes Active once every state on their map is green.
-  const allGreen = (t: TeamMember) => TRACKED.every((c) => status(c, t.done).key === "go");
+  // An agent's states: the ones they've started or have athletes in.
+  const statesOf = (t: TeamMember) => myStates(t.done, t.athletes.map((a) => a.state));
+  // An agent who is getting licensed goes Active once every one of their states is green.
+  const allGreen = (t: TeamMember) => { const c = statesOf(t); return c.length > 0 && c.every((x) => status(x, t.done).key === "go"); };
   const team = [me, ...state.team.map((t) => (t.stage === 2 && allGreen(t) ? { ...t, stage: 3 } : t))];
 
   const active = team.filter((t) => t.stage === 3).length;
@@ -37,7 +39,7 @@ export default function HqPage() {
   const today = startOfToday();
   const attention: string[] = [];
   team.forEach((t) => {
-    if (t.stage === 3 && t.id !== "me") TRACKED.forEach((c) => { if (status(c, t.done).key !== "go") attention.push(`${t.name}: not licensed in ${RULES[c].name}`); });
+    if (t.stage === 3 && t.id !== "me") statesOf(t).forEach((c) => { if (status(c, t.done).key !== "go") attention.push(`${t.name}: not licensed in ${RULES[c].name}`); });
   });
   todos(state).filter((x) => x.due && !x.later && (x.due.getTime() - today.getTime()) / DAY <= 3)
     .forEach((x) => attention.push(`You: ${x.title} (${dueText(x.due).toLowerCase()})`));
@@ -109,7 +111,7 @@ export default function HqPage() {
                 {here.map((t) => (
                   <div className="pcard" key={t.id}>
                     <b>{t.name}</b>
-                    {i === 2 && <small>{TRACKED.map((c) => <span key={c}><span className={`dot ${status(c, t.done).key}`} /> {c} </span>)}</small>}
+                    {i === 2 && <small>{statesOf(t).map((c) => <span key={c}><span className={`dot ${status(c, t.done).key}`} /> {c} </span>)}</small>}
                     {i < 2 && t.id !== "me" && !live && (
                       <button className="linkbtn" data-advance={t.id} onClick={() => update((d) => { d.team.find((m) => m.id === t.id)!.stage++; })}>
                         Demo: {i === 0 ? "they opened the invite" : "they signed"}
@@ -130,7 +132,7 @@ export default function HqPage() {
           <tbody>{team.map((p) => (
             <tr key={p.id}>
               <td><b>{p.name}</b><div className="muted" style={{ fontSize: 13 }}>{STAGES[p.stage]}</div></td>
-              <td><div className="dots">{TRACKED.map((c) => <span className="chip" key={c}><span className={`dot ${status(c, p.done).key}`} />{c}</span>)}</div></td>
+              <td><div className="dots">{statesOf(p).length ? statesOf(p).map((c) => <span className="chip" key={c}><span className={`dot ${status(c, p.done).key}`} />{c}</span>) : <span className="muted">None yet</span>}</div></td>
               <td style={{ fontVariantNumeric: "tabular-nums" }}>{p.athletes.length}</td>
             </tr>
           ))}</tbody>

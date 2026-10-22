@@ -55,6 +55,18 @@ nav.tabs .tablink[aria-current="page"]{background:var(--accent);color:var(--acce
 .usmap g.st rect{stroke:var(--line)} .usmap g.st text{stroke:none}
 .usmap .lbl{font:600 13px var(--body);fill:var(--off-ink);text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .usmap .lbl.on{fill:#fff;font-weight:800}
+.usmap .st.pick{cursor:pointer}
+.usmap .st.pick:hover,.usmap .st.pick:focus-visible{filter:brightness(.94);outline:none;stroke:var(--ink);stroke-width:2}
+.usmap .st.sel,.usmap g.st.sel rect{stroke:var(--ink);stroke-width:3}
+.maplayout{display:grid;gap:20px;align-items:start}
+.maplayout>.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+.statepanel{min-width:0;scroll-margin-top:12px}
+.panelbody{display:flex;flex-direction:column;gap:20px}
+@media (min-width:900px){
+  .maplayout.open{grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr)}
+  .maplayout.open .statepanel{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;overscroll-behavior:contain}
+  .wrap:has(.maplayout.open){max-width:1240px}
+}
 .usmap .lead{stroke:var(--off-ink);stroke-width:.8;opacity:.6}
 .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:14px;color:var(--muted);margin-top:14px}
 .legend span{display:inline-flex;align-items:center;gap:6px}

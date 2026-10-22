@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import US from "@/data/us-states.json";
 import { LABEL, RULES, type StatusKey } from "@/lib/rules";
 
@@ -8,25 +7,23 @@ const STATES = US as Record<string, { n: string; d: string; c: number[] }>;
 // Too small to tap on the map, so they also get a labeled button to the right.
 const SMALL = ["VT", "NH", "MA", "RI", "CT", "NJ", "DE", "MD", "DC"];
 
-export function UsMap({ statuses }: { statuses: Record<string, StatusKey> }) {
-  const router = useRouter();
+export function UsMap({ statuses, selected, onSelect }: { statuses: Record<string, StatusKey>; selected?: string | null; onSelect: (code: string) => void }) {
   const tracked = (c: string) => c in statuses && c in RULES;
-  const props = (code: string) =>
-    tracked(code)
-      ? {
-          className: `st tracked ${statuses[code]}`,
-          tabIndex: 0,
-          role: "button",
-          "aria-label": `${STATES[code].n}: ${LABEL[statuses[code]]}`,
-          onClick: () => router.push(`/state/${code}`),
-          onKeyDown: (e: React.KeyboardEvent) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              router.push(`/state/${code}`);
-            }
-          },
-        }
-      : { className: "st" };
+  // Every state opens in the panel; states still being researched say "coming soon".
+  const props = (code: string) => ({
+    className: `st ${tracked(code) ? `tracked ${statuses[code]}` : "pick"}${selected === code ? " sel" : ""}`,
+    tabIndex: 0,
+    role: "button",
+    "aria-pressed": selected === code,
+    "aria-label": `${STATES[code].n}: ${tracked(code) ? LABEL[statuses[code]] : "coming soon"}`,
+    onClick: () => onSelect(code),
+    onKeyDown: (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onSelect(code);
+      }
+    },
+  });
 
   return (
     <svg viewBox="0 0 1040 610" className="usmap" role="img" aria-label="Map of the United States">

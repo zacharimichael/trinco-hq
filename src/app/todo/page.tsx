@@ -2,9 +2,12 @@
 
 import { TodoRow } from "@/components/TodoRow";
 import { useTaskRunner } from "@/components/TaskRunner";
-import { fmt, TRACKED } from "@/lib/rules";
+import US from "@/data/us-states.json";
+import { fmt } from "@/lib/rules";
 import { athleteTasks, todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
+
+const ALL_STATES = Object.keys(US).sort();
 
 export default function TodoPage() {
   const { state } = useStore();
@@ -19,7 +22,7 @@ export default function TodoPage() {
         screens: () => [{ type: "fields", title: "Who are you signing?", fields: [
           { key: "name", label: "Athlete's name", value: "" },
           { key: "school", label: "School", value: "" },
-          { key: "state", label: "School's state", value: TRACKED[0], options: TRACKED },
+          { key: "state", label: "School's state", value: state.profile.address.match(/\b([A-Z]{2})\s+\d{5}/)?.[1] ?? "FL", options: ALL_STATES },
           { key: "sport", label: "Sport", value: "" },
         ] }],
         done: (d) => ({ msg: `${d.name || "Your athlete"} is added. Their to-dos are on your list.` }),

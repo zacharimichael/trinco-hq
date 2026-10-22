@@ -108,7 +108,7 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
     );
 
   const signReady = sc.type !== "sign" || (!!sig && agree);
-  const nextLabel = sc.type === "sign" ? "Sign" : !last ? "Next" : sc.type === "pay" ? `Pay $${total(sc.lines)}` : sc.type === "confirm" ? "Send" : "Done";
+  const nextLabel = sc.type === "sign" ? "Sign" : !last ? "Next" : sc.type === "pay" ? `Pay $${total(sc.lines)}` : sc.type === "confirm" ? sc.button ?? "Send" : "Done";
 
   return (
     <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title" onClick={(e) => e.target === e.currentTarget && onClose()}>
