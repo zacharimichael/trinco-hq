@@ -1,0 +1,142 @@
+{
+  "state": "NC",
+  "name": "North Carolina",
+  "license_required": true,
+  "regulator": {
+    "name": "North Carolina Secretary of State, Athlete Agent Registration",
+    "phone": "919-814-5400",
+    "website": "https://sosnc.gov/divisions/athlete_agents"
+  },
+  "law": {
+    "type": "UAAA",
+    "name": "Uniform Athlete Agents Act, amended for NIL in 2025 (G.S. 78C-85 and following)",
+    "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+  },
+  "covers_nil_agents": "Yes. NIL contracts are agency contracts and need their own NIL warning.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register with the Secretary of State. $200, renewed every year.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "nc_app",
+          "text": "Fill out the Initial Application for Registration",
+          "detail": "Original signature required.",
+          "type": "form",
+          "source": "https://sosnc.gov/webfiles/documents/forms/athlete_agents/initial_application_for_registration_as_an_athlete_agent.pdf"
+        },
+        {
+          "id": "nc_fee",
+          "text": "Pay $200",
+          "detail": "Check, money order or cashier's check to the NC Department of the Secretary of State.",
+          "type": "payment",
+          "amount_usd": 200,
+          "source": "https://sosnc.gov/divisions/athlete_agents/registration_requirements"
+        },
+        {
+          "id": "nc_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "nc_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+        },
+        {
+          "id": "nc_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+        },
+        {
+          "id": "nc_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+        },
+        {
+          "id": "nc_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+        },
+        {
+          "id": "nc_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "nc_nil_warning",
+          "text": "Add the separate NIL warning to NIL contracts",
+          "type": "contract",
+          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "nc_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+        },
+        {
+          "id": "nc_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "nc_renew",
+          "text": "Renew every year and pay $200",
+          "detail": "If it lapses you can't act as an agent until the renewal is approved.",
+          "type": "deadline",
+          "amount_usd": 200,
+          "due_rule": "issued_at + 1y",
+          "source": "https://sosnc.gov/webfiles/documents/forms/athlete_agents/Application_for_Renewal_as_an_Athlete_Agent.pdf"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The 2025 NIL amendment also bars school-connected agents for 2 years and exempts some in-state attorneys. Review the exact NIL warning text.",
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

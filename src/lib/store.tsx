@@ -61,8 +61,8 @@ function loadDemo(): AppState {
 }
 
 /** The parts of AppState each member owns, stored in member_state.data. */
-type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs">;
-const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs });
+type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn">;
+const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {} });
 
 type MemberRow = { id: string; email: string; name: string; role: "owner" | "agent"; stage: number; split: number | null; user_id: string | null };
 
@@ -101,6 +101,7 @@ async function loadLive(session: Session): Promise<AppState | null> {
     done: own.done ?? {},
     athletes: own.athletes ?? [],
     docs: own.docs ?? [],
+    licensedOn: own.licensedOn ?? {},
     signatures: [],
     team,
     deals: ((firm?.data as { deals?: Deal[] } | null)?.deals ?? []),

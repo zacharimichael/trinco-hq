@@ -1,0 +1,142 @@
+{
+  "state": "NY",
+  "name": "New York",
+  "license_required": true,
+  "regulator": {
+    "name": "New York Department of State, Division of Licensing Services",
+    "phone": "518-474-4429",
+    "website": "https://dos.ny.gov/get-athlete-agent-license"
+  },
+  "law": {
+    "type": "UAAA",
+    "name": "Athlete agents (General Business Law art. 39-E)",
+    "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+  },
+  "covers_nil_agents": "Yes. Educ. Law 6438-a says NIL agents must be registered.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register with the Department of State. $100. Athletes can cancel within 5 days.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "ny_app",
+          "text": "Fill out the Athlete Agent Application (DOS-1640)",
+          "type": "form",
+          "form": "DOS-1640",
+          "source": "https://dos.ny.gov/athlete-agent-applications"
+        },
+        {
+          "id": "ny_fee",
+          "text": "Pay $100",
+          "detail": "Check, money order or card form. No cash.",
+          "type": "payment",
+          "amount_usd": 100,
+          "source": "https://dos.ny.gov/get-athlete-agent-license"
+        },
+        {
+          "id": "ny_submit",
+          "text": "Mail it to the Division of Licensing Services",
+          "detail": "P.O. Box 22001, Albany, NY 12201-2001.",
+          "type": "task",
+          "source": "https://dos.ny.gov/get-athlete-agent-license"
+        },
+        {
+          "id": "ny_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "ny_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+        },
+        {
+          "id": "ny_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+        },
+        {
+          "id": "ny_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+        },
+        {
+          "id": "ny_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 5 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+        },
+        {
+          "id": "ny_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "ny_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+        },
+        {
+          "id": "ny_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "ny_renew",
+          "text": "Renew every 2 years and pay $50",
+          "type": "deadline",
+          "amount_usd": 50,
+          "due_rule": "issued_at + 2y",
+          "source": "https://dos.ny.gov/get-athlete-agent-license"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The 2-year term and 5-day cancellation window come from a secondary source. Confirm in GBL art. 39-E.",
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

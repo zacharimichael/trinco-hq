@@ -3,8 +3,15 @@
   "name": "Massachusetts",
   "license_required": false,
   "regulator": null,
+  "law": {
+    "type": "none",
+    "name": "Massachusetts has no athlete agent law.",
+    "source": "https://www.billtrack50.com/billdetail/1865467"
+  },
+  "covers_nil_agents": "No state rule found.",
   "last_researched": "2026-10-15",
   "attorney_reviewed": false,
+  "summary": "No state license. Follow federal SPARTA rules and each school's rules.",
   "sections": [
     {
       "id": "get_licensed",
@@ -70,9 +77,9 @@
   "watch_list": [
     {
       "item": "Federal Protect College Sports Act of 2026 (S.4668)",
-      "status": "Passed the Senate on Sept 28, 2026. Not yet law.",
-      "impact": "It would require every NIL agent to register in a state, cap fees at 5% and create public agent databases.",
-      "source": "https://www.bhfs.com/wp-content/uploads/2026/10/Section-by-Section-Review_Protect-College-Sports-Act-of-2026.pdf"
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
     },
     {
       "item": "MA H1930 (student-athlete NIL rights)",

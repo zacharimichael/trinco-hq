@@ -1,0 +1,163 @@
+{
+  "state": "OR",
+  "name": "Oregon",
+  "license_required": true,
+  "regulator": {
+    "name": "Oregon Department of Education",
+    "phone": "971-208-2128",
+    "website": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+  },
+  "law": {
+    "type": "RUAAA",
+    "name": "Athlete agents (ORS 702)",
+    "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+  },
+  "covers_nil_agents": "Yes. ORS 702.200 lets athletes hire an agent for NIL.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register with the Department of Education. $250 plus fingerprints.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "or_app",
+          "text": "Apply on the Athlete Agent Portal",
+          "detail": "Sign in ink and get it notarized. Paper form 2285-O also works.",
+          "type": "form",
+          "source": "https://or.accessgov.com/ode/Forms/Page/ode/althlete-agent"
+        },
+        {
+          "id": "or_prints",
+          "text": "Get fingerprinted through Fieldprint",
+          "type": "task",
+          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+        },
+        {
+          "id": "or_fee",
+          "text": "Pay $250",
+          "detail": "$150 if based on another state's registration.",
+          "type": "payment",
+          "amount_usd": 250,
+          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+        },
+        {
+          "id": "or_30d",
+          "text": "Finish all of it within 30 days",
+          "detail": "Application, fingerprints and fee.",
+          "type": "deadline",
+          "due_rule": "started_at + 30d",
+          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+        },
+        {
+          "id": "or_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "or_pre_notice",
+          "text": "Tell the athletic director before you first contact the athlete",
+          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "type": "notice",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_ack",
+          "text": "Have the athlete sign a separate eligibility warning",
+          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "type": "contract",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "or_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+        },
+        {
+          "id": "or_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "or_renew",
+          "text": "Renew every 2 years and pay $150",
+          "type": "deadline",
+          "amount_usd": 150,
+          "due_rule": "issued_at + 2y",
+          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "A parent may cancel for a minor in Oregon. The 2-year term comes from a secondary source.",
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

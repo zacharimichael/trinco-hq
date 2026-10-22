@@ -1,0 +1,95 @@
+{
+  "state": "NJ",
+  "name": "New Jersey",
+  "license_required": false,
+  "regulator": null,
+  "law": {
+    "type": "none",
+    "name": "New Jersey has no athlete agent registration.",
+    "source": "https://leaveyouragent.com/be-your-own-agent/registration-by-state"
+  },
+  "covers_nil_agents": "Partly. New Jersey's 2025 NIL law says agents follow SPARTA and act as fiduciaries.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "No state license. Under the NIL law you owe the athlete fiduciary duties.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "nj_none",
+          "text": "No state license needed",
+          "detail": "New Jersey has no athlete agent registration.",
+          "type": "info",
+          "source": "https://leaveyouragent.com/be-your-own-agent/registration-by-state"
+        },
+        {
+          "id": "nj_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "nj_sparta_warning",
+          "text": "Warn the athlete in writing that signing could affect their eligibility",
+          "detail": "This is required by federal law (SPARTA) in every state.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "nj_no_backdate",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "nj_school_notice",
+          "text": "Make sure the athlete tells their school about the deal",
+          "detail": "Most schools and state NIL laws require athletes to disclose NIL deals.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "nj_fiduciary",
+          "text": "Put the athlete's interests first in every deal",
+          "detail": "New Jersey's NIL law makes agents fiduciaries.",
+          "type": "rule",
+          "source": "https://leaveyouragent.com/be-your-own-agent/registration-by-state"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "nj_never",
+          "text": "Never make false promises or give gifts or money to recruit athletes",
+          "detail": "This is a federal SPARTA rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "\"No law\" is based on a secondary 50-state survey (Leave Your Agent, checked 2026-10-13). Confirm with the state legislature."
+  ]
+}

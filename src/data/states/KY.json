@@ -1,0 +1,156 @@
+{
+  "state": "KY",
+  "name": "Kentucky",
+  "license_required": true,
+  "regulator": {
+    "name": "Kentucky Department of Professional Licensing",
+    "phone": null,
+    "website": "https://oop.ky.gov/reg_athletes.aspx"
+  },
+  "law": {
+    "type": "RUAAA",
+    "name": "Revised Uniform Athlete Agents Act (KRS 164.6901 and following)",
+    "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+  },
+  "covers_nil_agents": "Yes. The agency contract includes NIL agreements.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register with the Department of Professional Licensing. $300, good for 2 years.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "ky_app",
+          "text": "Fill out Form AAR-002",
+          "detail": "Application for Athlete Agent Registry or Renewal.",
+          "type": "form",
+          "form": "AAR-002",
+          "source": "https://apps.legislature.ky.gov/law/kar/titles/830/002/010/"
+        },
+        {
+          "id": "ky_attach",
+          "text": "Attach your contracts with Kentucky athletes and other licenses",
+          "type": "task",
+          "source": "https://apps.legislature.ky.gov/law/kar/titles/830/002/010/"
+        },
+        {
+          "id": "ky_fee",
+          "text": "Pay $300",
+          "type": "payment",
+          "amount_usd": 300,
+          "source": "https://apps.legislature.ky.gov/law/kar/titles/830/002/010/"
+        },
+        {
+          "id": "ky_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "ky_pre_notice",
+          "text": "Tell the athletic director before you first contact the athlete",
+          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "type": "notice",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_ack",
+          "text": "Have the athlete sign a separate eligibility warning",
+          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "type": "contract",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "ky_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+        },
+        {
+          "id": "ky_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "ky_renew",
+          "text": "Renew within 120 days before expiry and pay $200",
+          "detail": "Every 2 years. If you miss the window, your registration is revoked.",
+          "type": "deadline",
+          "amount_usd": 200,
+          "due_rule": "issued_at + 2y - 1d",
+          "source": "https://apps.legislature.ky.gov/law/kar/titles/830/002/010/"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The regulation does not give a mailing or online filing method. Confirm with the Department.",
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

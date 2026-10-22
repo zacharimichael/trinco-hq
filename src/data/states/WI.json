@@ -1,0 +1,149 @@
+{
+  "state": "WI",
+  "name": "Wisconsin",
+  "license_required": true,
+  "regulator": {
+    "name": "Wisconsin Department of Safety and Professional Services (DSPS)",
+    "phone": "608-266-2112",
+    "website": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+  },
+  "law": {
+    "type": "RUAAA",
+    "name": "Uniform Athlete Agents Act, amended to RUAAA in 2019 (Wis. Stat. ch. 440 subch. X)",
+    "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+  },
+  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register online with DSPS. $38. Renews June 30 of even years.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "wi_app",
+          "text": "Apply on LicensE",
+          "detail": "Also complete Form 2668.",
+          "type": "form",
+          "form": "2668",
+          "source": "https://license.wi.gov/"
+        },
+        {
+          "id": "wi_fee",
+          "text": "Pay $38",
+          "type": "payment",
+          "amount_usd": 38,
+          "source": "https://dsps.wi.gov/credentialing/credential-fees-and-renewal-dates/"
+        },
+        {
+          "id": "wi_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "wi_pre_notice",
+          "text": "Tell the athletic director before you first contact the athlete",
+          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "type": "notice",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_ack",
+          "text": "Have the athlete sign a separate eligibility warning",
+          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "type": "contract",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "wi_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+        },
+        {
+          "id": "wi_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "wi_renew",
+          "text": "Renew by June 30 and pay $38",
+          "detail": "Every even year. The next renewal is June 30, 2028. No classes required.",
+          "type": "deadline",
+          "amount_usd": 38,
+          "due_rule": "June 30 of each even year",
+          "source": "https://dsps.wi.gov/credentialing/credential-fees-and-renewal-dates/"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

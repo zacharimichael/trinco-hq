@@ -33,7 +33,7 @@ export function TodoRow({ t }: { t: Todo }) {
         <small>
           {t.where}
           {t.due && !t.later && <> · <span className={`due ${soon ? "soon" : ""}`}>{dueText(t.due)}</span></>}
-          {t.wait && <> · <button className="linkbtn" onClick={() => update((d) => { d.done[approvalId(t.wait!)] = true; })}>Demo: approve it</button></>}
+          {t.wait && <> · <button className="linkbtn" onClick={() => update((d) => { d.done[approvalId(t.wait!)] = true; d.licensedOn = { ...d.licensedOn, [t.wait!]: new Date().toISOString() }; })}>Demo: approve it</button></>}
         </small>
       </span>
       {t.wait ? <span className="waitchip">● Waiting</span>

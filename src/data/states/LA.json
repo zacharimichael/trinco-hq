@@ -1,0 +1,148 @@
+{
+  "state": "LA",
+  "name": "Louisiana",
+  "license_required": true,
+  "regulator": {
+    "name": "Louisiana Attorney General",
+    "phone": "877-297-0995",
+    "website": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+  },
+  "law": {
+    "type": "own",
+    "name": "Louisiana athlete agent law, rewritten in 2026 (R.S. 4:420 and following)",
+    "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254"
+  },
+  "covers_nil_agents": "Yes. Paid NIL or endorsement advice is agent work, for high school and college athletes.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register online with the Attorney General. $1,000, plus a background check and NIL training. Good for 2 years.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "la_app",
+          "text": "Apply on the Attorney General's NIL portal",
+          "detail": "Includes 5 years of jobs and licenses, 3 references, a headshot and a bio.",
+          "type": "form",
+          "source": "https://nil.ag.louisiana.gov/"
+        },
+        {
+          "id": "la_fee",
+          "text": "Pay $1,000",
+          "detail": "$500 if you're already registered in another state.",
+          "type": "payment",
+          "amount_usd": 1000,
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_bg",
+          "text": "Finish the background check and NIL training",
+          "detail": "Run by Advance NIL after you pay. Usually 2 to 7 business days.",
+          "type": "task",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "la_disclosure",
+          "text": "Sign a written NIL disclosure with the athlete before you start",
+          "detail": "Your registration, fee, anyone else paid, expenses, services, length and date. Without it you lose your fee.",
+          "type": "contract",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_school_report",
+          "text": "Help the athlete report the deal to their school",
+          "type": "task",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_pro_notice",
+          "text": "Pro contracts: tell the athletic director and coach 7 days before contact",
+          "type": "notice",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_pro_72h",
+          "text": "Pro contracts: notify them again within 72 hours of signing",
+          "type": "deadline",
+          "due_rule": "signed_at + 72h",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_file",
+          "text": "Pro contracts: send signed contracts to the Attorney General",
+          "type": "task",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        },
+        {
+          "id": "la_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "la_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254"
+        },
+        {
+          "id": "la_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "la_renew",
+          "text": "Renew every 2 years",
+          "type": "deadline",
+          "due_rule": "issued_at + 2y",
+          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The AG page says $1,000 for 2 years, but the act text reads $100 a year. Confirm.",
+    "The renewal fee is not posted.",
+    "No cancellation right was found in the 2026 act.",
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

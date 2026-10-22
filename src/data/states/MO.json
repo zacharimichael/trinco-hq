@@ -1,0 +1,163 @@
+{
+  "state": "MO",
+  "name": "Missouri",
+  "license_required": true,
+  "regulator": {
+    "name": "Missouri Office of Athlete Agents (Division of Professional Registration)",
+    "phone": "573-751-0243",
+    "website": "https://pr.mo.gov/athleteagents-rules.asp"
+  },
+  "law": {
+    "type": "RUAAA",
+    "name": "Revised Uniform Athlete Agents Act (RSMo 436.215 and following)",
+    "source": "https://pr.mo.gov/athleteagents-rules.asp"
+  },
+  "covers_nil_agents": "Yes. RSMo 173.280 says only attorneys or Missouri-registered agents may represent college athletes for NIL.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register with the Office of Athlete Agents. $102 with fingerprints. Expires June 30 of odd years.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "mo_app",
+          "text": "Fill out the Application for Athlete Agent Registration",
+          "detail": "Attach 2 photos and proof of citizenship.",
+          "type": "form",
+          "form": "MO 375-0235",
+          "source": "https://pr.mo.gov/boards/athleteagents/375-0235.pdf"
+        },
+        {
+          "id": "mo_prints",
+          "text": "Get fingerprinted",
+          "detail": "Attach 2 fingerprint cards.",
+          "type": "task",
+          "source": "https://pr.mo.gov/boards/athleteagents/375-0235.pdf"
+        },
+        {
+          "id": "mo_fee",
+          "text": "Pay $102",
+          "detail": "$70 application + $20 state check + $12 FBI check. Payable to Missouri Office of Athlete Agents.",
+          "type": "payment",
+          "amount_usd": 102,
+          "source": "https://pr.mo.gov/boards/athleteagents/375-0235.pdf"
+        },
+        {
+          "id": "mo_submit",
+          "text": "Mail it to the Office of Athlete Agents",
+          "detail": "3605 Missouri Blvd., P.O. Box 1335, Jefferson City, MO 65102.",
+          "type": "task",
+          "source": "https://pr.mo.gov/boards/athleteagents/375-0235.pdf"
+        },
+        {
+          "id": "mo_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "mo_pre_notice",
+          "text": "Tell the athletic director before you first contact the athlete",
+          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "type": "notice",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_ack",
+          "text": "Have the athlete sign a separate eligibility warning",
+          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "type": "contract",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "mo_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+        },
+        {
+          "id": "mo_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "mo_renew",
+          "text": "Renew by June 30 of each odd year",
+          "detail": "The next renewal is June 30, 2027.",
+          "type": "deadline",
+          "due_rule": "June 30 of each odd year",
+          "source": "https://pr.mo.gov/boards/athleteagents/375-0235.pdf"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

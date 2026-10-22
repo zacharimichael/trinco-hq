@@ -1,7 +1,7 @@
 "use client";
 
 import US from "@/data/us-states.json";
-import { approvalId, LABEL, RULES, status, submitId } from "@/lib/rules";
+import { applied, approvalId, LABEL, RULES, status } from "@/lib/rules";
 import { stateTasks } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 import { useTaskRunner } from "./TaskRunner";
@@ -29,7 +29,6 @@ export function StatePanel({ code, onClose }: { code: string; onClose: () => voi
   const s = status(code, state.done);
   const pct = s.total ? Math.round((s.n / s.total) * 100) : 0;
   const tasks = stateTasks(code, state.profile);
-  const sub = submitId(code);
 
   return (
     <div className="panelbody" id="state-panel">
@@ -38,6 +37,7 @@ export function StatePanel({ code, onClose }: { code: string; onClose: () => voi
         <div className="statehead" style={{ marginTop: 8 }}><h1>{R.name}</h1><span className={`badge ${s.key}`}>{LABEL[s.key]}</span></div>
         <p className="muted" style={{ margin: "8px 0 0" }}>
           {R.license_required ? `${s.n} of ${s.total} steps done` : "No state license needed. Just this short list."}
+          {R.summary && <><br />{R.summary}</>}
         </p>
         <div className="bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}><i style={{ width: `${pct}%` }} /></div>
       </div>
@@ -64,7 +64,7 @@ export function StatePanel({ code, onClose }: { code: string; onClose: () => voi
                 </div>
               );
             })}
-            {sub && state.done[sub] && (
+            {applied(code, state.done) && (
               <div className="todo"><span className="grow"><b>{R.name} approves your license</b></span>
                 {state.done[approvalId(code)] ? <span className="okchip">✓ Approved</span> : <span className="waitchip">● Waiting</span>}</div>
             )}

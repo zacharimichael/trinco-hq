@@ -1,0 +1,88 @@
+{
+  "state": "MT",
+  "name": "Montana",
+  "license_required": false,
+  "regulator": null,
+  "law": {
+    "type": "none",
+    "name": "Montana repealed its athlete agent law in 2007.",
+    "source": "https://leaveyouragent.com/be-your-own-agent/registration-by-state"
+  },
+  "covers_nil_agents": "No state rule found.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "No state license. Follow federal SPARTA rules and each school's rules.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "mt_none",
+          "text": "No state license needed",
+          "detail": "Montana repealed its athlete agent law in 2007.",
+          "type": "info",
+          "source": "https://leaveyouragent.com/be-your-own-agent/registration-by-state"
+        },
+        {
+          "id": "mt_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "mt_sparta_warning",
+          "text": "Warn the athlete in writing that signing could affect their eligibility",
+          "detail": "This is required by federal law (SPARTA) in every state.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "mt_no_backdate",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "mt_school_notice",
+          "text": "Make sure the athlete tells their school about the deal",
+          "detail": "Most schools and state NIL laws require athletes to disclose NIL deals.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "mt_never",
+          "text": "Never make false promises or give gifts or money to recruit athletes",
+          "detail": "This is a federal SPARTA rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "\"No law\" is based on a secondary 50-state survey (Leave Your Agent, checked 2026-10-13). Confirm with the state legislature."
+  ]
+}

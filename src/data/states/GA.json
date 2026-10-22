@@ -1,0 +1,162 @@
+{
+  "state": "GA",
+  "name": "Georgia",
+  "license_required": true,
+  "regulator": {
+    "name": "Georgia Secretary of State, Professional Licensing Boards (Athlete Agents)",
+    "phone": "404-424-9966",
+    "website": "https://rules.sos.ga.gov/gac/54-3"
+  },
+  "law": {
+    "type": "UAAA",
+    "name": "Georgia Athlete Agent Regulatory Act (O.C.G.A. 43-4A)",
+    "source": "https://rules.sos.ga.gov/gac/54-3"
+  },
+  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
+  "last_researched": "2026-10-22",
+  "attorney_reviewed": false,
+  "summary": "Register with the Secretary of State. $210 plus a $10,000 surety bond.",
+  "sections": [
+    {
+      "id": "get_licensed",
+      "title": "Get licensed",
+      "steps": [
+        {
+          "id": "ga_app",
+          "text": "Fill out the Athlete Agent initial application",
+          "detail": "Finish the whole file within 6 months of your first document.",
+          "type": "form",
+          "source": "https://sos.ga.gov/sites/default/files/forms/43%20Application%20-%20Initial_1.pdf"
+        },
+        {
+          "id": "ga_bond",
+          "text": "Get a $10,000 surety bond",
+          "detail": "From a surety allowed in Georgia. Keep it active the whole time you're registered.",
+          "type": "task",
+          "source": "https://sos.ga.gov/sites/default/files/forms/43%20Form%20-%20Surety%20Bond.pdf"
+        },
+        {
+          "id": "ga_training",
+          "text": "Prove training or experience",
+          "detail": "An affidavit or certificate in contracts, negotiation, complaint resolution, arbitration or contract disputes.",
+          "type": "task",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        },
+        {
+          "id": "ga_docs",
+          "text": "Attach ID, character affidavits and any court records",
+          "detail": "Notarized character affidavits. Out-of-state agents also file a notarized service-of-process designation.",
+          "type": "task",
+          "source": "https://sos.ga.gov/sites/default/files/forms/43%20Application%20-%20Initial_1.pdf"
+        },
+        {
+          "id": "ga_fee",
+          "text": "Pay $210",
+          "detail": "$200 fee + $10 processing.",
+          "type": "payment",
+          "amount_usd": 210,
+          "source": "https://sos.ga.gov/sites/default/files/forms/43%20Application%20-%20Initial_1.pdf"
+        },
+        {
+          "id": "ga_submit",
+          "text": "Mail everything to Georgia Athlete Agent",
+          "detail": "237 Coliseum Dr., Macon, GA 31217.",
+          "type": "task",
+          "source": "https://sos.ga.gov/sites/default/files/forms/43%20Application%20-%20Initial_1.pdf"
+        },
+        {
+          "id": "ga_school",
+          "text": "Register with each school's compliance office, if it asks",
+          "detail": "Most schools have their own agent sign-up.",
+          "type": "task",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "every_athlete",
+      "title": "Every new athlete",
+      "steps": [
+        {
+          "id": "ga_contract",
+          "text": "Use a written contract with all required items",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "type": "contract",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        },
+        {
+          "id": "ga_warning",
+          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "type": "contract",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        },
+        {
+          "id": "ga_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        },
+        {
+          "id": "ga_72h",
+          "text": "Notify the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        },
+        {
+          "id": "ga_sparta",
+          "text": "Date the contract the day it's signed",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "type": "contract",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "stay_compliant",
+      "title": "Stay compliant",
+      "steps": [
+        {
+          "id": "ga_records",
+          "text": "Keep client records for 5 years",
+          "detail": "Names and addresses, contracts and recruiting costs.",
+          "type": "recurring",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        },
+        {
+          "id": "ga_never",
+          "text": "Never give gifts or money to recruit athletes or make false promises",
+          "detail": "This is a state and federal (SPARTA) rule.",
+          "type": "rule",
+          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        }
+      ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "ga_renew",
+          "text": "Renew every 2 years and keep the bond active",
+          "type": "deadline",
+          "due_rule": "issued_at + 2y",
+          "source": "https://rules.sos.ga.gov/gac/54-3"
+        }
+      ]
+    }
+  ],
+  "watch_list": [
+    {
+      "item": "Federal Protect College Sports Act of 2026 (S.4668)",
+      "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
+      "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
+      "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    }
+  ],
+  "review_notes": [
+    "The renewal fee and 2-year term come from secondary sources. Confirm with the Secretary of State.",
+    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+  ]
+}

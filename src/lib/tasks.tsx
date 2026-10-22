@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { AppState, Athlete, Profile } from "./model";
-import { fmt, RULES, section, startOfToday, approvalId, hoursAfterSigning, renewDue, status, submitId, type StateRules, type Step } from "./rules";
+import { applied, fmt, RULES, section, startOfToday, approvalId, hoursAfterSigning, renewDue, status, submitId, type StateRules, type Step } from "./rules";
 
 /** Every to-do is a short guided flow done on the site: fill, review, sign, done. */
 export type FormData = Record<string, string | string[]>;
@@ -270,8 +270,7 @@ export function todos(s: AppState): Todo[] {
       if ((def.needs ?? []).some((n) => !s.done[n])) continue;
       out.push({ key: st.id, title: def.title, where: RULES[code].name, due: null, task: def });
     }
-    const sub = submitId(code);
-    if (sub && s.done[sub] && !s.done[approvalId(code)])
+    if (applied(code, s.done) && !s.done[approvalId(code)])
       out.push({ key: `wait_${code}`, title: `Waiting for ${RULES[code].name} to approve your license`, where: RULES[code].name, due: null, wait: code });
   }
   for (const a of s.athletes)
@@ -282,7 +281,7 @@ export function todos(s: AppState): Todo[] {
   for (const code of Object.keys(RULES)) {
     if (!RULES[code].license_required || status(code, s.done).key !== "go") continue;
     for (const st of section(code, "renew")?.steps ?? [])
-      out.push({ key: `renew_${st.id}`, title: `Renew your ${RULES[code].name} license`, where: `${RULES[code].name}${st.amount_usd ? ` · ${money(st.amount_usd)}` : ""}`, due: renewDue(st.due_rule), later: true });
+      out.push({ key: `renew_${st.id}`, title: `Renew your ${RULES[code].name} license`, where: `${RULES[code].name}${st.amount_usd ? ` · ${money(st.amount_usd)}` : ""}`, due: renewDue(st.due_rule, s.licensedOn?.[code]), later: true });
   }
   const t = (d: Date | null) => (d ? d.getTime() : Infinity);
   return out.sort((x, y) => Number(!!x.wait) - Number(!!y.wait) || t(x.due) - t(y.due));

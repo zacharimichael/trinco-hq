@@ -77,4 +77,6 @@ export interface AppState {
   signatures: SignatureRecord[];
   team: TeamMember[];
   deals: Deal[];
+  /** When each state approved the license (ISO date), for renewal reminders. */
+  licensedOn?: Record<string, string>;
 }

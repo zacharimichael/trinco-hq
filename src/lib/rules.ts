@@ -31,6 +31,8 @@ export interface StateRules {
   sections: Section[];
   /** Optional exact warning text the state requires on athlete contracts. */
   contract_warning?: string;
+  /** One plain sentence for the state card. */
+  summary?: string;
 }
 
 /** Every researched state. Run `npm run sync-states` to pull in new state files. */
@@ -56,11 +58,20 @@ export function licenseSteps(code: string): string[] {
 }
 export const approvalId = (code: string) => `${code.toLowerCase()}_approved`;
 
-/** The step that sends the application to the state: the "_submit" step, or the last required one. */
+/** The step that sends the application to the state, when the state has one ("xx_submit"). */
 export function submitId(code: string): string | null {
   if (!RULES[code].license_required) return null;
-  const req = (section(code, "get_licensed")?.steps ?? []).filter(counts).map((s) => s.id);
-  return req.find((id) => id.endsWith("_submit")) ?? req[req.length - 1] ?? null;
+  return (section(code, "get_licensed")?.steps ?? []).find((s) => counts(s) && s.id.endsWith("_submit"))?.id ?? null;
+}
+
+/** True once everything that goes to the state is done, so the agent is waiting on approval.
+ *  School registrations don't go to the state, so they don't hold this up. */
+export function applied(code: string, done: Done) {
+  if (!RULES[code].license_required) return false;
+  const sub = submitId(code);
+  if (sub) return !!done[sub];
+  const filed = (section(code, "get_licensed")?.steps ?? []).filter((s) => counts(s) && !/school/i.test(s.text));
+  return filed.length > 0 && filed.every((s) => done[s.id]);
 }
 
 /** States an agent works in: any they've started, plus any where they have an athlete. */
@@ -69,8 +80,17 @@ export function myStates(done: Done, athleteStates: string[] = []) {
 }
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-/** Reads a renewal rule like "May 31 of each even year" or "June 30 each year". Null if it can't. */
-export function renewDue(rule: string | undefined, from = startOfToday()): Date | null {
+/** Reads a renewal rule like "May 31 of each even year", "June 30 each year" or
+ *  "issued_at + 2y - 30d" (needs the approval date). Null if it can't. */
+export function renewDue(rule: string | undefined, issuedAt?: string, from = startOfToday()): Date | null {
+  const rel = rule?.match(/issued_at\s*\+\s*(\d+)y(?:\s*-\s*(\d+)d)?/);
+  if (rel) {
+    if (!issuedAt) return null;
+    const d = new Date(issuedAt);
+    d.setHours(0, 0, 0, 0);
+    while (d < from) d.setFullYear(d.getFullYear() + Number(rel[1]));
+    return new Date(d.getTime() - Number(rel[2] ?? 0) * DAY);
+  }
   const m = rule?.toLowerCase().match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})/);
   if (!m) return null;
   const mo = MONTHS.indexOf(m[1]), day = Number(m[2]);
