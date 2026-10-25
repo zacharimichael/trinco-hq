@@ -140,31 +140,16 @@ export function athletesByState(athletes: { name: string; state: string }[], s: 
   return out;
 }
 
-/** Example players for demo mode. Made-up people at real schools. */
-export function seedScouting(): Scouting {
-  const p = (pos: Pos, school: string, x: Partial<Player>): Player => ({ ...newPlayer(pos, slug(`FBS-${school}`)), ...x, id: slug(`${pos}-${x.name}`) });
-  const fcs = (name: string) => slug(`FCS-${name}`);
-  return {
-    players: [
-      p("LS", "Florida", { name: "Tyler Brandt", age: 21, height: 74, weight: 235, hs: "Plant High", hsState: "FL", lsRating: 88, system: "Pro style", forty: 4.92, bench: 22, snapAcc: 18, snapSpeed: 17, spiral: "Clean", nil: [0, 5000, 12000, null, null, null], depth: "Starter", allConference: true, client: true, otherPos: ["TE"], otherSports: "Lacrosse" }),
-      p("K", "Florida", { name: "Marco Velez", age: 20, height: 71, weight: 190, hs: "Miami Christian", hsState: "FL", kRating: 84, kPower: 17, kAcc: 16, foot: "Right", kicksOff: true, nil: [2500, 15000, null, null, null, null], depth: "Starter", client: true, otherSports: "Soccer" }),
-      p("P", "Florida", { name: "Ben Whitaker", age: 22, height: 76, weight: 215, hs: "Brisbane Grammar", hsState: "", pRating: 79, pPower: 16, pAcc: 15, getOff: 15, puntType: "Spiral", holds: true, spot: "Numbers", kicksOff: false, nil: [0, 0, 4000, 8000, null, null], depth: "Starter" }),
-      p("K", "Florida", { name: "Owen Park", age: 19, height: 70, weight: 180, hs: "Lake Mary", hsState: "FL", kRating: 70, kPower: 14, kAcc: 13, foot: "Left", kicksOff: false, nil: [1000, null, null, null, null, null], depth: "Backup" }),
-      p("LS", "Texas", { name: "Caleb Moore", age: 22, height: 73, weight: 240, hs: "Allen High", hsState: "TX", lsRating: 92, system: "Free release", forty: 4.85, bench: 25, snapAcc: 19, snapSpeed: 18, spiral: "Clean", nil: [5000, 20000, 35000, 40000, null, null], depth: "Starter", allAmerican: true, allConference: true, otherPos: ["LB"] }),
-      p("KP", "Texas", { name: "Luke Harmon", age: 21, height: 73, weight: 200, hs: "Westlake", hsState: "TX", kRating: 81, pRating: 83, kPower: 16, kAcc: 15, pPower: 17, pAcc: 16, getOff: 16, foot: "Right", puntType: "Spiral", kicksOff: true, holds: true, spot: "Middle of field", nil: [3000, 18000, 30000, null, null, null], depth: "Starter", allConference: true }),
-      p("K", "Ohio State", { name: "Grant Ellison", age: 21, height: 72, weight: 195, hs: "St. Xavier", hsState: "OH", kRating: 91, kPower: 19, kAcc: 18, foot: "Right", kicksOff: true, nil: [10000, 40000, 65000, null, null, null], depth: "Starter", allAmerican: true, allConference: true, client: true }),
-      p("P", "Georgia", { name: "Henry Cole", age: 23, height: 75, weight: 210, hs: "Melbourne High", hsState: "", pRating: 87, pPower: 18, pAcc: 17, getOff: 17, puntType: "Spiral", holds: true, spot: "Sideline", kicksOff: false, nil: [0, 12000, 25000, 30000, 30000, null], depth: "Starter", allAmerican: true, allConference: true }),
-      { ...p("LS", "", { name: "Drew Sutton", age: 21, height: 72, weight: 230, hs: "Fargo South", hsState: "ND", lsRating: 85, system: "Pro style", forty: 5.01, bench: 20, snapAcc: 17, snapSpeed: 16, spiral: "Wobble", nil: [0, 2500, 6000, null, null, null], depth: "Starter", allConference: true }), school: fcs("North Dakota State") },
-      { ...p("K", "", { name: "Isaiah Grant", age: 20, height: 69, weight: 175, hs: "Bozeman High", hsState: "MT", kRating: 80, kPower: 18, kAcc: 14, foot: "Left", kicksOff: true, nil: [0, 3000, null, null, null, null], depth: "Starter", client: true }), school: fcs("Montana State") },
-    ],
-    staff: {
-      [slug("FBS-Florida")]: {
-        HC: { name: "Head coach (example)", phone: "(352) 555-0100", email: "hc@example.com" },
-        GM: { name: "GM (example)", phone: "(352) 555-0101", email: "gm@example.com" },
-        ST: { name: "Special teams coach (example)", phone: "(352) 555-0102", email: "st@example.com" },
-        decider: "GM",
-      },
-    },
-    extraSchools: [],
-  };
+export const emptyScouting = (): Scouting => ({ players: [], staff: {}, extraSchools: [] });
+
+// Ids and the one school of example contacts the app used to ship as demo data.
+const OLD_DEMO_PLAYERS = ["ls-tyler-brandt", "k-marco-velez", "p-ben-whitaker", "k-owen-park", "ls-caleb-moore", "kp-luke-harmon", "k-grant-ellison", "p-henry-cole", "ls-drew-sutton", "k-isaiah-grant"];
+
+/** Removes the old made-up example players from saved data, keeping everything added by hand. */
+export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
+  if (!s) return emptyScouting();
+  const staff = { ...s.staff };
+  const fl = staff[slug("FBS-Florida")];
+  if (fl && fl.HC.name === "Head coach (example)") delete staff[slug("FBS-Florida")];
+  return { ...emptyScouting(), ...s, players: (s.players ?? []).filter((p) => !OLD_DEMO_PLAYERS.includes(p.id)), staff };
 }
