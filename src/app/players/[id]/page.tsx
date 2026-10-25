@@ -7,7 +7,7 @@ import US from "@/data/us-states.json";
 import { Choice, ContactFields, Multi, Num, Rating, Text, YesNo } from "@/components/Fields";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import {
-  COACH_LABEL, HS_POSITIONS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
+  COACH_LABEL, HS_POSITIONS, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
   type CoachRole, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -53,6 +53,7 @@ export default function PlayerPage() {
             </div>
             <Num label="Weight (lbs)" value={p.weight} onChange={(weight) => set({ weight })} />
           </div>
+          <Choice label="Year in school" options={SCHOOL_YEARS} value={p.year} onChange={(year) => set({ year })} />
           <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
           <PriorSchools value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
         </div>

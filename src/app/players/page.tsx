@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { heightText, money, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
+import { heightText, money, yearShort, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 export default function PlayersPage() {
@@ -29,13 +29,17 @@ export default function PlayersPage() {
         <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers, kickers, punters and K+P.</p>
       </div>
 
-      {canEdit && (
-        <div className="addrow">
-          {POSITIONS.map((x) => (
-            <button key={x} className="btn" type="button" id={`add-${x}`} onClick={() => router.push(`/players/${addPlayer(x)}`)}>+ {POS_LABEL[x]}</button>
-          ))}
-        </div>
-      )}
+      <div className="card sec" id="add-player">
+        <h2>Add a player</h2>
+        {canEdit ? (<>
+          <p className="muted" style={{ margin: 0 }}>Tap their position.</p>
+          <div className="addrow">
+            {POSITIONS.map((x) => (
+              <button key={x} className="btn" type="button" id={`add-${x}`} onClick={() => router.push(`/players/${addPlayer(x)}`)}>+ Add {x === "KP" ? "K+P" : POS_LABEL[x].toLowerCase()}</button>
+            ))}
+          </div>
+        </>) : <p className="muted" style={{ margin: 0 }}>Only the agency owner can add players.</p>}
+      </div>
 
       <div className="card sec">
         <div className="filters">
@@ -65,7 +69,7 @@ export default function PlayersPage() {
                       {p.allConference && <span className="chip">All-Conf</span>}
                     </div></td>
                   <td>{POS_SHORT[p.pos]}</td>
-                  <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.conference, p.depth].filter(Boolean).join(" · ")}</small></td>
+                  <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.conference, yearShort(p.year), p.depth].filter(Boolean).join(" · ")}</small></td>
                   <td className="num"><b>{overall(p) ?? "—"}</b></td>
                   <td>{heightText(p.height)} / {p.weight ?? "—"}</td>
                   <td className="num">{money(nilNow(p))}</td>

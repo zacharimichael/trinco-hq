@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Choice, ContactFields, Text } from "@/components/Fields";
 import type { Division, School } from "@/data/schools";
-import { COACH_LABEL, customSchool, money, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, type CoachRole, type Player, type Pos } from "@/lib/players";
+import { COACH_LABEL, customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 const BOARDS = ["By school", "By conference", "Top earners", "All-Americans", "All-Conference", "Starters", "Backups"] as const;
@@ -84,7 +84,7 @@ function Leaderboard({ players, school }: { players: Player[]; school: (id: stri
   return (
     <div className="card tablewrap">
       <table>
-        <thead><tr><th className="num">#</th><th>Player</th><th>Pos</th><th>School</th><th>Role</th><th className="num">NIL now</th><th className="num">Total</th></tr></thead>
+        <thead><tr><th className="num">#</th><th>Player</th><th>Pos</th><th>School</th><th>Role / Year</th><th className="num">NIL now</th><th className="num">Total</th></tr></thead>
         <tbody>
           {players.map((p, i) => {
             const s = school(p.school);
@@ -99,7 +99,7 @@ function Leaderboard({ players, school }: { players: Player[]; school: (id: stri
                   </div></td>
                 <td>{POS_SHORT[p.pos]}</td>
                 <td>{s?.name}<br /><small className="muted">{s?.division} · {s?.conference}</small></td>
-                <td>{p.depth ?? "—"}</td>
+                <td>{p.depth ?? "—"}{p.year && <><br /><small className="muted">{p.year}</small></>}</td>
                 <td className="num"><b>{money(nilNow(p))}</b></td>
                 <td className="num">{money(nilTotal(p))}</td>
               </tr>
@@ -133,7 +133,7 @@ function ByConference({ confs, players, pos, school }: { confs: string[]; player
                   <Link key={p.id} href={`/players/${p.id}`} className="pcard">
                     <b>{p.name || "New player"}</b>
                     <small>{school(p.school)?.name}</small>
-                    <small>{p.depth ?? "Unranked"} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
+                    <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
                     {(p.allAmerican || p.allConference || p.client) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf"].filter(Boolean).join(" · ")}</small>}
                   </Link>
                 ))}
@@ -225,7 +225,7 @@ function SchoolDepth({ s, ps, pos }: { s: School; ps: Player[]; pos: Pos | "All"
             {ps.filter((p) => p.pos === x).sort(depthOrder).map((p) => (
               <Link key={p.id} href={`/players/${p.id}`} className="pcard">
                 <b>{p.name || "New player"}</b>
-                <small>{p.depth ?? "Unranked"} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
+                <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
                 {(p.allAmerican || p.allConference || p.client) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf"].filter(Boolean).join(" · ")}</small>}
               </Link>
             ))}

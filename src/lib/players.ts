@@ -11,6 +11,14 @@ export const punts = (p: Pos) => p === "P" || p === "KP";
 export const HS_POSITIONS = ["QB", "RB", "WR", "TE", "OL", "S", "CB", "LB", "DL"] as const;
 export const NIL_YEARS = 6;
 
+export const SCHOOL_YEARS = ["Freshman", "Sophomore", "Junior", "Senior", "Redshirt Freshman", "Redshirt Sophomore", "Redshirt Junior", "Redshirt Senior"] as const;
+export type SchoolYear = (typeof SCHOOL_YEARS)[number];
+const YEAR_SHORT: Record<SchoolYear, string> = {
+  Freshman: "Fr", Sophomore: "So", Junior: "Jr", Senior: "Sr",
+  "Redshirt Freshman": "RS Fr", "Redshirt Sophomore": "RS So", "Redshirt Junior": "RS Jr", "Redshirt Senior": "RS Sr",
+};
+export const yearShort = (y: SchoolYear | null | undefined) => (y ? YEAR_SHORT[y] : "");
+
 export interface Contact { name: string; phone: string; email: string }
 export const blankContact = (): Contact => ({ name: "", phone: "", email: "" });
 
@@ -34,6 +42,8 @@ export interface Player {
   pos: Pos;
   name: string;
   age: number | null;
+  /** Year in school. */
+  year?: SchoolYear | null;
   /** Total inches. */
   height: number | null;
   weight: number | null;
