@@ -29,13 +29,17 @@ export default function PlayersPage() {
         <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers, kickers, punters and K+P.</p>
       </div>
 
-      {canEdit && (
-        <div className="addrow">
-          {POSITIONS.map((x) => (
-            <button key={x} className="btn" type="button" id={`add-${x}`} onClick={() => router.push(`/players/${addPlayer(x)}`)}>+ {POS_LABEL[x]}</button>
-          ))}
-        </div>
-      )}
+      <div className="card sec" id="add-player">
+        <h2>Add a player</h2>
+        {canEdit ? (<>
+          <p className="muted" style={{ margin: 0 }}>Tap their position.</p>
+          <div className="addrow">
+            {POSITIONS.map((x) => (
+              <button key={x} className="btn" type="button" id={`add-${x}`} onClick={() => router.push(`/players/${addPlayer(x)}`)}>+ Add {x === "KP" ? "K+P" : POS_LABEL[x].toLowerCase()}</button>
+            ))}
+          </div>
+        </>) : <p className="muted" style={{ margin: 0 }}>Only the agency owner can add players.</p>}
+      </div>
 
       <div className="card sec">
         <div className="filters">
