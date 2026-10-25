@@ -8,11 +8,15 @@ import { TodoRow } from "@/components/TodoRow";
 import { status, TRACKED, type StatusKey } from "@/lib/rules";
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
+import { athletesByState } from "@/lib/players";
 
 export default function MapPage() {
   const { state } = useStore();
   const statuses = Object.fromEntries(TRACKED.map((c) => [c, status(c, state.done).key])) as Record<string, StatusKey>;
   const count = (k: StatusKey) => Object.values(statuses).filter((v) => v === k).length;
+  const mine = athletesByState(state.athletes, state.scouting);
+  const counts = Object.fromEntries(Object.entries(mine).map(([c, l]) => [c, l.length]));
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
   const next = todos(state).filter((t) => !t.later).slice(0, 3);
 
   // The open state lives in the URL (?s=FL) so it survives a refresh and can be linked.
@@ -41,16 +45,18 @@ export default function MapPage() {
         <span className="pill go"><span className="dot go" /><b>{count("go")}</b> Licensed</span>
         <span className="pill wip"><span className="dot wip" /><b>{count("wip")}</b> In progress</span>
         <span className="pill stop"><span className="dot stop" /><b>{count("stop")}</b> Not licensed</span>
+        <span className="pill ath"><span className="athdot">#</span><b>{total}</b> My athletes</span>
       </div>
       <div className={`maplayout ${open ? "open" : ""}`}>
         <div className="col">
           <div className="card">
-            <div className="mapbox"><UsMap statuses={statuses} selected={open} onSelect={select} /></div>
+            <div className="mapbox"><UsMap statuses={statuses} counts={counts} selected={open} onSelect={select} /></div>
             <div className="legend">
               <span><span className="dot go" />Licensed</span>
               <span><span className="dot wip" />In progress</span>
               <span><span className="dot stop" />Not licensed</span>
               <span><span className="dot off" />Coming soon</span>
+              <span><span className="athdot">2</span>My athletes there</span>
             </div>
           </div>
           <div className="card next">
@@ -59,7 +65,7 @@ export default function MapPage() {
             <Link className="back" href="/todo" id="see-all">See all to-dos</Link>
           </div>
         </div>
-        {open && <div ref={panel} className="statepanel"><StatePanel key={open} code={open} onClose={() => select(null)} /></div>}
+        {open && <div ref={panel} className="statepanel"><StatePanel key={open} code={open} athletes={mine[open] ?? []} onClose={() => select(null)} /></div>}
       </div>
     </section>
   );

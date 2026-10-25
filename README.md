@@ -21,9 +21,14 @@ The app runs in **demo mode** with example data saved in the browser (`src/lib/s
 | `src/lib/tasks.tsx` | Every to-do as a guided flow: fill, review, e-sign, done. |
 | `src/components/TaskRunner.tsx` | The step-by-step modal and signature pad. |
 | `src/app/` | Screens: map with the state's steps beside it (`/?s=FL`), to-do (`/todo`), agency HQ (`/hq`). |
+| `src/data/schools.ts` | Every FBS and FCS school for 2026 with conference and state. Edit here when schools move; schools can also be added in the app. |
+| `src/lib/players.ts` | Player profiles (LS, K, P, K+P), school coaching contacts, NIL years and the demo players. Saved in the firm's data (owner edits). |
+| `src/app/players`, `src/app/compare`, `src/app/depth` | Player list and profiles, side-by-side comparison, and depth charts with top earners, All-Americans, All-Conference, starters and backups. |
 | `supabase/migrations/` | Database schema with row-level security for the real backend. |
 
 ## Still to connect
+
+- **Film uploads:** run `supabase/migrations/0002_film.sql` once so phone videos save to private storage. In demo mode they last until refresh.
 
 - **Sign-in and database:** Supabase (schema is ready in `supabase/migrations`).
 - **Billing:** Stripe monthly subscription per firm.

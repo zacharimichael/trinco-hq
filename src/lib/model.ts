@@ -1,4 +1,5 @@
 import type { Done } from "./rules";
+import type { Scouting } from "./players";
 
 export interface Profile {
   name: string;
@@ -77,6 +78,8 @@ export interface AppState {
   signatures: SignatureRecord[];
   team: TeamMember[];
   deals: Deal[];
+  /** Specialist players, school staff and depth charts. Shared across the agency (owner edits). */
+  scouting: Scouting;
   /** When each state approved the license (ISO date), for renewal reminders. */
   licensedOn?: Record<string, string>;
 }
