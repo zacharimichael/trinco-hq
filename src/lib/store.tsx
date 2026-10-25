@@ -9,7 +9,6 @@ import { emptyScouting, withoutDemoPlayers, type Film, type Scouting } from "./p
 
 /**
  * App state, in one of two modes:
- * - demo: example data saved in this browser only.
  * - live: signed in; each member's work is saved to Supabase (member_state),
  *   firm data (name, split, deals) to firms, and the team comes from members.
  */
@@ -51,16 +50,6 @@ function seed(): AppState {
   };
 }
 
-function loadDemo(): AppState {
-  try {
-    const raw = localStorage.getItem(DEMO_KEY);
-    if (raw) {
-      const s = JSON.parse(raw) as AppState;
-      if (s.v === VERSION) return { ...s, scouting: withoutDemoPlayers(s.scouting) };
-    }
-  } catch {}
-  return seed();
-}
 
 /** The parts of AppState each member owns, stored in member_state.data. */
 type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn">;
@@ -121,7 +110,6 @@ type Ctx = {
   email: string | null;
   update: (fn: (draft: AppState) => void) => void;
   reset: () => void;
-  startDemo: () => void;
   signOut: () => Promise<void>;
   createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
   inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
@@ -149,11 +137,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    let demo = false;
-    try { demo = localStorage.getItem(DEMO_FLAG) === "1"; } catch {}
+    // The site is private: no demo. Clear any demo data an older version left in this browser.
+    try { localStorage.removeItem(DEMO_FLAG); localStorage.removeItem(DEMO_KEY); } catch {}
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) void enterLive(data.session);
-      else if (demo) { setState(loadDemo()); setMode("demo"); }
       else setMode("signed-out");
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
@@ -202,11 +189,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const value: Ctx = {
     state, mode, email: session?.user.email ?? null, update,
     reset: () => setState(seed()),
-    startDemo: () => {
-      try { localStorage.setItem(DEMO_FLAG, "1"); } catch {}
-      setState(loadDemo());
-      setMode("demo");
-    },
     signOut: async () => {
       try { localStorage.removeItem(DEMO_FLAG); } catch {}
       await supabase.auth.signOut();
