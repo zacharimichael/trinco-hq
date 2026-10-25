@@ -49,6 +49,7 @@ const GROUPS: { title: string; rows: Metric[] }[] = [
     { label: "Kicks from", get: (p) => p.spot, when: (p) => punts(p.pos) },
   ] },
   { title: "Body", rows: [
+    { label: "Year", get: (p) => p.year },
     { label: "Age", get: (p) => p.age },
     { label: "Height", get: (p) => (p.height ? heightText(p.height) : null) },
     { label: "Weight", get: (p) => (p.weight ? `${p.weight} lbs` : null) },
