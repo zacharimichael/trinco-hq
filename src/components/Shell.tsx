@@ -8,13 +8,15 @@ import { CreateFirm, SignIn } from "./Gate";
 const TABS = [
   { href: "/", label: "My map", id: "tab-map", ownerOnly: false },
   { href: "/todo", label: "To-do", id: "tab-hub", ownerOnly: false },
+  { href: "/players", label: "Players", id: "tab-players", ownerOnly: false },
+  { href: "/depth", label: "Depth charts", id: "tab-depth", ownerOnly: false },
   { href: "/hq", label: "HQ", id: "tab-firm", ownerOnly: true },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const { state, mode, email, signOut } = useStore();
-  const current = (href: string) => (href === "/" ? path === "/" || path.startsWith("/state") : path.startsWith(href));
+  const current = (href: string) => (href === "/" ? path === "/" || path.startsWith("/state") : href === "/players" ? path.startsWith(href) || path.startsWith("/compare") : path.startsWith(href));
   const isOwner = mode === "demo" || state.me?.role === "owner";
 
   if (mode === "loading") return <div className="wrap"><p className="muted">Loading…</p></div>;

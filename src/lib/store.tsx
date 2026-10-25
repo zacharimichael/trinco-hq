@@ -5,6 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import type { AppState, Deal, Me, SignatureRecord, TeamMember } from "./model";
 import { DAY, startOfToday } from "./rules";
 import { supabase } from "./supabase";
+import { seedScouting, type Film, type Scouting } from "./players";
 
 /**
  * App state, in one of two modes:
@@ -46,6 +47,7 @@ function seed(): AppState {
       { athlete: "Devon Price", agent: "Chris Taylor", brand: "Seminole Sportswear", amount: 12000, fee: 10, status: "Pending" },
       { athlete: "Ava Lin", agent: "Sam Rivera", brand: "Boston Smoothie Co.", amount: 1800, fee: 10, status: "Paid" },
     ],
+    scouting: seedScouting(),
   };
 }
 
@@ -54,7 +56,7 @@ function loadDemo(): AppState {
     const raw = localStorage.getItem(DEMO_KEY);
     if (raw) {
       const s = JSON.parse(raw) as AppState;
-      if (s.v === VERSION) return s;
+      if (s.v === VERSION) return { ...s, scouting: s.scouting ?? seedScouting() };
     }
   } catch {}
   return seed();
@@ -63,6 +65,11 @@ function loadDemo(): AppState {
 /** The parts of AppState each member owns, stored in member_state.data. */
 type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn">;
 const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {} });
+
+/** Firm-wide data the owner saves to firms.data. */
+type FirmData = { deals?: Deal[]; scouting?: Scouting };
+const firmData = (s: AppState): FirmData => ({ deals: s.deals, scouting: s.scouting });
+const emptyScouting = (): Scouting => ({ players: [], staff: {}, extraSchools: [] });
 
 type MemberRow = { id: string; email: string; name: string; role: "owner" | "agent"; stage: number; split: number | null; user_id: string | null };
 
@@ -104,7 +111,8 @@ async function loadLive(session: Session): Promise<AppState | null> {
     licensedOn: own.licensedOn ?? {},
     signatures: [],
     team,
-    deals: ((firm?.data as { deals?: Deal[] } | null)?.deals ?? []),
+    deals: ((firm?.data as FirmData | null)?.deals ?? []),
+    scouting: { ...emptyScouting(), ...(firm?.data as FirmData | null)?.scouting },
   };
 }
 
@@ -119,6 +127,10 @@ type Ctx = {
   createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
   inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
   recordSignature: (rec: SignatureRecord) => void;
+  /** Saves a film clip. Signed in: to the firm's private storage. Demo: kept until refresh. */
+  uploadFilm: (playerId: string, file: File) => Promise<Film | string>;
+  /** A playable link for an uploaded clip. */
+  filmUrl: (film: Film) => Promise<string>;
 };
 const StoreContext = createContext<Ctx | null>(null);
 
@@ -132,7 +144,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setSession(s);
     const live = await loadLive(s);
     if (!live) return setMode("needs-firm");
-    saved.current = { member: JSON.stringify(memberData(live)), firm: JSON.stringify({ deals: live.deals }), stage: live.me?.stage ?? 0 };
+    saved.current = { member: JSON.stringify(memberData(live)), firm: JSON.stringify(firmData(live)), stage: live.me?.stage ?? 0 };
     setState(live);
     setMode("live");
   }, []);
@@ -171,9 +183,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         const { error } = await supabase.from("member_state").upsert({ member_id: me.memberId, data: memberData(state), updated_at: new Date().toISOString() });
         if (!error) saved.current.member = m;
       }
-      const f = JSON.stringify({ deals: state.deals });
+      const f = JSON.stringify(firmData(state));
       if (me.role === "owner" && f !== saved.current.firm) {
-        const { error } = await supabase.from("firms").update({ data: { deals: state.deals } }).eq("id", (await supabase.rpc("my_firm_id")).data);
+        const { error } = await supabase.from("firms").update({ data: firmData(state) }).eq("id", (await supabase.rpc("my_firm_id")).data);
         if (!error) saved.current.firm = f;
       }
     }, 600);
@@ -221,6 +233,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         member_id: state.me.memberId, document: rec.document, document_sha256: rec.documentSha256,
         method: rec.method, value: rec.value, consent: true, user_agent: rec.userAgent, signed_at: rec.signedAt,
       });
+    },
+    uploadFilm: async (playerId, file) => {
+      if (mode !== "live") return { kind: "Video", name: file.name, url: URL.createObjectURL(file) };
+      const { data: firmId } = await supabase.rpc("my_firm_id");
+      const path = `${firmId}/${playerId}/${Date.now()}-${file.name.replace(/[^\w.-]+/g, "_")}`;
+      const { error } = await supabase.storage.from("film").upload(path, file, { contentType: file.type || "video/mp4" });
+      if (error) return error.message;
+      return { kind: "Video", name: file.name, url: "", path };
+    },
+    filmUrl: async (film) => {
+      if (!film.path) return film.url;
+      const { data } = await supabase.storage.from("film").createSignedUrl(film.path, 3600);
+      return data?.signedUrl ?? "";
     },
   };
 

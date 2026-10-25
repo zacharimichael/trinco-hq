@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import US from "@/data/us-states.json";
 import { applied, approvalId, LABEL, RULES, status } from "@/lib/rules";
 import { stateTasks } from "@/lib/tasks";
@@ -9,12 +10,22 @@ import { useTaskRunner } from "./TaskRunner";
 const NAMES = US as Record<string, { n: string }>;
 
 /** One state's licensing steps, shown next to the map. Start opens each step's guided flow. */
-export function StatePanel({ code, onClose }: { code: string; onClose: () => void }) {
+export function StatePanel({ code, athletes = [], onClose }: { code: string; athletes?: { name: string; href?: string; school?: string }[]; onClose: () => void }) {
   const { state } = useStore();
   const run = useTaskRunner();
   const R = RULES[code];
 
   const close = <button className="back" id="close-state" type="button" onClick={onClose}>✕ Close</button>;
+  const mine = (
+    <div className="card sec" id="state-athletes">
+      <h2>My athletes here</h2>
+      {athletes.length ? athletes.map((a, i) => (
+        <div className="todo" key={i}>
+          <span className="grow">{a.href ? <Link href={a.href}><b>{a.name}</b></Link> : <b>{a.name}</b>}{a.school && <small>{a.school}</small>}</span>
+        </div>
+      )) : <p className="muted" style={{ margin: 0 }}>None yet.</p>}
+    </div>
+  );
   if (!R)
     return (
       <div className="panelbody" id="state-panel">
@@ -23,6 +34,7 @@ export function StatePanel({ code, onClose }: { code: string; onClose: () => voi
           <div className="statehead"><h1>{NAMES[code]?.n ?? code}</h1></div>
           <p className="muted" style={{ margin: 0 }}>Coming soon. We&apos;re adding this state&apos;s steps now.</p>
         </div>
+        {mine}
       </div>
     );
 
@@ -41,6 +53,7 @@ export function StatePanel({ code, onClose }: { code: string; onClose: () => voi
         </p>
         <div className="bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}><i style={{ width: `${pct}%` }} /></div>
       </div>
+      {mine}
 
       {R.sections.map((se) => (
         <div className="card sec" key={se.id}>
