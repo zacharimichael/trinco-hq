@@ -10,7 +10,7 @@ npm run dev        # http://localhost:3000
 npm run build      # production build and type check
 ```
 
-The app runs in **demo mode** with example data saved in the browser (`src/lib/store.tsx`). Nothing is sent, paid or filed yet.
+The site is private: everything needs sign-in, and only emails listed in Supabase's `allowed_owners` table can create an agency (`supabase/migrations/0003_private.sql`). Agents the owner invites from HQ can join that agency.
 
 ## Where things live
 

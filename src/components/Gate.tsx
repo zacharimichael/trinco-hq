@@ -4,9 +4,8 @@ import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
-/** Shown instead of the app until someone is signed in (or chooses the demo). */
+/** Shown instead of the app until someone is signed in. The site is private, so there's no demo. */
 export function SignIn() {
-  const { startDemo } = useStore();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +42,6 @@ export function SignIn() {
           </form>
         )}
       </div>
-      <button className="linkbtn" type="button" onClick={startDemo} id="try-demo">Just looking? Try the demo with example data</button>
     </section>
   );
 }
@@ -61,7 +59,7 @@ export function CreateFirm() {
     setBusy(true);
     const err = await createFirm(firm.trim(), name.trim());
     setBusy(false);
-    if (err) setError(err);
+    if (err) setError(/private/i.test(err) ? "This site is private. Only the owner's account can use it." : err);
   }
 
   return (
