@@ -8,13 +8,16 @@ import { useScouting } from "@/lib/useScouting";
 
 export default function PlayersPage() {
   const router = useRouter();
-  const { sc, school, canEdit, addPlayer } = useScouting();
+  const { sc, school, schools, canEdit, addPlayer } = useScouting();
   const [pos, setPos] = useState<Pos | "all">("all");
   const [q, setQ] = useState("");
+  const [conf, setConf] = useState("");
+  const confs = [...new Set(schools.map((s) => s.conference))];
   const [pick, setPick] = useState<string[]>([]);
 
   const list = sc.players
     .filter((p) => pos === "all" || p.pos === pos)
+    .filter((p) => !conf || school(p.school)?.conference === conf)
     .filter((p) => !q || `${p.name} ${school(p.school)?.name ?? ""}`.toLowerCase().includes(q.toLowerCase()))
     .sort((a, b) => (overall(b) ?? 0) - (overall(a) ?? 0));
   const toggle = (id: string) => setPick((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id].slice(-4)));
@@ -41,6 +44,10 @@ export default function PlayersPage() {
               <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{x === "all" ? "All" : POS_SHORT[x]}</button>
             ))}
           </div></div>
+          <select aria-label="Conference" className="search" value={conf} onChange={(e) => setConf(e.target.value)}>
+            <option value="">All conferences</option>
+            {confs.map((c) => <option key={c}>{c}</option>)}
+          </select>
           <input className="search" aria-label="Search players" placeholder="Search name or school" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
         <p className="muted" style={{ margin: 0, fontSize: 14 }}>Tick up to 4 players to compare them.</p>
@@ -58,7 +65,7 @@ export default function PlayersPage() {
                       {p.allConference && <span className="chip">All-Conf</span>}
                     </div></td>
                   <td>{POS_SHORT[p.pos]}</td>
-                  <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{school(p.school)?.division} {p.depth ?? ""}</small></td>
+                  <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.conference, p.depth].filter(Boolean).join(" · ")}</small></td>
                   <td className="num"><b>{overall(p) ?? "—"}</b></td>
                   <td>{heightText(p.height)} / {p.weight ?? "—"}</td>
                   <td className="num">{money(nilNow(p))}</td>

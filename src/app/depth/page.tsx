@@ -8,7 +8,7 @@ import type { Division, School } from "@/data/schools";
 import { COACH_LABEL, customSchool, money, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
-const BOARDS = ["By school", "Top earners", "All-Americans", "All-Conference", "Starters", "Backups"] as const;
+const BOARDS = ["By school", "By conference", "Top earners", "All-Americans", "All-Conference", "Starters", "Backups"] as const;
 type Board = (typeof BOARDS)[number];
 const ROLES: CoachRole[] = ["HC", "GM", "ST"];
 
@@ -23,12 +23,16 @@ export default function DepthPage() {
   const [div, setDiv] = useState<Division | "All">("All");
   const [pos, setPos] = useState<Pos | "All">("All");
   const [board, setBoard] = useState<Board>("By school");
+  const [conf, setConf] = useState("");
 
+  const inDiv = schools.filter((s) => div === "All" || s.division === div);
+  const confs = [...new Set(inDiv.map((s) => s.conference))];
+  const conference = confs.includes(conf) ? conf : "";
   const players = sc.players.filter((p) => {
     const s = school(p.school);
-    return s && (div === "All" || s.division === div) && (pos === "All" || p.pos === pos);
+    return s && (div === "All" || s.division === div) && (!conference || s.conference === conference) && (pos === "All" || p.pos === pos);
   });
-  const inBoard: Record<Exclude<Board, "By school">, (p: Player) => boolean> = {
+  const inBoard: Record<Exclude<Board, "By school" | "By conference">, (p: Player) => boolean> = {
     "Top earners": (p) => nilNow(p) > 0,
     "All-Americans": (p) => p.allAmerican,
     "All-Conference": (p) => p.allConference,
@@ -58,13 +62,19 @@ export default function DepthPage() {
         <div className="seg"><div>
           {(["All", ...POSITIONS] as const).map((x) => <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{x === "All" ? "All positions" : POS_SHORT[x]}</button>)}
         </div></div>
+        <select aria-label="Conference" className="search" id="conf-filter" value={conference} onChange={(e) => setConf(e.target.value)}>
+          <option value="">All conferences</option>
+          {confs.map((c) => <option key={c}>{c}</option>)}
+        </select>
       </div>
       <nav className="boardtabs" aria-label="Lists">
         {BOARDS.map((b) => <button key={b} type="button" aria-pressed={board === b} onClick={() => setBoard(b)}>{b}</button>)}
       </nav>
 
       {board === "By school"
-        ? <BySchool schools={schools.filter((s) => div === "All" || s.division === div)} players={players} pos={pos} />
+        ? <BySchool schools={inDiv.filter((s) => !conference || s.conference === conference)} players={players} pos={pos} />
+        : board === "By conference"
+        ? <ByConference confs={conference ? [conference] : confs} players={players} pos={pos} school={school} />
         : <Leaderboard players={players.filter(inBoard[board]).sort((a, b) => nilNow(b) - nilNow(a) || depthOrder(a, b))} school={school} />}
     </section>
   );
@@ -102,14 +112,47 @@ function Leaderboard({ players, school }: { players: Player[]; school: (id: stri
   );
 }
 
+/** Every conference's specialists side by side, by position. */
+function ByConference({ confs, players, pos, school }: { confs: string[]; players: Player[]; pos: Pos | "All"; school: (id: string) => School | undefined }) {
+  const shown = pos === "All" ? POSITIONS : [pos];
+  const groups = confs.map((c) => ({ c, ps: players.filter((p) => school(p.school)?.conference === c) })).filter((g) => g.ps.length);
+  if (!groups.length) return <p className="muted">Nobody here yet.</p>;
+  return (
+    <div className="schoollist">
+      {groups.map(({ c, ps }) => (
+        <div key={c} className="card sec">
+          <div className="coachhead">
+            <h2>{c}</h2>
+            <span className="chip">{ps.length} {ps.length === 1 ? "player" : "players"} · {money(ps.reduce((a, p) => a + nilNow(p), 0))}</span>
+          </div>
+          <div className="depthgrid">
+            {shown.map((x) => (
+              <div key={x} className="pcol">
+                <div className="phead">{POS_LABEL[x]}</div>
+                {ps.filter((p) => p.pos === x).sort(depthOrder).map((p) => (
+                  <Link key={p.id} href={`/players/${p.id}`} className="pcard">
+                    <b>{p.name || "New player"}</b>
+                    <small>{school(p.school)?.name}</small>
+                    <small>{p.depth ?? "Unranked"} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
+                    {(p.allAmerican || p.allConference || p.client) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf"].filter(Boolean).join(" · ")}</small>}
+                  </Link>
+                ))}
+                {!ps.some((p) => p.pos === x) && <small className="muted">None yet</small>}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function BySchool({ schools, players, pos }: { schools: School[]; players: Player[]; pos: Pos | "All" }) {
   const [q, setQ] = useState("");
-  const [conf, setConf] = useState("");
   const [open, setOpen] = useState<string | null>(null);
-  const confs = [...new Set(schools.map((s) => s.conference))];
   const at = (id: string) => players.filter((p) => p.school === id);
   const list = schools
-    .filter((s) => (!conf || s.conference === conf) && (!q || s.name.toLowerCase().includes(q.toLowerCase())))
+    .filter((s) => !q || s.name.toLowerCase().includes(q.toLowerCase()))
     .map((s) => ({ s, ps: at(s.id) }))
     .sort((a, b) => b.ps.length - a.ps.length || a.s.name.localeCompare(b.s.name));
 
@@ -117,17 +160,13 @@ function BySchool({ schools, players, pos }: { schools: School[]; players: Playe
     <div className="sec">
       <div className="filters">
         <input className="search" aria-label="Find a school" placeholder="Find a school" value={q} onChange={(e) => setQ(e.target.value)} />
-        <select aria-label="Conference" className="search" value={conf} onChange={(e) => setConf(e.target.value)}>
-          <option value="">All conferences</option>
-          {confs.map((c) => <option key={c}>{c}</option>)}
-        </select>
       </div>
       <div className="schoollist">
         {list.map(({ s, ps }) => (
           <div key={s.id} className="card school">
             <button type="button" className="schoolhead" aria-expanded={open === s.id} onClick={() => setOpen(open === s.id ? null : s.id)}>
               <span className="grow"><b>{s.name}</b><small>{s.division} · {s.conference} · {s.state}</small></span>
-              {ps.length > 0 && <span className="chip">{ps.length} players · {money(ps.reduce((a, p) => a + nilNow(p), 0))}</span>}
+              {ps.length > 0 && <span className="chip">{ps.length} {ps.length === 1 ? "player" : "players"} · {money(ps.reduce((a, p) => a + nilNow(p), 0))}</span>}
               <span aria-hidden>{open === s.id ? "▴" : "▾"}</span>
             </button>
             {open === s.id && <SchoolDepth s={s} ps={ps} pos={pos} />}
