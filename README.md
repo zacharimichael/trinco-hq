@@ -22,7 +22,7 @@ The app runs in **demo mode** with example data saved in the browser (`src/lib/s
 | `src/components/TaskRunner.tsx` | The step-by-step modal and signature pad. |
 | `src/app/` | Screens: map with the state's steps beside it (`/?s=FL`), to-do (`/todo`), agency HQ (`/hq`). |
 | `src/data/schools.ts` | Every FBS and FCS school for 2026 with conference and state. Edit here when schools move; schools can also be added in the app. |
-| `src/lib/players.ts` | Player profiles (LS, K, P, K+P), school coaching contacts, NIL years and the demo players. Saved in the firm's data (owner edits). |
+| `src/lib/players.ts` | Player profiles (LS, K, P, K+P), school coaching contacts, NIL years. Saved in the firm's data (owner edits). |
 | `src/app/players`, `src/app/compare`, `src/app/depth` | Player list and profiles, side-by-side comparison, and depth charts with top earners, All-Americans, All-Conference, starters and backups. |
 | `supabase/migrations/` | Database schema with row-level security for the real backend. |
 

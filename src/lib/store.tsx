@@ -5,7 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import type { AppState, Deal, Me, SignatureRecord, TeamMember } from "./model";
 import { DAY, startOfToday } from "./rules";
 import { supabase } from "./supabase";
-import { seedScouting, type Film, type Scouting } from "./players";
+import { emptyScouting, withoutDemoPlayers, type Film, type Scouting } from "./players";
 
 /**
  * App state, in one of two modes:
@@ -47,7 +47,7 @@ function seed(): AppState {
       { athlete: "Devon Price", agent: "Chris Taylor", brand: "Seminole Sportswear", amount: 12000, fee: 10, status: "Pending" },
       { athlete: "Ava Lin", agent: "Sam Rivera", brand: "Boston Smoothie Co.", amount: 1800, fee: 10, status: "Paid" },
     ],
-    scouting: seedScouting(),
+    scouting: emptyScouting(),
   };
 }
 
@@ -56,7 +56,7 @@ function loadDemo(): AppState {
     const raw = localStorage.getItem(DEMO_KEY);
     if (raw) {
       const s = JSON.parse(raw) as AppState;
-      if (s.v === VERSION) return { ...s, scouting: s.scouting ?? seedScouting() };
+      if (s.v === VERSION) return { ...s, scouting: withoutDemoPlayers(s.scouting) };
     }
   } catch {}
   return seed();
@@ -69,7 +69,6 @@ const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.d
 /** Firm-wide data the owner saves to firms.data. */
 type FirmData = { deals?: Deal[]; scouting?: Scouting };
 const firmData = (s: AppState): FirmData => ({ deals: s.deals, scouting: s.scouting });
-const emptyScouting = (): Scouting => ({ players: [], staff: {}, extraSchools: [] });
 
 type MemberRow = { id: string; email: string; name: string; role: "owner" | "agent"; stage: number; split: number | null; user_id: string | null };
 
@@ -112,7 +111,7 @@ async function loadLive(session: Session): Promise<AppState | null> {
     signatures: [],
     team,
     deals: ((firm?.data as FirmData | null)?.deals ?? []),
-    scouting: { ...emptyScouting(), ...(firm?.data as FirmData | null)?.scouting },
+    scouting: withoutDemoPlayers((firm?.data as FirmData | null)?.scouting),
   };
 }
 
