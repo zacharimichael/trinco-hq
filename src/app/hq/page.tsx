@@ -13,6 +13,7 @@ export default function HqPage() {
   const { state, update, mode, inviteAgent } = useStore();
   const live = mode === "live";
   const owner = !live || state.me?.role === "owner";
+  const canOnboard = owner || state.me?.role === "editor";
   const run = useTaskRunner();
   const { agency } = state;
   if (live && state.me?.role === "agent")
@@ -101,7 +102,7 @@ export default function HqPage() {
       <div className="card sec">
         <div className="statehead" style={{ justifyContent: "space-between" }}>
           <h2>Onboard agents</h2>
-          {owner && <button className="btn" id="onboard" type="button" onClick={onboard}>+ Add a new agent</button>}
+          {canOnboard && <button className="btn" id="onboard" type="button" onClick={onboard}>+ Add a new agent</button>}
         </div>
         <p className="muted" style={{ margin: 0 }}>New agents sign your agency agreement here, then get licensed state by state. They go live when their map is all green.</p>
         <div className="pipe">
@@ -196,7 +197,7 @@ function SharedAccess() {
   return (
     <div className="card sec" id="shared-access">
       <h2>Shared access</h2>
-      <p className="muted" style={{ margin: 0 }}>They can see everything and add film to players. They can&apos;t change or delete anything.</p>
+      <p className="muted" style={{ margin: 0 }}>They can do everything you can: your map, players, call logs, film, depth charts, deals and agents. Only you can add or remove people here.</p>
       <div className="pair">
         <input aria-label="Their email" type="email" placeholder="Their email" value={email} onChange={(e) => { setEmail(e.target.value); setMsg(""); }}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void add(); } }} />

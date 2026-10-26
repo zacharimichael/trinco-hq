@@ -17,7 +17,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const { state, mode, email, signOut, save, retrySave } = useStore();
   const current = (href: string) => (href === "/" ? path === "/" || path.startsWith("/state") : href === "/players" ? path.startsWith(href) || path.startsWith("/compare") : path.startsWith(href));
-  const isOwner = mode === "demo" || state.me?.role === "owner" || state.me?.role === "viewer";
+  const isOwner = mode === "demo" || state.me?.role === "owner" || state.me?.role === "viewer" || state.me?.role === "editor";
   const viewOnly = state.me?.role === "viewer";
 
   if (mode === "loading") return <div className="wrap"><p className="muted">Loading…</p></div>;

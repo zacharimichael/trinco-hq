@@ -7,8 +7,8 @@ import { allSchools, blankStaff, newPlayer, schoolById, type Player, type Pos, t
 export function useScouting() {
   const { state, update, mode } = useStore();
   const sc = state.scouting;
-  // Scouting is agency-wide and saved by the owner. Agents see it read-only.
-  const canEdit = mode === "demo" || state.me?.role === "owner";
+  // Scouting is agency-wide and saved by the owner and anyone they shared full access with. Agents see it read-only.
+  const canEdit = mode === "demo" || state.me?.role === "owner" || state.me?.role === "editor";
   const edit = (fn: (s: Scouting) => void) => update((d) => fn(d.scouting));
 
   return {
