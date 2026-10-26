@@ -155,11 +155,16 @@ export const emptyScouting = (): Scouting => ({ players: [], staff: {}, extraSch
 // Ids and the one school of example contacts the app used to ship as demo data.
 const OLD_DEMO_PLAYERS = ["ls-tyler-brandt", "k-marco-velez", "p-ben-whitaker", "k-owen-park", "ls-caleb-moore", "kp-luke-harmon", "k-grant-ellison", "p-henry-cole", "ls-drew-sutton", "k-isaiah-grant"];
 
+const MOVED: Record<string, string> = { "fcs-north-dakota-state": "fbs-north-dakota-state" };
+
 /** Removes the old made-up example players from saved data, keeping everything added by hand. */
 export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   if (!s) return emptyScouting();
   const staff = { ...s.staff };
   const fl = staff[slug("FBS-Florida")];
   if (fl && fl.HC.name === "Head coach (example)") delete staff[slug("FBS-Florida")];
-  return { ...emptyScouting(), ...s, players: (s.players ?? []).filter((p) => !OLD_DEMO_PLAYERS.includes(p.id)), staff };
+  // Schools that moved between FCS and FBS get a new id; point saved players and contacts at it.
+  for (const [from, to] of Object.entries(MOVED)) if (staff[from] && !staff[to]) { staff[to] = staff[from]; delete staff[from]; }
+  const players = (s.players ?? []).filter((p) => !OLD_DEMO_PLAYERS.includes(p.id)).map((p) => (MOVED[p.school] ? { ...p, school: MOVED[p.school] } : p));
+  return { ...emptyScouting(), ...s, players, staff };
 }

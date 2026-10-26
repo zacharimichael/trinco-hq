@@ -1,5 +1,6 @@
 /**
- * FBS and FCS football schools for the 2026 season: [name, state].
+ * FBS and FCS football schools for the 2026 season: [name, state]. Checked against
+ * fbschedules.com and theanalyst.com 2026 realignment lists (Oct 2026).
  * Realignment moves every year, so the app also lets you add a school and the
  * list is easy to edit here.
  */
@@ -35,7 +36,7 @@ const FBS: Record<string, Row[]> = {
   ],
   "Mountain West": [
     ["Air Force", "CO"], ["Hawaii", "HI"], ["Nevada", "NV"], ["New Mexico", "NM"], ["San Jose State", "CA"],
-    ["UNLV", "NV"], ["Wyoming", "WY"], ["Northern Illinois", "IL"], ["UTEP", "TX"],
+    ["UNLV", "NV"], ["Wyoming", "WY"], ["Northern Illinois", "IL"], ["UTEP", "TX"], ["North Dakota State", "ND"],
   ],
   American: [
     ["Army", "NY"], ["Charlotte", "NC"], ["East Carolina", "NC"], ["Florida Atlantic", "FL"], ["Memphis", "TN"],
@@ -64,25 +65,25 @@ const FCS: Record<string, Row[]> = {
   "Big Sky": [
     ["Cal Poly", "CA"], ["Eastern Washington", "WA"], ["Idaho", "ID"], ["Idaho State", "ID"], ["Montana", "MT"],
     ["Montana State", "MT"], ["Northern Arizona", "AZ"], ["Northern Colorado", "CO"], ["Portland State", "OR"],
-    ["UC Davis", "CA"], ["Weber State", "UT"],
+    ["Southern Utah", "UT"], ["UC Davis", "CA"], ["Utah Tech", "UT"], ["Weber State", "UT"],
   ],
   CAA: [
     ["Albany", "NY"], ["Bryant", "RI"], ["Campbell", "NC"], ["Elon", "NC"], ["Hampton", "VA"], ["Maine", "ME"],
     ["Monmouth", "NJ"], ["New Hampshire", "NH"], ["North Carolina A&T", "NC"], ["Rhode Island", "RI"],
-    ["Stony Brook", "NY"], ["Towson", "MD"], ["Villanova", "PA"], ["William & Mary", "VA"],
+    ["Sacred Heart", "CT"], ["Stony Brook", "NY"], ["Towson", "MD"],
   ],
   "Missouri Valley": [
     ["Illinois State", "IL"], ["Indiana State", "IN"], ["Murray State", "KY"], ["North Dakota", "ND"],
-    ["North Dakota State", "ND"], ["Northern Iowa", "IA"], ["South Dakota", "SD"], ["South Dakota State", "SD"],
+    ["Northern Iowa", "IA"], ["South Dakota", "SD"], ["South Dakota State", "SD"],
     ["Southern Illinois", "IL"], ["Youngstown State", "OH"],
   ],
-  "Big South-OVC": [
+  "OVC-Big South": [
     ["Charleston Southern", "SC"], ["Eastern Illinois", "IL"], ["Gardner-Webb", "NC"], ["Lindenwood", "MO"],
-    ["Southeast Missouri", "MO"], ["Tennessee State", "TN"], ["Tennessee Tech", "TN"], ["UT Martin", "TN"], ["Western Illinois", "IL"],
+    ["Southeast Missouri", "MO"], ["Tennessee State", "TN"], ["UT Martin", "TN"], ["Western Illinois", "IL"],
   ],
   SoCon: [
     ["Chattanooga", "TN"], ["East Tennessee State", "TN"], ["Furman", "SC"], ["Mercer", "GA"], ["Samford", "AL"],
-    ["The Citadel", "SC"], ["VMI", "VA"], ["Western Carolina", "NC"], ["Wofford", "SC"],
+    ["Tennessee Tech", "TN"], ["The Citadel", "SC"], ["VMI", "VA"], ["Western Carolina", "NC"], ["Wofford", "SC"],
   ],
   Southland: [
     ["East Texas A&M", "TX"], ["Houston Christian", "TX"], ["Incarnate Word", "TX"], ["Lamar", "TX"], ["McNeese", "LA"],
@@ -90,11 +91,11 @@ const FCS: Record<string, Row[]> = {
   ],
   UAC: [
     ["Abilene Christian", "TX"], ["Austin Peay", "TN"], ["Central Arkansas", "AR"], ["Eastern Kentucky", "KY"],
-    ["North Alabama", "AL"], ["Southern Utah", "UT"], ["Tarleton State", "TX"], ["Utah Tech", "UT"], ["West Georgia", "GA"],
+    ["North Alabama", "AL"], ["Tarleton State", "TX"], ["West Florida", "FL"], ["West Georgia", "GA"],
   ],
   Patriot: [
     ["Bucknell", "PA"], ["Colgate", "NY"], ["Fordham", "NY"], ["Georgetown", "DC"], ["Holy Cross", "MA"],
-    ["Lafayette", "PA"], ["Lehigh", "PA"],
+    ["Lafayette", "PA"], ["Lehigh", "PA"], ["Richmond", "VA"], ["Villanova", "PA"], ["William & Mary", "VA"],
   ],
   Ivy: [
     ["Brown", "RI"], ["Columbia", "NY"], ["Cornell", "NY"], ["Dartmouth", "NH"], ["Harvard", "MA"],
@@ -115,12 +116,14 @@ const FCS: Record<string, Row[]> = {
     ["Mississippi Valley State", "MS"], ["Prairie View A&M", "TX"], ["Southern", "LA"], ["Texas Southern", "TX"],
   ],
   NEC: [
-    ["Central Connecticut", "CT"], ["Duquesne", "PA"], ["LIU", "NY"], ["Mercyhurst", "PA"], ["New Haven", "CT"],
+    ["Central Connecticut", "CT"], ["Chicago State", "IL"], ["Duquesne", "PA"], ["LIU", "NY"], ["Mercyhurst", "PA"], ["New Haven", "CT"],
     ["Robert Morris", "PA"], ["Stonehill", "MA"], ["Wagner", "NY"],
   ],
+  "FCS Independent": [["Merrimack", "MA"]],
 };
 
-export type Division = "FBS" | "FCS";
+/** "Other" is any school without an FBS/FCS depth chart: Division II, III, NAIA, JUCO. */
+export type Division = "FBS" | "FCS" | "Other";
 export interface School { id: string; name: string; division: Division; conference: string; state: string }
 
 export const slug = (s: string) => s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
