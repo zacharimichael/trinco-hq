@@ -59,6 +59,38 @@ const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.d
 type FirmData = { deals?: Deal[]; scouting?: Scouting };
 const firmData = (s: AppState): FirmData => ({ deals: s.deals, scouting: s.scouting });
 
+const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+// Older databases (before 0005_editor.sql) don't have the merge-save functions yet.
+const noFunction = (e: { code?: string; message: string }) => e.code === "PGRST202" || /could not find the function/i.test(e.message);
+
+/** Only what changed since the last save, so two people saving at once merge instead of overwrite. */
+function memberChanges(prev: MemberData, next: MemberData) {
+  const patch: Record<string, unknown> = {};
+  const merge: Record<string, Record<string, unknown>> = {};
+  for (const k of Object.keys(next) as (keyof MemberData)[]) {
+    if (same(prev[k], next[k])) continue;
+    if (k === "done" || k === "licensedOn") {
+      const a: Record<string, unknown> = prev[k] ?? {}, b: Record<string, unknown> = next[k] ?? {};
+      merge[k] = {};
+      for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) if (!same(a[key], b[key])) merge[k][key] = b[key] ?? null;
+    } else patch[k] = next[k];
+  }
+  return { p_patch: patch, p_merge: merge };
+}
+
+function firmChanges(prev: FirmData, next: FirmData) {
+  const a = prev.scouting ?? emptyScouting(), b = next.scouting ?? emptyScouting();
+  const before = new Map(a.players.map((p) => [p.id, p]));
+  const now = new Set(b.players.map((p) => p.id));
+  return {
+    p_players: b.players.filter((p) => !same(before.get(p.id), p)),
+    p_removed: a.players.filter((p) => !now.has(p.id)).map((p) => p.id),
+    p_staff: Object.fromEntries(Object.entries(b.staff).filter(([k, v]) => !same(a.staff[k], v))),
+    p_schools: b.extraSchools.filter((x) => !a.extraSchools.some((y) => y.id === x.id)),
+    p_deals: same(prev.deals, next.deals) ? null : next.deals ?? [],
+  };
+}
+
 type MemberRow = { id: string; email: string; name: string; role: Me["role"]; stage: number; split: number | null; user_id: string | null };
 
 async function loadLive(session: Session): Promise<AppState | null> {
@@ -73,8 +105,8 @@ async function loadLive(session: Session): Promise<AppState | null> {
     supabase.from("shared_film").select("id, player_id, film, added_by").order("created_at"),
   ]);
   const rows = (members ?? []) as MemberRow[];
-  // Someone the owner shared with sees the owner's map.
-  const base = (mine.role === "viewer" && rows.find((m) => m.role === "owner")) || mine;
+  // Someone the owner shared with works on the owner's map.
+  const base = ((mine.role === "viewer" || mine.role === "editor") && rows.find((m) => m.role === "owner")) || mine;
   const stateOf = (id: string) => (states ?? []).find((r) => r.member_id === id)?.data as Partial<MemberData> | undefined;
   const own = stateOf(base.id) ?? {};
 
@@ -90,10 +122,10 @@ async function loadLive(session: Session): Promise<AppState | null> {
             };
           })
       : [];
-  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id })) : [];
+  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer" || m.role === "editor").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id })) : [];
   const sharedFilm: SharedFilm[] = (films ?? []).map((r) => ({ id: r.id, player: r.player_id, film: r.film as Film, by: r.added_by }));
 
-  const me: Me = { memberId: mine.id, role: mine.role, stage: mine.stage };
+  const me: Me = { memberId: base.id, role: mine.role, stage: base === mine ? mine.stage : 3 };
   return {
     v: VERSION,
     me,
@@ -126,7 +158,7 @@ type Ctx = {
   signOut: () => Promise<void>;
   createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
   inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
-  /** Owner only: lets one more person sign in and see the agency (view only, plus adding film). */
+  /** Owner only: lets one more person sign in and do everything the owner can, except manage who has access. */
   share: (email: string) => Promise<string | null>;
   unshare: (id: string) => Promise<string | null>;
   /** Someone the owner shared with adds a clip to a player. */
@@ -146,13 +178,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [save, setSave] = useState<SaveState>({ status: "saved" });
   const [retry, setRetry] = useState(0);
-  const saved = useRef<{ member: string; firm: string; stage: number }>({ member: "", firm: "", stage: 0 });
+  const saved = useRef<{ member: MemberData; firm: FirmData; stage: number } | null>(null);
 
   const enterLive = useCallback(async (s: Session) => {
     setSession(s);
     const live = await loadLive(s);
     if (!live) return setMode("needs-firm");
-    saved.current = { member: JSON.stringify(memberData(live)), firm: JSON.stringify(firmData(live)), stage: live.me?.stage ?? 0 };
+    saved.current = { member: memberData(live), firm: firmData(live), stage: live.me?.stage ?? 0 };
     setState(live);
     setMode("live");
   }, []);
@@ -178,27 +210,33 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     // View-only people never save.
-    if (mode !== "live" || !state.me || state.me.role === "viewer") return;
-    const me = state.me;
-    const dirty = JSON.stringify(memberData(state)) !== saved.current.member || (me.role === "owner" && JSON.stringify(firmData(state)) !== saved.current.firm);
+    if (mode !== "live" || !state.me || state.me.role === "viewer" || !saved.current) return;
+    const me = state.me, last = saved.current;
+    const lead = me.role === "owner" || me.role === "editor";
+    const m = memberData(state), f = firmData(state);
+    const dirty = !same(m, last.member) || (lead && !same(f, last.firm));
     if (dirty) setSave({ status: "saving" });
     const t = setTimeout(async () => {
       const problems: string[] = [];
       // Signing the agency agreement on the to-do list moves an agent from stage 1 to 2.
-      if (me.stage === 2 && saved.current.stage === 1) {
+      if (me.stage === 2 && last.stage === 1) {
         const { error } = await supabase.rpc("sign_agency_agreement");
-        if (!error) saved.current.stage = 2;
+        if (!error) last.stage = 2;
       }
-      const m = JSON.stringify(memberData(state));
-      if (m !== saved.current.member) {
-        const { error } = await supabase.from("member_state").upsert({ member_id: me.memberId, data: memberData(state), updated_at: new Date().toISOString() });
-        if (!error) saved.current.member = m; else problems.push(error.message);
+      if (!same(m, last.member)) {
+        let { error } = await supabase.rpc("save_my_state", memberChanges(last.member, m));
+        if (error && noFunction(error) && me.role !== "editor")
+          ({ error } = await supabase.from("member_state").upsert({ member_id: me.memberId, data: m, updated_at: new Date().toISOString() }));
+        if (!error) last.member = m; else problems.push(error.message);
       }
-      const f = JSON.stringify(firmData(state));
-      if (me.role === "owner" && f !== saved.current.firm) {
-        // An update the database refuses can come back with no error and no rows, so check a row came back.
-        const { data, error } = await supabase.from("firms").update({ data: firmData(state) }).eq("id", (await supabase.rpc("my_firm_id")).data).select("id");
-        if (!error && data?.length) saved.current.firm = f; else problems.push(error?.message ?? "The database didn't accept the change.");
+      if (lead && !same(f, last.firm)) {
+        let { error } = await supabase.rpc("save_firm_changes", firmChanges(last.firm, f));
+        if (error && noFunction(error) && me.role === "owner") {
+          // An update the database refuses can come back with no error and no rows, so check a row came back.
+          const r = await supabase.from("firms").update({ data: f }).eq("id", (await supabase.rpc("my_firm_id")).data).select("id");
+          error = r.error ?? (r.data?.length ? null : { message: "The database didn't accept the change." } as typeof error);
+        }
+        if (!error) last.firm = f; else problems.push(error.message);
       }
       setSave(problems.length ? { status: "error", message: problems[0] } : { status: "saved" });
     }, 600);
@@ -249,7 +287,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const email = raw.trim().toLowerCase();
       if (!/^\S+@\S+\.\S+$/.test(email)) return "Type their full email.";
       const { data: firmId } = await supabase.rpc("my_firm_id");
-      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: "viewer", stage: 3 }).select("id").single();
+      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: "editor", stage: 3 }).select("id").single();
       if (error) return /duplicate|unique/i.test(error.message) ? "That email already has access."
         : /row-level security|check constraint/i.test(error.message) ? "The database isn't set up for sharing yet. Run 0004_share.sql in Supabase (SQL Editor), then try again."
         : error.message;

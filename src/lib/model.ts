@@ -62,8 +62,11 @@ export interface Deal {
 
 export interface Me {
   memberId: string;
-  /** viewer: someone the owner shared the agency with. Sees the owner's map and data, can add film, can't change anything. */
-  role: "owner" | "agent" | "viewer";
+  /**
+   * Someone the owner shared the agency with works on the owner's map and data.
+   * editor: can change everything except who has access. viewer: sees everything and can add film.
+   */
+  role: "owner" | "agent" | "viewer" | "editor";
   stage: number;
 }
 
