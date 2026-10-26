@@ -1,5 +1,5 @@
 import type { Done } from "./rules";
-import type { Scouting } from "./players";
+import type { Film, Scouting } from "./players";
 
 export interface Profile {
   name: string;
@@ -62,9 +62,16 @@ export interface Deal {
 
 export interface Me {
   memberId: string;
-  role: "owner" | "agent";
+  /** viewer: someone the owner shared the agency with. Sees the owner's map and data, can add film, can't change anything. */
+  role: "owner" | "agent" | "viewer";
   stage: number;
 }
+
+/** Someone the owner shared the agency with. */
+export interface SharedPerson { id: string; email: string; joined: boolean }
+
+/** A film clip someone the owner shared with added to a player. */
+export interface SharedFilm { id: string; player: string; film: Film; by: string }
 
 export interface AppState {
   v: number;
@@ -78,6 +85,9 @@ export interface AppState {
   signatures: SignatureRecord[];
   team: TeamMember[];
   deals: Deal[];
+  /** People the owner shared the agency with. */
+  shared?: SharedPerson[];
+  sharedFilm?: SharedFilm[];
   /** Specialist players, school staff and depth charts. Shared across the agency (owner edits). */
   scouting: Scouting;
   /** When each state approved the license (ISO date), for renewal reminders. */

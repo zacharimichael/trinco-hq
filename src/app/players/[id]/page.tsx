@@ -136,7 +136,10 @@ export default function PlayerPage() {
 
         <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider}
           addLater={(t) => edit((s) => { const x = s.players.find((y) => y.id === p.id); if (x) x.talks = [...x.talks, t].sort((a, b) => b.date.localeCompare(a.date)); })} />
-        <FilmBox p={p} onChange={(film) => set({ film })} />
+      </fieldset>
+      {/* Outside the locked fields: people the owner shared with can add film too. */}
+      <FilmBox p={p} canEdit={canEdit} onChange={(film) => set({ film })} />
+      <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
         <details className="card fold">
           <summary><h2>{sch ? `${sch.name} coaches` : "School coaches"}</h2>{staff.decider && <span className="chip">Decision maker: {COACH_LABEL[staff.decider]}</span>}</summary>
           <div className="sec">
@@ -240,8 +243,17 @@ function Talks({ p, onChange, decider, addLater }: { p: Player; onChange: (t: Ta
   );
 }
 
-function FilmBox({ p, onChange }: { p: Player; onChange: (f: Film[]) => void }) {
-  const { uploadFilm, mode } = useStore();
+function FilmBox({ p, canEdit, onChange }: { p: Player; canEdit: boolean; onChange: (f: Film[]) => void }) {
+  const { state, uploadFilm, mode, addSharedFilm, removeSharedFilm } = useStore();
+  const viewer = state.me?.role === "viewer";
+  const shared = (state.sharedFilm ?? []).filter((f) => f.player === p.id);
+  const count = p.film.length + shared.length;
+  // The owner edits the player's own film list; someone they shared with adds to a separate list.
+  const add = async (f: Film) => {
+    if (!viewer) return onChange([...p.film, f]);
+    const err = await addSharedFilm(p.id, f);
+    if (err) setError(err);
+  };
   const [link, setLink] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -249,20 +261,21 @@ function FilmBox({ p, onChange }: { p: Player; onChange: (f: Film[]) => void }) 
     const url = link.trim();
     if (!/^https?:\/\//i.test(url)) return setError("Paste a full link that starts with https://");
     const kind: Film["kind"] = /hudl\.com/i.test(url) ? "Hudl" : /onform/i.test(url) ? "OnForm" : "Link";
-    onChange([...p.film, { kind, url }]);
     setLink(""); setError("");
+    void add({ kind, url });
   };
   const upload = async (file: File | undefined) => {
     if (!file) return;
     setBusy(true); setError("");
     const r = await uploadFilm(p.id, file);
     setBusy(false);
-    if (typeof r === "string") setError(r); else onChange([...p.film, r]);
+    if (typeof r === "string") setError(r); else await add(r);
   };
   return (
     <details className="card fold">
-      <summary><h2>Film</h2><span className="chip">{p.film.length} {p.film.length === 1 ? "clip" : "clips"}</span></summary>
+      <summary><h2>Film</h2><span className="chip">{count} {count === 1 ? "clip" : "clips"}</span></summary>
       <div className="sec">
+      {(canEdit || viewer) && (<>
       <div className="pair">
         <input aria-label="Hudl or OnForm link" value={link} placeholder="Paste a Hudl or OnForm link" onChange={(e) => setLink(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLink(); } }} />
@@ -272,15 +285,17 @@ function FilmBox({ p, onChange }: { p: Player; onChange: (f: Film[]) => void }) 
         {busy ? "Uploading…" : "Upload video from phone"}
         <input type="file" accept="video/*" hidden disabled={busy} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} />
       </label>
+      </>)}
       {mode === "demo" && <small className="muted">Demo: uploaded videos only last until you refresh.</small>}
       {error && <p style={{ margin: 0, color: "var(--stop)" }}>{error}</p>}
-      {p.film.map((f, i) => <FilmItem key={i} f={f} onRemove={() => onChange(p.film.filter((_, j) => j !== i))} />)}
+      {p.film.map((f, i) => <FilmItem key={i} f={f} onRemove={canEdit ? () => onChange(p.film.filter((_, j) => j !== i)) : undefined} />)}
+      {shared.map((x) => <FilmItem key={x.id} f={x.film} by={x.by} onRemove={canEdit ? () => void removeSharedFilm(x.id).then((e) => e && setError(e)) : undefined} />)}
       </div>
     </details>
   );
 }
 
-function FilmItem({ f, onRemove }: { f: Film; onRemove: () => void }) {
+function FilmItem({ f, by, onRemove }: { f: Film; by?: string; onRemove?: () => void }) {
   const { filmUrl } = useStore();
   const [src, setSrc] = useState(f.path ? "" : f.url);
   // Signed links expire, so fetch one when the clip is shown.
@@ -289,8 +304,8 @@ function FilmItem({ f, onRemove }: { f: Film; onRemove: () => void }) {
   return (
     <div className="film">
       <div className="coachhead">
-        <b>{f.kind === "Video" ? f.name ?? "Video" : f.kind}</b>
-        <button type="button" className="linkbtn" onClick={onRemove}>Remove</button>
+        <b>{f.kind === "Video" ? f.name ?? "Video" : f.kind}{by && <small className="muted"> · added by {by}</small>}</b>
+        {onRemove && <button type="button" className="linkbtn" onClick={onRemove}>Remove</button>}
       </div>
       {f.kind === "Video"
         ? (src ? <video src={src} controls playsInline preload="metadata" /> : <span className="muted">Loading…</span>)
