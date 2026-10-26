@@ -15,7 +15,7 @@ const TABS = [
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
-  const { state, mode, email, signOut } = useStore();
+  const { state, mode, email, signOut, save, retrySave } = useStore();
   const current = (href: string) => (href === "/" ? path === "/" || path.startsWith("/state") : href === "/players" ? path.startsWith(href) || path.startsWith("/compare") : path.startsWith(href));
   const isOwner = mode === "demo" || state.me?.role === "owner";
 
@@ -34,6 +34,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
       </header>
+      {mode === "live" && (
+        <div className={`savechip ${save.status}`} role="status" aria-live="polite">
+          {save.status === "saving" ? "Saving…" : save.status === "saved" ? "✓ All changes saved" : <>Not saved: {save.message} <button className="linkbtn" type="button" onClick={retrySave}>Try again</button></>}
+        </div>
+      )}
       <main>{children}</main>
       {mode === "live" && (
         <footer className="muted" style={{ marginTop: 32, fontSize: 14, display: "flex", gap: 12, flexWrap: "wrap" }}>
