@@ -250,7 +250,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (!/^\S+@\S+\.\S+$/.test(email)) return "Type their full email.";
       const { data: firmId } = await supabase.rpc("my_firm_id");
       const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: "viewer", stage: 3 }).select("id").single();
-      if (error) return /duplicate|unique/i.test(error.message) ? "That email already has access." : error.message;
+      if (error) return /duplicate|unique/i.test(error.message) ? "That email already has access."
+        : /row-level security|check constraint/i.test(error.message) ? "The database isn't set up for sharing yet. Run 0004_share.sql in Supabase (SQL Editor), then try again."
+        : error.message;
       update((d) => { (d.shared ??= []).push({ id: data.id, email, joined: false }); });
       return null;
     },

@@ -48,6 +48,10 @@ drop policy if exists shared_film_delete on shared_film;
 create policy shared_film_delete on shared_film for delete using (am_owner(firm_id));
 
 -- They can upload videos too (removing stays owner-only, see 0002_film.sql).
-drop policy if exists film_insert on storage.objects;
-create policy film_insert on storage.objects for insert
-  with check (bucket_id = 'film' and (storage.foldername(name))[1] = my_firm_id()::text and sees_firm(my_firm_id()));
+-- Skipped with a notice if film storage isn't set up, so the rest still applies.
+do $$ begin
+  drop policy if exists film_insert on storage.objects;
+  create policy film_insert on storage.objects for insert
+    with check (bucket_id = 'film' and (storage.foldername(name))[1] = my_firm_id()::text and sees_firm(my_firm_id()));
+exception when others then raise notice 'Film uploads not updated: %', sqlerrm;
+end $$;
