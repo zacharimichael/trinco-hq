@@ -238,3 +238,7 @@ details.fold[open]>summary::after{content:"▴"}
 details.fold>.sec{padding:0 20px 20px}
 .donebar{position:sticky;bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
 .donebar .linkbtn{margin-left:auto}
+.sortbtn{border:0;background:none;padding:6px 0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.sortbtn span{opacity:.5}
+.sortbtn.on{color:var(--ink)}
+.sortbtn.on span{opacity:1}
