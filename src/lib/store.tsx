@@ -104,8 +104,13 @@ async function loadLive(session: Session): Promise<AppState | null> {
   };
 }
 
+export type SaveState = { status: "saving" | "saved" | "error"; message?: string };
+
 type Ctx = {
   state: AppState;
+  /** Whether the latest changes reached the database. */
+  save: SaveState;
+  retrySave: () => void;
   mode: Mode;
   email: string | null;
   update: (fn: (draft: AppState) => void) => void;
@@ -125,6 +130,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>(seed);
   const [mode, setMode] = useState<Mode>("loading");
   const [session, setSession] = useState<Session | null>(null);
+  const [save, setSave] = useState<SaveState>({ status: "saved" });
+  const [retry, setRetry] = useState(0);
   const saved = useRef<{ member: string; firm: string; stage: number }>({ member: "", firm: "", stage: 0 });
 
   const enterLive = useCallback(async (s: Session) => {
@@ -158,7 +165,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
     if (mode !== "live" || !state.me) return;
     const me = state.me;
+    const dirty = JSON.stringify(memberData(state)) !== saved.current.member || (me.role === "owner" && JSON.stringify(firmData(state)) !== saved.current.firm);
+    if (dirty) setSave({ status: "saving" });
     const t = setTimeout(async () => {
+      const problems: string[] = [];
       // Signing the agency agreement on the to-do list moves an agent from stage 1 to 2.
       if (me.stage === 2 && saved.current.stage === 1) {
         const { error } = await supabase.rpc("sign_agency_agreement");
@@ -167,16 +177,26 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const m = JSON.stringify(memberData(state));
       if (m !== saved.current.member) {
         const { error } = await supabase.from("member_state").upsert({ member_id: me.memberId, data: memberData(state), updated_at: new Date().toISOString() });
-        if (!error) saved.current.member = m;
+        if (!error) saved.current.member = m; else problems.push(error.message);
       }
       const f = JSON.stringify(firmData(state));
       if (me.role === "owner" && f !== saved.current.firm) {
-        const { error } = await supabase.from("firms").update({ data: firmData(state) }).eq("id", (await supabase.rpc("my_firm_id")).data);
-        if (!error) saved.current.firm = f;
+        // An update the database refuses can come back with no error and no rows, so check a row came back.
+        const { data, error } = await supabase.from("firms").update({ data: firmData(state) }).eq("id", (await supabase.rpc("my_firm_id")).data).select("id");
+        if (!error && data?.length) saved.current.firm = f; else problems.push(error?.message ?? "The database didn't accept the change.");
       }
+      setSave(problems.length ? { status: "error", message: problems[0] } : { status: "saved" });
     }, 600);
     return () => clearTimeout(t);
-  }, [state, mode]);
+  }, [state, mode, retry]);
+
+  // Don't let the tab close on unsaved work.
+  useEffect(() => {
+    if (save.status !== "saving" && save.status !== "error") return;
+    const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [save.status]);
 
   const update = useCallback((fn: (draft: AppState) => void) => {
     setState((prev) => {
@@ -188,6 +208,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const value: Ctx = {
     state, mode, email: session?.user.email ?? null, update,
+    save, retrySave: () => setRetry((n) => n + 1),
     reset: () => setState(seed()),
     signOut: async () => {
       try { localStorage.removeItem(DEMO_FLAG); } catch {}

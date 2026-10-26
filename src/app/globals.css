@@ -242,3 +242,6 @@ details.fold>.sec{padding:0 20px 20px}
 .sortbtn span{opacity:.5}
 .sortbtn.on{color:var(--ink)}
 .sortbtn.on span{opacity:1}
+.savechip{align-self:flex-end;margin:-8px 0 12px auto;width:fit-content;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);max-width:calc(100vw - 24px)}
+.savechip.saved{color:var(--go)}
+.savechip.error{background:var(--stop-soft);color:var(--ink);border-color:var(--stop)}

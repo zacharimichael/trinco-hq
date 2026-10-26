@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import US from "@/data/us-states.json";
@@ -19,7 +19,7 @@ const ROLES: CoachRole[] = ["HC", "GM", "ST"];
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { sc, canEdit, school, staffOf, setStaff, setPlayer, removePlayer } = useScouting();
+  const { sc, canEdit, school, staffOf, setStaff, setPlayer, removePlayer, edit } = useScouting();
   const p = sc.players.find((x) => x.id === id);
   if (!p) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">This player isn&apos;t here anymore.</p></section>;
 
@@ -134,7 +134,8 @@ export default function PlayerPage() {
           {(p.playedOther ?? p.otherPos.length > 0) && <Multi label="Which position?" options={HS_POSITIONS} value={p.otherPos} onChange={(otherPos) => set({ otherPos })} />}
         </div>
 
-        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
+        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider}
+          addLater={(t) => edit((s) => { const x = s.players.find((y) => y.id === p.id); if (x) x.talks = [...x.talks, t].sort((a, b) => b.date.localeCompare(a.date)); })} />
         <FilmBox p={p} onChange={(film) => set({ film })} />
         <details className="card fold">
           <summary><h2>{sch ? `${sch.name} coaches` : "School coaches"}</h2>{staff.decider && <span className="chip">Decision maker: {COACH_LABEL[staff.decider]}</span>}</summary>
@@ -195,16 +196,21 @@ const SHORT: Record<Talk["who"], string> = { Player: "P", Parent: "Pa", HC: "HC"
 const nowLocal = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
 
 /** Call log: every call with the player, family and coaches, newest first, so the conversation reads in order. */
-function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
+function Talks({ p, onChange, decider, addLater }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null; addLater: (t: Talk) => void }) {
   const [who, setWho] = useState<Talk["who"] | null>(null);
   const [when, setWhen] = useState(nowLocal);
   const [note, setNote] = useState("");
+  const [justSaved, setJustSaved] = useState(false);
+  const entry = (): Talk => ({ date: when ? new Date(when).toISOString() : new Date().toISOString(), who: who ?? "Other", note: note.trim() });
   const add = () => {
     if (!note.trim()) return;
-    const date = when ? new Date(when).toISOString() : new Date().toISOString();
-    onChange([...p.talks, { date, who: who ?? "Other", note: note.trim() }].sort((a, b) => b.date.localeCompare(a.date)));
-    setNote(""); setWhen(nowLocal());
+    onChange([...p.talks, entry()].sort((a, b) => b.date.localeCompare(a.date)));
+    setNote(""); setWhen(nowLocal()); setJustSaved(true);
   };
+  // A call typed but not saved yet is saved anyway when you leave the profile.
+  const draft = useRef<Talk | null>(null);
+  draft.current = note.trim() ? entry() : null;
+  useEffect(() => () => { if (draft.current) addLater(draft.current); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const calls = [...p.talks].sort((a, b) => b.date.localeCompare(a.date));
   return (
     <details className="card fold" id="call-log">
@@ -216,8 +222,11 @@ function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => v
         <label htmlFor="call-when">When</label>
         <input id="call-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
       </div>
-      <Text label="What was said" multiline value={note} placeholder="e.g. GM wants to see film, will offer $15k for next season" onChange={setNote} />
-      <button className="btn" type="button" onClick={add} disabled={!note.trim()} style={{ alignSelf: "flex-start" }}>Log call</button>
+      <Text label="What was said" multiline value={note} placeholder="e.g. GM wants to see film, will offer $15k for next season" onChange={(v) => { setNote(v); setJustSaved(false); }} />
+      <div className="pair" style={{ alignItems: "center" }}>
+        <button className="btn" type="button" id="save-call" onClick={add} disabled={!note.trim()} style={{ flex: "none" }}>Save call</button>
+        {justSaved && <span className="okchip">✓ Saved</span>}
+      </div>
       {calls.map((t) => (
         <div className="step" key={`${t.date}-${t.note}`}>
           <span className="mark list">{SHORT[t.who] ?? "•"}</span>
