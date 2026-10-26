@@ -147,7 +147,6 @@ export default function PlayerPage() {
           </div>
           <h3>High school coach</h3>
           <ContactFields value={p.hsCoach} onChange={(hsCoach) => set({ hsCoach })} />
-          <Text label="High school stats" multiline value={p.hsStats} placeholder="e.g. 14/16 FG, long of 52, 70% touchbacks" onChange={(hsStats) => set({ hsStats })} />
           <YesNo label="Played another position?" value={p.playedOther ?? (p.otherPos.length ? true : null)} onChange={(playedOther) => set({ playedOther, ...(playedOther ? {} : { otherPos: [] }) })} />
           {(p.playedOther ?? p.otherPos.length > 0) && <Multi label="Which position?" options={HS_POSITIONS} value={p.otherPos} onChange={(otherPos) => set({ otherPos })} />}
           <YesNo label="Played other sports?" value={p.otherSportsYes ?? (p.otherSports ? true : null)} onChange={(otherSportsYes) => set({ otherSportsYes, ...(otherSportsYes ? {} : { otherSports: "" }) })} />
@@ -181,29 +180,45 @@ function PriorSchools({ value, onChange }: { value: string[]; onChange: (v: stri
   );
 }
 
-const WHO: { v: Talk["who"]; label: string }[] = [{ v: "HC", label: "Head coach" }, { v: "GM", label: "GM" }, { v: "ST", label: "Special teams" }, { v: "Other", label: "Other" }];
+const WHO: { v: Talk["who"]; label: string }[] = [
+  { v: "Player", label: "Player" }, { v: "Parent", label: "Parent" }, { v: "HC", label: "Head coach" }, { v: "GM", label: "GM" },
+  { v: "ST", label: "Special teams" }, { v: "HSC", label: "HS coach" }, { v: "Other", label: "Other" },
+];
+const SHORT: Record<Talk["who"], string> = { Player: "P", Parent: "Pa", HC: "HC", GM: "GM", ST: "ST", HSC: "HS", Other: "•" };
 
-/** Live negotiation updates: who we talked to and what they said. */
+/** Local date and time for a datetime-local input. */
+const nowLocal = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
+
+/** Call log: every call with the player, family and coaches, newest first, so the conversation reads in order. */
 function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
-  const [who, setWho] = useState<Talk["who"] | null>(decider);
+  const [who, setWho] = useState<Talk["who"] | null>(null);
+  const [when, setWhen] = useState(nowLocal);
   const [note, setNote] = useState("");
   const add = () => {
     if (!note.trim()) return;
-    onChange([{ date: new Date().toISOString(), who: who ?? "Other", note: note.trim() }, ...p.talks]);
-    setNote("");
+    const date = when ? new Date(when).toISOString() : new Date().toISOString();
+    onChange([...p.talks, { date, who: who ?? "Other", note: note.trim() }].sort((a, b) => b.date.localeCompare(a.date)));
+    setNote(""); setWhen(nowLocal());
   };
+  const calls = [...p.talks].sort((a, b) => b.date.localeCompare(a.date));
   return (
-    <div className="card sec">
-      <h2>Negotiation updates</h2>
+    <div className="card sec" id="call-log">
+      <h2>Call log</h2>
       <Choice label="Talked to" options={WHO.map((w) => w.label)} value={WHO.find((w) => w.v === who)?.label ?? null}
         onChange={(v) => setWho(WHO.find((w) => w.label === v)?.v ?? null)} />
-      <Text label="What happened" multiline value={note} placeholder="e.g. GM wants to see film, will offer $15k for next season" onChange={setNote} />
-      <button className="btn" type="button" onClick={add} disabled={!note.trim()} style={{ alignSelf: "flex-start" }}>Add update</button>
-      {p.talks.map((t, i) => (
-        <div className="step" key={i}>
-          <span className="mark list">{t.who === "Other" ? "•" : t.who}</span>
+      <div className="field">
+        <label htmlFor="call-when">When</label>
+        <input id="call-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
+      </div>
+      <Text label="What was said" multiline value={note} placeholder="e.g. GM wants to see film, will offer $15k for next season" onChange={setNote} />
+      <button className="btn" type="button" onClick={add} disabled={!note.trim()} style={{ alignSelf: "flex-start" }}>Log call</button>
+      {calls.length > 0 && <h3>{calls.length} {calls.length === 1 ? "call" : "calls"}</h3>}
+      {calls.map((t) => (
+        <div className="step" key={`${t.date}-${t.note}`}>
+          <span className="mark list">{SHORT[t.who] ?? "•"}</span>
           <div className="grow"><div className="t">{t.note}</div>
             <div className="d">{WHO.find((w) => w.v === t.who)?.label}{decider === t.who && " (decision maker)"} · {new Date(t.date).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</div></div>
+          <button type="button" className="linkbtn" aria-label="Delete this call" onClick={() => { if (confirm("Delete this call?")) onChange(p.talks.filter((x) => x !== t)); }}>✕</button>
         </div>
       ))}
     </div>

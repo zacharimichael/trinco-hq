@@ -35,7 +35,8 @@ export interface Film {
   path?: string;
 }
 
-export interface Talk { date: string; who: CoachRole | "Other"; note: string }
+/** One entry in a player's call log. */
+export interface Talk { date: string; who: CoachRole | "Player" | "Parent" | "HSC" | "Other"; note: string }
 
 export interface Player {
   id: string;
@@ -53,7 +54,6 @@ export interface Player {
   hs: string;
   hsState: string;
   hsCoach: Contact;
-  hsStats: string;
   playedOther?: boolean | null;
   otherPos: string[];
   otherSportsYes?: boolean | null;
@@ -111,7 +111,7 @@ export function newPlayer(pos: Pos, school = ""): Player {
   return {
     id: `p${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
     pos, name: "", age: null, height: null, weight: null, school, priorSchools: [],
-    hs: "", hsState: "", hsCoach: blankContact(), hsStats: "", otherPos: [], otherSports: "",
+    hs: "", hsState: "", hsCoach: blankContact(), otherPos: [], otherSports: "",
     nil: Array(NIL_YEARS).fill(null), film: [], talks: [],
     depth: null, allAmerican: false, allConference: false, client: false,
   };
