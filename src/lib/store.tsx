@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import type { AppState, Deal, Me, SignatureRecord, TeamMember } from "./model";
+import type { AppState, Deal, Me, SharedFilm, SignatureRecord, TeamMember } from "./model";
 import { DAY, startOfToday } from "./rules";
 import { supabase } from "./supabase";
 import { emptyScouting, withoutDemoPlayers, type Film, type Scouting } from "./players";
@@ -59,25 +59,29 @@ const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.d
 type FirmData = { deals?: Deal[]; scouting?: Scouting };
 const firmData = (s: AppState): FirmData => ({ deals: s.deals, scouting: s.scouting });
 
-type MemberRow = { id: string; email: string; name: string; role: "owner" | "agent"; stage: number; split: number | null; user_id: string | null };
+type MemberRow = { id: string; email: string; name: string; role: Me["role"]; stage: number; split: number | null; user_id: string | null };
 
 async function loadLive(session: Session): Promise<AppState | null> {
   await supabase.rpc("claim_invite");
   const { data: mine } = await supabase.from("members").select("id, firm_id, email, name, role, stage, split").eq("user_id", session.user.id).maybeSingle();
   if (!mine) return null;
 
-  const [{ data: firm }, { data: members }, { data: states }] = await Promise.all([
+  const [{ data: firm }, { data: members }, { data: states }, { data: films }] = await Promise.all([
     supabase.from("firms").select("name, default_split, data").eq("id", mine.firm_id).single(),
     supabase.from("members").select("id, email, name, role, stage, split, user_id").eq("firm_id", mine.firm_id).order("created_at"),
     supabase.from("member_state").select("member_id, data"),
+    supabase.from("shared_film").select("id, player_id, film, added_by").order("created_at"),
   ]);
+  const rows = (members ?? []) as MemberRow[];
+  // Someone the owner shared with sees the owner's map.
+  const base = (mine.role === "viewer" && rows.find((m) => m.role === "owner")) || mine;
   const stateOf = (id: string) => (states ?? []).find((r) => r.member_id === id)?.data as Partial<MemberData> | undefined;
-  const own = stateOf(mine.id) ?? {};
+  const own = stateOf(base.id) ?? {};
 
   const team: TeamMember[] =
-    mine.role === "owner"
-      ? ((members ?? []) as MemberRow[])
-          .filter((m) => m.id !== mine.id)
+    mine.role !== "agent"
+      ? rows
+          .filter((m) => m.role === "agent")
           .map((m) => {
             const d = stateOf(m.id) ?? {};
             return {
@@ -86,19 +90,23 @@ async function loadLive(session: Session): Promise<AppState | null> {
             };
           })
       : [];
+  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id })) : [];
+  const sharedFilm: SharedFilm[] = (films ?? []).map((r) => ({ id: r.id, player: r.player_id, film: r.film as Film, by: r.added_by }));
 
   const me: Me = { memberId: mine.id, role: mine.role, stage: mine.stage };
   return {
     v: VERSION,
     me,
     agency: { name: firm?.name ?? "Your agency", split: firm?.default_split ?? 70 },
-    profile: { name: mine.name, email: mine.email, phone: "", address: "", dob: "", ...own.profile },
+    profile: { name: base.name, email: base.email, phone: "", address: "", dob: "", ...own.profile },
     done: own.done ?? {},
     athletes: own.athletes ?? [],
     docs: own.docs ?? [],
     licensedOn: own.licensedOn ?? {},
     signatures: [],
     team,
+    shared,
+    sharedFilm,
     deals: ((firm?.data as FirmData | null)?.deals ?? []),
     scouting: withoutDemoPlayers((firm?.data as FirmData | null)?.scouting),
   };
@@ -118,6 +126,12 @@ type Ctx = {
   signOut: () => Promise<void>;
   createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
   inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
+  /** Owner only: lets one more person sign in and see the agency (view only, plus adding film). */
+  share: (email: string) => Promise<string | null>;
+  unshare: (id: string) => Promise<string | null>;
+  /** Someone the owner shared with adds a clip to a player. */
+  addSharedFilm: (playerId: string, film: Film) => Promise<string | null>;
+  removeSharedFilm: (id: string) => Promise<string | null>;
   recordSignature: (rec: SignatureRecord) => void;
   /** Saves a film clip. Signed in: to the firm's private storage. Demo: kept until refresh. */
   uploadFilm: (playerId: string, file: File) => Promise<Film | string>;
@@ -163,7 +177,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       try { localStorage.setItem(DEMO_KEY, JSON.stringify(state)); } catch {}
       return;
     }
-    if (mode !== "live" || !state.me) return;
+    // View-only people never save.
+    if (mode !== "live" || !state.me || state.me.role === "viewer") return;
     const me = state.me;
     const dirty = JSON.stringify(memberData(state)) !== saved.current.member || (me.role === "owner" && JSON.stringify(firmData(state)) !== saved.current.firm);
     if (dirty) setSave({ status: "saving" });
@@ -207,7 +222,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value: Ctx = {
-    state, mode, email: session?.user.email ?? null, update,
+    // View-only: nothing they tap changes anything.
+    state, mode, email: session?.user.email ?? null, update: state.me?.role === "viewer" ? () => {} : update,
     save, retrySave: () => setRetry((n) => n + 1),
     reset: () => setState(seed()),
     signOut: async () => {
@@ -227,6 +243,34 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name, email: email.toLowerCase(), split, role: "agent", stage: 0 }).select("id").single();
       if (error) return error.message;
       update((d) => { d.team.push({ id: data.id, name, email, stage: 0, split, done: {}, athletes: [] }); });
+      return null;
+    },
+    share: async (raw) => {
+      const email = raw.trim().toLowerCase();
+      if (!/^\S+@\S+\.\S+$/.test(email)) return "Type their full email.";
+      const { data: firmId } = await supabase.rpc("my_firm_id");
+      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: "viewer", stage: 3 }).select("id").single();
+      if (error) return /duplicate|unique/i.test(error.message) ? "That email already has access." : error.message;
+      update((d) => { (d.shared ??= []).push({ id: data.id, email, joined: false }); });
+      return null;
+    },
+    unshare: async (id) => {
+      const { data, error } = await supabase.from("members").delete().eq("id", id).select("id");
+      if (error || !data?.length) return error?.message ?? "The database didn't accept the change.";
+      update((d) => { d.shared = (d.shared ?? []).filter((p) => p.id !== id); });
+      return null;
+    },
+    addSharedFilm: async (playerId, film) => {
+      const { data: firmId } = await supabase.rpc("my_firm_id");
+      const { data, error } = await supabase.from("shared_film").insert({ firm_id: firmId, player_id: playerId, film }).select("id, added_by").single();
+      if (error) return error.message;
+      update((d) => { (d.sharedFilm ??= []).push({ id: data.id, player: playerId, film, by: data.added_by }); });
+      return null;
+    },
+    removeSharedFilm: async (id) => {
+      const { data, error } = await supabase.from("shared_film").delete().eq("id", id).select("id");
+      if (error || !data?.length) return error?.message ?? "The database didn't accept the change.";
+      update((d) => { d.sharedFilm = (d.sharedFilm ?? []).filter((f) => f.id !== id); });
       return null;
     },
     recordSignature: (rec) => {
