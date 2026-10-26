@@ -27,21 +27,41 @@ export default function PlayerPage() {
   const sch = school(p.school);
   const staff = staffOf(p.school);
 
+  // Leaving a brand-new profile without a name throws it away, so a mis-tap doesn't leave a blank player behind.
+  const leave = () => { if (canEdit && !p.name.trim()) removePlayer(p.id); router.push("/players"); };
+
   return (
     <section className="view profile">
-      <Link className="back" href="/players">← All players</Link>
+      <button className="back" type="button" onClick={leave}>← All players</button>
       <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="card sec">
-          <input className="bigname" aria-label="Player name" placeholder="Player name" value={p.name} onChange={(e) => set({ name: e.target.value })} />
+          <input className="bigname" aria-label="Player name" placeholder="Player name" autoFocus={!p.name} value={p.name} onChange={(e) => set({ name: e.target.value })} />
           <Choice label="Position" options={POSITIONS.map((x) => POS_SHORT[x])} value={POS_SHORT[p.pos]}
             onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
         </div>
 
         <div className="card sec">
-          <h2>Basics</h2>
           <div className="formgrid">
-            <Num label="Age" value={p.age} onChange={(age) => set({ age })} />
+            <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
+            <div className="field">
+              <label htmlFor="year">Year</label>
+              <select id="year" value={p.year ?? ""} onChange={(e) => set({ year: (e.target.value || null) as Player["year"] })}>
+                <option value="">Pick a year</option>
+                {SCHOOL_YEARS.map((y) => <option key={y}>{y}</option>)}
+              </select>
+            </div>
+          </div>
+          <PriorSchools value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
+          <div className="field">
+            <label htmlFor="hsState">High school state</label>
+            <select id="hsState" value={p.hsState} onChange={(e) => set({ hsState: e.target.value })}>
+              <option value="">Pick a state</option>
+              {STATE_NAMES.map(([c, n]) => <option key={c} value={c}>{n}</option>)}
+              <option value="INTL">Outside the US</option>
+            </select>
+          </div>
+          <div className="formgrid">
             <div className="field">
               <label>Height</label>
               <div className="pair">
@@ -52,10 +72,8 @@ export default function PlayerPage() {
               </div>
             </div>
             <Num label="Weight (lbs)" value={p.weight} onChange={(weight) => set({ weight })} />
+            <Num label="Age" value={p.age} onChange={(age) => set({ age })} />
           </div>
-          <Choice label="Year in school" options={SCHOOL_YEARS} value={p.year} onChange={(year) => set({ year })} />
-          <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
-          <PriorSchools value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
         </div>
 
         <div className="card sec">
@@ -112,7 +130,15 @@ export default function PlayerPage() {
         </div>
 
         <div className="card sec">
-          <h2>{sch ? `${sch.name} contacts` : "School contacts"}</h2>
+          <YesNo label="Played another position?" value={p.playedOther ?? (p.otherPos.length ? true : null)} onChange={(playedOther) => set({ playedOther, ...(playedOther ? {} : { otherPos: [] }) })} />
+          {(p.playedOther ?? p.otherPos.length > 0) && <Multi label="Which position?" options={HS_POSITIONS} value={p.otherPos} onChange={(otherPos) => set({ otherPos })} />}
+        </div>
+
+        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
+        <FilmBox p={p} onChange={(film) => set({ film })} />
+        <details className="card fold">
+          <summary><h2>{sch ? `${sch.name} coaches` : "School coaches"}</h2>{staff.decider && <span className="chip">Decision maker: {COACH_LABEL[staff.decider]}</span>}</summary>
+          <div className="sec">
           {!sch ? <p className="muted" style={{ margin: 0 }}>Pick a school above first.</p> : (<>
             <p className="muted" style={{ margin: 0 }}>Shared with every player at {sch.name}.</p>
             {ROLES.map((r) => (
@@ -127,36 +153,15 @@ export default function PlayerPage() {
             <Choice label="Who makes the decision?" options={ROLES.map((r) => COACH_LABEL[r])} value={staff.decider ? COACH_LABEL[staff.decider] : null}
               onChange={(v) => setStaff(p.school, { ...staff, decider: ROLES.find((r) => COACH_LABEL[r] === v) ?? null })} />
           </>)}
-        </div>
-
-        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
-        <FilmBox p={p} onChange={(film) => set({ film })} />
-
-        <div className="card sec">
-          <h2>High school</h2>
-          <div className="formgrid">
-            <Text label="High school" value={p.hs} onChange={(hs) => set({ hs })} />
-            <div className="field">
-              <label htmlFor="hsState">High school state</label>
-              <select id="hsState" value={p.hsState} onChange={(e) => set({ hsState: e.target.value })}>
-                <option value="">Pick a state</option>
-                {STATE_NAMES.map(([c, n]) => <option key={c} value={c}>{n}</option>)}
-                <option value="INTL">Outside the US</option>
-              </select>
-            </div>
           </div>
-          <h3>High school coach</h3>
-          <ContactFields value={p.hsCoach} onChange={(hsCoach) => set({ hsCoach })} />
-          <YesNo label="Played another position?" value={p.playedOther ?? (p.otherPos.length ? true : null)} onChange={(playedOther) => set({ playedOther, ...(playedOther ? {} : { otherPos: [] }) })} />
-          {(p.playedOther ?? p.otherPos.length > 0) && <Multi label="Which position?" options={HS_POSITIONS} value={p.otherPos} onChange={(otherPos) => set({ otherPos })} />}
-          <YesNo label="Played other sports?" value={p.otherSportsYes ?? (p.otherSports ? true : null)} onChange={(otherSportsYes) => set({ otherSportsYes, ...(otherSportsYes ? {} : { otherSports: "" }) })} />
-          {(p.otherSportsYes ?? !!p.otherSports) && <Text label="Which sports?" value={p.otherSports} placeholder="Soccer, baseball" onChange={(otherSports) => set({ otherSports })} />}
-        </div>
+        </details>
+
       </fieldset>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        <Link className="btn" href={`/compare?ids=${p.id}`}>Compare with others</Link>
-        {canEdit && <button className="btn ghost" type="button" onClick={() => { if (confirm(`Delete ${p.name || "this player"}?`)) { router.push("/players"); removePlayer(p.id); } }}>Delete player</button>}
+      <div className="donebar">
+        {canEdit && <button className="btn" type="button" id="done" onClick={leave}>Done</button>}
+        <Link className="btn ghost" href={`/compare?ids=${p.id}`}>Compare</Link>
+        {canEdit && <button className="linkbtn" type="button" onClick={() => { if (confirm(`Delete ${p.name || "this player"}?`)) { router.push("/players"); removePlayer(p.id); } }}>Delete player</button>}
       </div>
     </section>
   );
@@ -202,8 +207,9 @@ function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => v
   };
   const calls = [...p.talks].sort((a, b) => b.date.localeCompare(a.date));
   return (
-    <div className="card sec" id="call-log">
-      <h2>Call log</h2>
+    <details className="card fold" id="call-log">
+      <summary><h2>Call log</h2><span className="chip">{calls.length} {calls.length === 1 ? "call" : "calls"}</span></summary>
+      <div className="sec">
       <Choice label="Talked to" options={WHO.map((w) => w.label)} value={WHO.find((w) => w.v === who)?.label ?? null}
         onChange={(v) => setWho(WHO.find((w) => w.label === v)?.v ?? null)} />
       <div className="field">
@@ -212,7 +218,6 @@ function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => v
       </div>
       <Text label="What was said" multiline value={note} placeholder="e.g. GM wants to see film, will offer $15k for next season" onChange={setNote} />
       <button className="btn" type="button" onClick={add} disabled={!note.trim()} style={{ alignSelf: "flex-start" }}>Log call</button>
-      {calls.length > 0 && <h3>{calls.length} {calls.length === 1 ? "call" : "calls"}</h3>}
       {calls.map((t) => (
         <div className="step" key={`${t.date}-${t.note}`}>
           <span className="mark list">{SHORT[t.who] ?? "•"}</span>
@@ -221,7 +226,8 @@ function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => v
           <button type="button" className="linkbtn" aria-label="Delete this call" onClick={() => { if (confirm("Delete this call?")) onChange(p.talks.filter((x) => x !== t)); }}>✕</button>
         </div>
       ))}
-    </div>
+      </div>
+    </details>
   );
 }
 
@@ -245,8 +251,9 @@ function FilmBox({ p, onChange }: { p: Player; onChange: (f: Film[]) => void }) 
     if (typeof r === "string") setError(r); else onChange([...p.film, r]);
   };
   return (
-    <div className="card sec">
-      <h2>Film</h2>
+    <details className="card fold">
+      <summary><h2>Film</h2><span className="chip">{p.film.length} {p.film.length === 1 ? "clip" : "clips"}</span></summary>
+      <div className="sec">
       <div className="pair">
         <input aria-label="Hudl or OnForm link" value={link} placeholder="Paste a Hudl or OnForm link" onChange={(e) => setLink(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLink(); } }} />
@@ -259,7 +266,8 @@ function FilmBox({ p, onChange }: { p: Player; onChange: (f: Film[]) => void }) 
       {mode === "demo" && <small className="muted">Demo: uploaded videos only last until you refresh.</small>}
       {error && <p style={{ margin: 0, color: "var(--stop)" }}>{error}</p>}
       {p.film.map((f, i) => <FilmItem key={i} f={f} onRemove={() => onChange(p.film.filter((_, j) => j !== i))} />)}
-    </div>
+      </div>
+    </details>
   );
 }
 

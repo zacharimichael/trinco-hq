@@ -229,3 +229,12 @@ a.pcard:hover{border-color:var(--accent)}
 details.card summary{cursor:pointer}
 table.cmp tr>th:first-child{position:sticky;left:0;background:var(--surface);z-index:1}
 table.cmp .grouprow th{position:static}
+details.fold{padding:0}
+details.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 20px;flex-wrap:wrap}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{font-size:19px}
+details.fold>summary::after{content:"▾";color:var(--muted)}
+details.fold[open]>summary::after{content:"▴"}
+details.fold>.sec{padding:0 20px 20px}
+.donebar{position:sticky;bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.donebar .linkbtn{margin-left:auto}
