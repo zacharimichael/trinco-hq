@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { heightText, money, yearShort, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
+import { SortTh, useSort } from "@/components/SortTh";
 
 export default function PlayersPage() {
   const router = useRouter();
@@ -15,11 +16,17 @@ export default function PlayersPage() {
   const confs = [...new Set(schools.map((s) => s.conference))];
   const [pick, setPick] = useState<string[]>([]);
 
-  const list = sc.players
+  const { sort, by, apply } = useSort<"name" | "pos" | "school" | "rating" | "nil", (typeof sc.players)[number]>({ key: "rating", desc: true }, {
+    name: (p) => p.name.toLowerCase(),
+    pos: (p) => POS_SHORT[p.pos],
+    school: (p) => school(p.school)?.name ?? "",
+    rating: overall,
+    nil: nilNow,
+  });
+  const list = apply(sc.players
     .filter((p) => pos === "all" || p.pos === pos)
     .filter((p) => !conf || school(p.school)?.conference === conf)
-    .filter((p) => !q || `${p.name} ${school(p.school)?.name ?? ""}`.toLowerCase().includes(q.toLowerCase()))
-    .sort((a, b) => (overall(b) ?? 0) - (overall(a) ?? 0));
+    .filter((p) => !q || `${p.name} ${school(p.school)?.name ?? ""}`.toLowerCase().includes(q.toLowerCase())));
   const toggle = (id: string) => setPick((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id].slice(-4)));
 
   return (
@@ -57,7 +64,7 @@ export default function PlayersPage() {
         <p className="muted" style={{ margin: 0, fontSize: 14 }}>Tick up to 4 players to compare them.</p>
         <div className="tablewrap">
           <table>
-            <thead><tr><th aria-label="Compare" /><th>Player</th><th>Pos</th><th>School</th><th className="num">Rating</th><th>Ht / Wt</th><th className="num">NIL now</th></tr></thead>
+            <thead><tr><th aria-label="Compare" /><SortTh k="name" label="Player" sort={sort} by={by} /><SortTh k="pos" label="Pos" sort={sort} by={by} /><SortTh k="school" label="School" sort={sort} by={by} /><SortTh k="rating" label="Rating" num sort={sort} by={by} /><th>Ht / Wt</th><SortTh k="nil" label="NIL now" num sort={sort} by={by} /></tr></thead>
             <tbody>
               {list.map((p) => (
                 <tr key={p.id}>

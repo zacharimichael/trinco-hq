@@ -7,6 +7,7 @@ import { Choice, ContactFields, Text } from "@/components/Fields";
 import type { Division, School } from "@/data/schools";
 import { COACH_LABEL, customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
+import { SortTh, useSort } from "@/components/SortTh";
 
 const BOARDS = ["By school", "By conference", "Top earners", "All-Americans", "All-Conference", "Starters", "Backups"] as const;
 type Board = (typeof BOARDS)[number];
@@ -75,16 +76,24 @@ export default function DepthPage() {
         ? <BySchool schools={inDiv.filter((s) => !conference || s.conference === conference)} players={players} pos={pos} />
         : board === "By conference"
         ? <ByConference confs={conference ? [conference] : confs} players={players} pos={pos} school={school} />
-        : <Leaderboard players={players.filter(inBoard[board]).sort((a, b) => nilNow(b) - nilNow(a) || depthOrder(a, b))} school={school} />}
+        : <Leaderboard players={players.filter(inBoard[board]).sort((a, b) => nilNow(b) - nilNow(a) || depthOrder(a, b))} school={school} key={board} />}
     </section>
   );
 }
 
-function Leaderboard({ players, school }: { players: Player[]; school: (id: string) => School | undefined }) {
+function Leaderboard({ players: rows, school }: { players: Player[]; school: (id: string) => School | undefined }) {
+  const { sort, by, apply } = useSort<"name" | "pos" | "school" | "nil" | "total", Player>({ key: "nil", desc: true }, {
+    name: (p) => p.name.toLowerCase(),
+    pos: (p) => POS_SHORT[p.pos],
+    school: (p) => school(p.school)?.name ?? "",
+    nil: nilNow,
+    total: nilTotal,
+  });
+  const players = apply(rows);
   return (
     <div className="card tablewrap">
       <table>
-        <thead><tr><th className="num">#</th><th>Player</th><th>Pos</th><th>School</th><th>Role / Year</th><th className="num">NIL now</th><th className="num">Total</th></tr></thead>
+        <thead><tr><th className="num">#</th><SortTh k="name" label="Player" sort={sort} by={by} /><SortTh k="pos" label="Pos" sort={sort} by={by} /><SortTh k="school" label="School" sort={sort} by={by} /><th>Role / Year</th><SortTh k="nil" label="NIL now" num sort={sort} by={by} /><SortTh k="total" label="Total" num sort={sort} by={by} /></tr></thead>
         <tbody>
           {players.map((p, i) => {
             const s = school(p.school);
