@@ -10,7 +10,8 @@ import { useStore } from "@/lib/store";
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 
 export default function HqPage() {
-  const { state, update, mode, inviteAgent } = useStore();
+  const { state, update, mode, inviteAgent, email: myEmail } = useStore();
+  const [inviteError, setInviteError] = useState("");
   const live = mode === "live";
   const owner = !live || state.me?.role === "owner";
   const canOnboard = owner || state.me?.role === "editor";
@@ -67,7 +68,18 @@ export default function HqPage() {
           { type: "sign", title: "Sign", what: "the agency agreement" },
         ],
         done: (d) => {
-          if (live) void inviteAgent(String(d.name || "New agent"), String(d.email || ""), Number(d.split) || agency.split);
+          const email = String(d.email || "").trim().toLowerCase();
+          // Everyone already in the agency, including you, can't be added again.
+          const taken = [state.profile.email, myEmail ?? "", ...state.team.map((t) => t.email), ...(state.shared ?? []).map((p) => p.email)]
+            .some((e) => e && e.toLowerCase() === email);
+          if (live && !email) return { msg: "Not added: type the agent's email and try again." };
+          if (live && taken)
+            return { msg: [state.profile.email, myEmail].some((e) => e?.toLowerCase() === email)
+              ? "Not added: that's your own email. You already count as an agent here, shown as \"You\" in the Agents list."
+              : "Not added: someone with that email is already in your agency." };
+          setInviteError("");
+          if (live) void inviteAgent(String(d.name || "New agent"), email, Number(d.split) || agency.split)
+            .then((err) => err && setInviteError(`${d.name || "The new agent"} wasn't saved: ${err}`));
           return {
             msg: live
               ? `${d.name || "Your new agent"} is added. Ask them to sign in at this site with ${d.email || "their email"}, and they'll be taken straight to the agreement.`
@@ -105,6 +117,7 @@ export default function HqPage() {
           {canOnboard && <button className="btn" id="onboard" type="button" onClick={onboard}>+ Add a new agent</button>}
         </div>
         <p className="muted" style={{ margin: 0 }}>New agents sign your agency agreement here, then get licensed state by state. They go live when their map is all green.</p>
+        {inviteError && <p role="alert" style={{ margin: 0, color: "var(--stop)" }}>{inviteError}</p>}
         <div className="pipe">
           {STAGES.map((stage, i) => {
             const here = team.filter((t) => t.stage === i);
