@@ -245,3 +245,8 @@ details.fold>.sec{padding:0 20px 20px}
 .savechip{align-self:flex-end;margin:-8px 0 12px auto;width:fit-content;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);max-width:calc(100vw - 24px)}
 .savechip.saved{color:var(--go)}
 .savechip.error{background:var(--stop-soft);color:var(--ink);border-color:var(--stop)}
+
+.addtodo { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.addtodo input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+.addtodo input:first-child { flex: 1 1 220px; }
+.addtodo input[type="date"] { flex: 0 1 170px; }
