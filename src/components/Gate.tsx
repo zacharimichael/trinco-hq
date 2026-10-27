@@ -10,11 +10,20 @@ export function SignIn() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  // For people the owner gave a password (see 0006_give_access.sql), so they don't need the email.
+  const [usePassword, setUsePassword] = useState(false);
+  const [password, setPassword] = useState("");
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError("");
+    if (usePassword) {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      setBusy(false);
+      if (error) setError(/invalid/i.test(error.message) ? "That email and password don't match." : error.message);
+      return;
+    }
     const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: window.location.origin } });
     setBusy(false);
     if (error) setError(error.message);
@@ -32,13 +41,22 @@ export function SignIn() {
           </>
         ) : (
           <form onSubmit={send} className="sec">
-            <p className="muted" style={{ margin: 0 }}>No password. We email you a link.</p>
+            <p className="muted" style={{ margin: 0 }}>{usePassword ? "Sign in with the password you were given." : "No password. We email you a link."}</p>
             <div className="field">
               <label htmlFor="email">Email</label>
               <input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
+            {usePassword && (
+              <div className="field">
+                <label htmlFor="password">Password</label>
+                <input id="password" type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              </div>
+            )}
             {error && <p style={{ margin: 0, color: "var(--stop)" }}>{error}</p>}
-            <button className="btn" type="submit" disabled={busy}>{busy ? "Sending…" : "Email me a sign-in link"}</button>
+            <button className="btn" type="submit" disabled={busy}>{usePassword ? (busy ? "Signing in…" : "Sign in") : busy ? "Sending…" : "Email me a sign-in link"}</button>
+            <button className="linkbtn" type="button" id="use-password" onClick={() => { setUsePassword(!usePassword); setError(""); }}>
+              {usePassword ? "Email me a link instead" : "Use a password instead"}
+            </button>
           </form>
         )}
       </div>

@@ -7,7 +7,7 @@
 -- remove them. The site stays private: nobody else can sign up (0003_private.sql).
 
 alter table members drop constraint if exists members_role_check;
-alter table members add constraint members_role_check check (role in ('owner', 'agent', 'viewer'));
+alter table members add constraint members_role_check check (role in ('owner', 'agent', 'viewer', 'editor'));
 
 -- The owner, or someone the owner shared the agency with.
 create or replace function sees_firm(f uuid) returns boolean
