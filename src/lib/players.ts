@@ -65,7 +65,7 @@ export interface Player {
   pRating?: number | null;
 
   // Long snapper
-  system?: "Pro style" | "Free release" | null;
+  system?: "Pro style" | "Free release" | "Hybrid" | null;
   forty?: number | null;
   bench?: number | null;
   snapAcc?: number | null;

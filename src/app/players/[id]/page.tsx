@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import US from "@/data/us-states.json";
 import { Choice, ContactFields, Num, Rating, Text, YesNo } from "@/components/Fields";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import {
@@ -13,7 +12,6 @@ import {
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
 
-const STATE_NAMES = Object.entries(US as Record<string, { n: string }>).map(([c, s]) => [c, s.n]).sort((a, b) => a[1].localeCompare(b[1]));
 const ROLES: CoachRole[] = ["HC", "GM", "ST"];
 
 export default function PlayerPage() {
@@ -53,14 +51,6 @@ export default function PlayerPage() {
             </div>
           </div>
           <PriorSchools value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
-          <div className="field">
-            <label htmlFor="hsState">High school state</label>
-            <select id="hsState" value={p.hsState} onChange={(e) => set({ hsState: e.target.value })}>
-              <option value="">Pick a state</option>
-              {STATE_NAMES.map(([c, n]) => <option key={c} value={c}>{n}</option>)}
-              <option value="INTL">Outside the US</option>
-            </select>
-          </div>
           <div className="formgrid">
             <div className="field">
               <label>Height</label>
@@ -72,7 +62,6 @@ export default function PlayerPage() {
               </div>
             </div>
             <Num label="Weight (lbs)" value={p.weight} onChange={(weight) => set({ weight })} />
-            <Num label="Age" value={p.age} onChange={(age) => set({ age })} />
           </div>
         </div>
 
@@ -80,14 +69,13 @@ export default function PlayerPage() {
           <h2>{POS_LABEL[p.pos]} ratings</h2>
           {p.pos === "LS" && (<>
             <Rating label="Long snapper rating" max={99} value={p.lsRating} onChange={(lsRating) => set({ lsRating })} />
-            <Choice label="System" options={["Pro style", "Free release"] as const} value={p.system} onChange={(system) => set({ system })} />
+            <Choice label="System" options={["Pro style", "Free release", "Hybrid"] as const} value={p.system} onChange={(system) => set({ system })} />
             <div className="formgrid">
               <Num label="40-yard dash (sec)" step={0.01} placeholder="4.90" value={p.forty} onChange={(forty) => set({ forty })} />
               <Num label="225 lb bench (reps)" value={p.bench} onChange={(bench) => set({ bench })} />
             </div>
             <Rating label="Snap accuracy" max={20} value={p.snapAcc} onChange={(snapAcc) => set({ snapAcc })} />
             <Rating label="Snap speed" max={20} value={p.snapSpeed} onChange={(snapSpeed) => set({ snapSpeed })} />
-            <Choice label="Snap spiral" options={["Loose", "Wobble", "Clean"] as const} value={p.spiral} onChange={(spiral) => set({ spiral })} />
           </>)}
           {kicks(p.pos) && (<>
             {p.pos === "KP" && <h3>Kicking</h3>}
