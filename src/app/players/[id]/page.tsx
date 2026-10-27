@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import US from "@/data/us-states.json";
-import { Choice, ContactFields, Multi, Num, Rating, Text, YesNo } from "@/components/Fields";
+import { Choice, ContactFields, Num, Rating, Text, YesNo } from "@/components/Fields";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import {
-  COACH_LABEL, HS_POSITIONS, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
+  COACH_LABEL, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
   type CoachRole, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -127,11 +127,6 @@ export default function PlayerPage() {
             ))}
           </div>
           <div className="lines"><div className="total"><span>Earned so far</span><span>{money(nilTotal(p))}</span></div></div>
-        </div>
-
-        <div className="card sec">
-          <YesNo label="Played another position?" value={p.playedOther ?? (p.otherPos.length ? true : null)} onChange={(playedOther) => set({ playedOther, ...(playedOther ? {} : { otherPos: [] }) })} />
-          {(p.playedOther ?? p.otherPos.length > 0) && <Multi label="Which position?" options={HS_POSITIONS} value={p.otherPos} onChange={(otherPos) => set({ otherPos })} />}
         </div>
 
         <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider}
