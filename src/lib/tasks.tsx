@@ -250,6 +250,8 @@ export interface Todo {
   later?: boolean;
   task?: TaskDef;
   athleteId?: string;
+  /** Id of a to-do added by hand. */
+  mine?: string;
 }
 
 /** A state is "started" once any of its steps is done or the agent has an athlete there. */
@@ -273,6 +275,8 @@ export function todos(s: AppState): Todo[] {
     if (applied(code, s.done) && !s.done[approvalId(code)])
       out.push({ key: `wait_${code}`, title: `Waiting for ${RULES[code].name} to approve your license`, where: RULES[code].name, due: null, wait: code });
   }
+  for (const m of s.myTodos ?? [])
+    if (!m.done) out.push({ key: `my_${m.id}`, title: m.title, where: "Your to-do", due: m.due ? new Date(`${m.due}T00:00:00`) : null, mine: m.id });
   for (const a of s.athletes)
     for (const t of athleteTasks(a, s.profile)) {
       if (a.done[t.id] || (t.needs ?? []).some((n) => !a.done[n])) continue;

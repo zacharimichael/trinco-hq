@@ -60,6 +60,9 @@ export interface Deal {
   status: "Paid" | "Pending";
 }
 
+/** A to-do added by hand on the To-do page. due is a YYYY-MM-DD date. */
+export interface MyTodo { id: string; title: string; due: string | null; done: boolean }
+
 export interface Me {
   memberId: string;
   /**
@@ -95,4 +98,6 @@ export interface AppState {
   scouting: Scouting;
   /** When each state approved the license (ISO date), for renewal reminders. */
   licensedOn?: Record<string, string>;
+  /** To-dos added by hand. */
+  myTodos?: MyTodo[];
 }

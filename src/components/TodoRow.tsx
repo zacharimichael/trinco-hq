@@ -36,7 +36,11 @@ export function TodoRow({ t }: { t: Todo }) {
           {t.wait && <> · <button className="linkbtn" onClick={() => update((d) => { d.done[approvalId(t.wait!)] = true; d.licensedOn = { ...d.licensedOn, [t.wait!]: new Date().toISOString() }; })}>Demo: approve it</button></>}
         </small>
       </span>
-      {t.wait ? <span className="waitchip">● Waiting</span>
+      {t.mine ? (<>
+        <button className="btn" data-todo={t.key} onClick={() => update((d) => { const m = d.myTodos?.find((x) => x.id === t.mine); if (m) m.done = true; })}>✓ Done</button>
+        <button className="linkbtn" aria-label={`Delete ${t.title}`} onClick={() => update((d) => { d.myTodos = (d.myTodos ?? []).filter((x) => x.id !== t.mine); })}>✕</button>
+      </>)
+        : t.wait ? <span className="waitchip">● Waiting</span>
         : t.later ? <span className="muted" style={{ fontSize: 14, whiteSpace: "nowrap" }}>{dueText(t.due)}</span>
         : <button className="btn" data-todo={t.key} onClick={start}>Start</button>}
     </div>
