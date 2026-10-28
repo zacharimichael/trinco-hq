@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Choice, ContactFields, Text } from "@/components/Fields";
 import type { Division, School } from "@/data/schools";
-import { COACH_LABEL, customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, type CoachRole, type Player, type Pos } from "@/lib/players";
+import { COACH_LABEL, customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 
@@ -46,7 +46,7 @@ export default function DepthPage() {
     <section className="view">
       <div>
         <h1>Depth charts</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS and FCS school. LS, K, P and K+P.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS and FCS school. LS, K and P.</p>
       </div>
 
       <div className="tiles">
@@ -123,7 +123,7 @@ function Leaderboard({ players: rows, school }: { players: Player[]; school: (id
 
 /** Every conference's specialists side by side, by position. */
 function ByConference({ confs, players, pos, school }: { confs: string[]; players: Player[]; pos: Pos | "All"; school: (id: string) => School | undefined }) {
-  const shown = pos === "All" ? POSITIONS : [pos];
+  const shown = pos === "All" ? positionsFor(players) : [pos];
   const groups = confs.map((c) => ({ c, ps: players.filter((p) => school(p.school)?.conference === c) })).filter((g) => g.ps.length);
   if (!groups.length) return <p className="muted">Nobody here yet.</p>;
   return (
@@ -223,7 +223,7 @@ function SchoolDepth({ s, ps, pos }: { s: School; ps: Player[]; pos: Pos | "All"
   const { canEdit, addPlayer, staffOf, setStaff } = useScouting();
   const [editing, setEditing] = useState(false);
   const staff = staffOf(s.id);
-  const shown = pos === "All" ? POSITIONS : [pos];
+  const shown = pos === "All" ? positionsFor(ps) : [pos];
 
   return (
     <div className="sec" style={{ marginTop: 14 }}>
