@@ -74,6 +74,7 @@ export default function PlayersPage() {
                       {p.client && <span className="chip mine">My athlete</span>}
                       {p.allAmerican && <span className="chip">All-American</span>}
                       {p.allConference && <span className="chip">All-Conf</span>}
+                      {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
                     </div></td>
                   <td>{POS_SHORT[p.pos]}</td>
                   <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.conference, yearShort(p.year), p.depth].filter(Boolean).join(" · ")}</small></td>

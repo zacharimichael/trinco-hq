@@ -25,9 +25,13 @@ The site is private: everything needs sign-in, and only emails listed in Supabas
 | `src/data/schools.ts` | Every FBS and FCS school for 2026 with conference and state. Edit here when schools move; schools can also be added in the app. |
 | `src/lib/players.ts` | Player profiles (LS, K, P, K+P), school coaching contacts, NIL years. Saved in the firm's data (owner edits). |
 | `src/app/players`, `src/app/compare`, `src/app/depth` | Player list and profiles, side-by-side comparison, and depth charts with top earners, All-Americans, All-Conference, starters and backups. |
+| `src/app/calendar`, `src/app/calls` | Calendar (events, dated calls and to-dos) and the call list. Saved with your own data, like to-dos. |
+| `src/components/LogCall.tsx`, `src/lib/intake.ts`, `src/app/api/notes/route.ts` | "Log a call" on each player: the note goes to Claude, which suggests where each fact belongs (profiles, NIL, depth chart, coaches, call list, calendar, notes). You tick what's right and it saves. Needs `ANTHROPIC_API_KEY` in Vercel. |
 | `supabase/migrations/` | Database schema with row-level security for the real backend. |
 
 ## Still to connect
+
+- **AI call notes:** add `ANTHROPIC_API_KEY` in Vercel → Settings → Environment Variables, then redeploy. Without it, notes still save to the call log.
 
 - **Film uploads:** run `supabase/migrations/0002_film.sql` once so phone videos save to private storage. In demo mode they last until refresh.
 

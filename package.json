@@ -12,11 +12,13 @@
     "check-states": "node scripts/check-states.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@supabase/supabase-js": "^2.117.1",
     "next": "^15.5.28",
     "pdf-lib": "^1.17.1",
     "react": "^19.1.10",
-    "react-dom": "^19.1.10"
+    "react-dom": "^19.1.10",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

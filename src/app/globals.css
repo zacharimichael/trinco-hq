@@ -270,3 +270,26 @@ details.more>ul{margin-top:10px}
 #state-proof .lines span:last-child{text-align:right}
 .tiles.two{grid-template-columns:1fr 1fr}
 .tiles.two .big{font-size:22px}
+
+/* AI call notes: what the AI found, one tick per item. */
+.found{display:flex;flex-direction:column;gap:8px}
+.foundrow{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--bg);cursor:pointer}
+.foundrow input{width:24px;height:24px;margin:0;accent-color:var(--go);flex:none;cursor:pointer}
+.foundrow small{display:block;color:var(--muted);font-size:14px}
+.foundrow .okmark{width:24px;text-align:center;color:var(--go);font-weight:800;flex:none}
+.foundrow.on{cursor:default}
+.chip.move{background:var(--wip-soft)}
+textarea{font:inherit;color:var(--ink)}
+
+/* Calendar: a month of days; tap one to see it. */
+.calhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.calgrid .wd{font-size:12px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
+.calday{border:2px solid transparent;background:var(--bg);border-radius:10px;min-height:64px;padding:6px;text-align:left;display:flex;flex-direction:column;gap:3px;min-width:0}
+.calday.out{opacity:.4}
+.calday.today .n{background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:0 7px}
+.calday[aria-pressed="true"]{border-color:var(--accent)}
+.calday .n{font-weight:700;font-size:14px;align-self:flex-start}
+.calday .it{font-size:12px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:6px;padding:1px 5px;background:var(--go-soft)}
+.calday .it.call{background:var(--wip-soft)}
+@media (max-width:600px){.calday{min-height:48px;padding:4px}.calday .it{font-size:0;height:6px;padding:0;width:6px;border-radius:999px;background:var(--go)}.calday .it.call{background:var(--wip)}}

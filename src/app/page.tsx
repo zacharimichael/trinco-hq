@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AddTodo } from "@/components/AddTodo";
 import { TodoRow } from "@/components/TodoRow";
 import { dealMoney } from "@/lib/agency";
+import { dayItems, shortDay, timeText, ymd } from "@/lib/calendar";
 import { fmt, myStates, RULES, status, TRACKED } from "@/lib/rules";
 import { POS_SHORT, POSITIONS, money } from "@/lib/players";
 import { todos } from "@/lib/tasks";
@@ -35,6 +36,10 @@ export default function AgencyHome() {
 
   const players = state.scouting.players;
   const lastCall = players.flatMap((p) => p.talks.map((t) => ({ ...t, player: p }))).sort((a, b) => b.date.localeCompare(a.date))[0];
+
+  const today = ymd(new Date());
+  const callsDue = (state.calls ?? []).filter((c) => !c.done && (!c.due || c.due <= today));
+  const comingUp = dayItems(state).filter((i) => i.kind === "event" && i.date >= today).slice(0, 2);
 
   const { earned, coming } = dealMoney(state);
   const athletes = state.athletes.length + state.team.reduce((n, t) => n + t.athletes.length, 0);
@@ -75,9 +80,21 @@ export default function AgencyHome() {
             <span className="pill ath"><b>{players.filter((x) => x.client).length}</b> Signed</span>
           </div>
           <p className="muted" style={{ margin: 0 }}>
-            {lastCall ? <>Last call: {lastCall.player.name || "a player"}, {fmt(`${lastCall.date}T00:00:00`)}</> : "No calls logged yet."}
+            {lastCall ? <>Last call: {lastCall.player.name || "a player"}, {fmt(lastCall.date)}</> : "No calls logged yet."}
           </p>
           <span className="go-on">Open scouting →</span>
+        </Link>
+
+        <Link href="/calls" className="card sec area" id="area-calls">
+          <h2>Calls &amp; calendar</h2>
+          <div className="summary">
+            <span className={`pill ${callsDue.some((c) => c.due && c.due <= today) ? "stop" : "ath"}`}><b>{callsDue.length}</b> {callsDue.length === 1 ? "call" : "calls"} to make</span>
+            <span className="pill ath"><b>{(state.calls ?? []).filter((c) => !c.done).length}</b> on the list</span>
+          </div>
+          <p className="muted" style={{ margin: 0 }}>
+            {comingUp.length ? comingUp.map((i) => <span key={i.key}>{shortDay(i.date)}{i.time ? ` ${timeText(i.time)}` : ""}: {i.title}<br /></span>) : "Nothing on the calendar."}
+          </p>
+          <span className="go-on">Open call list →</span>
         </Link>
 
         {owner && (
