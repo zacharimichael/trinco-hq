@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTaskRunner } from "@/components/TaskRunner";
+import { dealMoney } from "@/lib/agency";
 import { STAGES, type TeamMember } from "@/lib/model";
 import { DAY, dueText, myStates, RULES, startOfToday, status } from "@/lib/rules";
 import { todos } from "@/lib/tasks";
@@ -18,7 +19,7 @@ export default function HqPage() {
   const run = useTaskRunner();
   const { agency } = state;
   if (live && state.me?.role === "agent")
-    return <section className="view"><h1>HQ</h1><p className="muted">Only the agency owner can see HQ.</p></section>;
+    return <section className="view"><h1>Agents &amp; deals</h1><p className="muted">Only the agency owner can see this.</p></section>;
 
   const me: TeamMember = {
     id: "me", name: "You", email: state.profile.email, stage: 3, split: 100, done: state.done,
@@ -32,13 +33,7 @@ export default function HqPage() {
 
   const active = team.filter((t) => t.stage === 3).length;
   const athletes = team.flatMap((t) => t.athletes.map((a) => ({ ...a, agent: t.name })));
-  const split = (agent: string) => (agent === "You" ? 0 : state.team.find((t) => t.name === agent)?.split ?? agency.split);
-  const cut = (d: (typeof state.deals)[number]) => (d.amount * d.fee) / 100;
-  const house = (d: (typeof state.deals)[number]) => (cut(d) * (100 - split(d.agent))) / 100;
-  const paid = state.deals.filter((d) => d.status === "Paid");
-  const earned = paid.reduce((s, d) => s + house(d), 0);
-  const toAgents = paid.reduce((s, d) => s + cut(d) - house(d), 0);
-  const coming = state.deals.filter((d) => d.status !== "Paid").reduce((s, d) => s + house(d), 0);
+  const { cut, house, earned, toAgents, coming } = dealMoney(state);
 
   const today = startOfToday();
   const attention: string[] = [];
@@ -96,7 +91,7 @@ export default function HqPage() {
 
   return (
     <section className="view">
-      <div><h1>HQ</h1><p className="muted" style={{ margin: "6px 0 0" }}>{agency.name} · everything about your agency in one place.</p></div>
+      <div><h1>Agents &amp; deals</h1><p className="muted" style={{ margin: "6px 0 0" }}>Onboard agents, see their licenses, athletes and commissions.</p></div>
 
       <div className="tiles">
         <div className="tile2"><span className="big">{active}</span>Active agents</div>

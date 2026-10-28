@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-states.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync-states": "node scripts/sync-states.mjs"
+    "sync-states": "node scripts/sync-states.mjs",
+    "check-states": "node scripts/check-states.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.1",

@@ -32,6 +32,9 @@ header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-
 nav.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:4px;flex-wrap:wrap}
 nav.tabs .tablink{text-decoration:none;border:0;background:none;padding:8px 16px;border-radius:999px;font-weight:600;color:var(--muted)}
 nav.tabs .tablink[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+nav.subtabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:-8px 0 20px;overflow-x:auto}
+nav.subtabs a{text-decoration:none;color:var(--muted);font-weight:600;padding:8px 2px;border-bottom:3px solid transparent;white-space:nowrap}
+nav.subtabs a[aria-current="page"]{color:var(--ink);border-color:var(--accent)}
 .who{font-size:14px;color:var(--muted)}
 .view{display:flex;flex-direction:column;gap:20px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
@@ -250,3 +253,20 @@ details.fold>.sec{padding:0 20px 20px}
 .addtodo input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
 .addtodo input:first-child { flex: 1 1 220px; }
 .addtodo input[type="date"] { flex: 0 1 170px; }
+
+/* Agency home: each area is one big tappable card. */
+a.area{text-decoration:none;color:inherit;transition:border-color .12s}
+a.area:hover,a.area:focus-visible{border-color:var(--accent)}
+a.area .go-on{color:var(--accent);font-weight:700}
+.warnline{margin:0;padding:8px 12px;border-radius:10px;background:var(--stop-soft);font-weight:600}
+/* All states table and the "where this comes from" card. */
+.srcs{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;font-size:15px}
+.srcs a{color:var(--accent);word-break:break-word}
+tr.pickrow{cursor:pointer}
+tr.pickrow:hover td{background:var(--bg)}
+.gapchip{display:inline-block;font-size:13px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--wip-soft);white-space:nowrap}
+details.more>summary{cursor:pointer;font-weight:600;color:var(--accent)}
+details.more>ul{margin-top:10px}
+#state-proof .lines span:last-child{text-align:right}
+.tiles.two{grid-template-columns:1fr 1fr}
+.tiles.two .big{font-size:22px}
