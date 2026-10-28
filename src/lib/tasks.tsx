@@ -22,6 +22,8 @@ export interface TaskDef {
   needs?: string[];
   due?: Date | null;
   screens: () => Screen[];
+  /** Where to do this step for real (the state's form or page). The app only tracks it. */
+  link?: string;
   done: (d: FormData) => { msg: string; doc?: string; sendsTo?: string };
 }
 
@@ -47,26 +49,26 @@ function customLicenseTasks(p: Profile): Record<string, TaskDef> {
           <h4>Application for Licensure as an Athlete Agent (DBPR AA-4101)</h4>
           <p><b>Applicant:</b> {str(d.name)}<br /><b>Date of birth:</b> {str(d.dob)}<br /><b>Address:</b> {str(d.address)}<br />
             <b>Email:</b> {str(d.email)} · <b>Phone:</b> {str(d.phone)}<br /><b>Criminal convictions:</b> {str(d.crime)}</p>
-          <p>We fill in the official state form for you.</p></>) },
+          <p>Fill in the official state form with these details.</p></>) },
         sign("your Florida application"),
       ],
-      done: () => ({ msg: "Application signed.", doc: "Florida application AA-4101" }),
+      done: () => ({ msg: "Marked as signed.", doc: "Florida application AA-4101" }),
     },
     fl_prints: {
       id: "fl_prints", title: "Book your fingerprint appointment", cta: "Book",
       screens: () => [{ type: "pick", title: "Pick a time near you", note: "Fingerprints are taken in person. Bring a photo ID.",
         options: ["Thu, 10:00 AM · IdentoGO, Boston (1.2 mi)", "Fri, 2:30 PM · IdentoGO, Boston (1.2 mi)", "Mon, 9:00 AM · Fieldprint, Cambridge (3.4 mi)"] }],
-      done: (d) => ({ msg: `Booked: ${str(d.pick)}. We'll remind you the day before.`, doc: "Fingerprint appointment" }),
+      done: (d) => ({ msg: `Marked as booked: ${str(d.pick)}.`, doc: "Fingerprint appointment" }),
     },
     fl_fee: {
       id: "fl_fee", title: "Pay the Florida fee", cta: "Pay $630",
       screens: () => [{ type: "pay", title: "Pay $630", lines: [["Application fee", 250], ["License fee", 375], ["Unlicensed activity fee", 5]] }],
-      done: () => ({ msg: "Paid $630. Receipt saved.", doc: "Receipt: Florida fees $630" }),
+      done: () => ({ msg: "Marked as paid ($630).", doc: "Receipt: Florida fees $630" }),
     },
     fl_submit: {
       id: "fl_submit", title: "Send your application to Florida", cta: "Send", needs: ["fl_app", "fl_prints", "fl_fee"],
       screens: () => [{ type: "confirm", title: "Ready to send", items: ["Application, signed", "Fingerprint appointment, booked", "Fees, paid"] }],
-      done: () => ({ msg: "Sent to Florida. We'll tell you the moment it's approved.", doc: "Florida submission confirmation" }),
+      done: () => ({ msg: "Marked as sent to Florida. When Florida approves you, mark it approved.", doc: "Florida submission confirmation" }),
     },
     fl_temp: {
       id: "fl_temp", title: "Ask for a 60-day temporary license", cta: "Sign & send", optional: true,
@@ -75,7 +77,7 @@ function customLicenseTasks(p: Profile): Record<string, TaskDef> {
           <p>I, {p.name}, of {p.address}, request a temporary athlete agent license while my application is pending.</p></>) },
         sign("the temporary license request"),
       ],
-      done: () => ({ msg: "Request sent to Florida.", doc: "Temporary license request" }),
+      done: () => ({ msg: "Marked as sent to Florida.", doc: "Temporary license request" }),
     },
     ma_school: {
       id: "ma_school", title: "Register with your schools", cta: "Pick & sign",
@@ -86,7 +88,7 @@ function customLicenseTasks(p: Profile): Record<string, TaskDef> {
           <p><b>Sent to the compliance office at:</b> {str(d.multi)}</p></>) },
         sign("your school registrations"),
       ],
-      done: (d) => { const n = (d.multi as string[] | undefined)?.length ?? 0; return { msg: `Sent to ${n} school${n === 1 ? "" : "s"}.`, doc: "School agent registrations" }; },
+      done: (d) => { const n = (d.multi as string[] | undefined)?.length ?? 0; return { msg: `Marked as sent to ${n} school${n === 1 ? "" : "s"}.`, doc: "School agent registrations" }; },
     },
   };
 }
@@ -105,7 +107,7 @@ function genericLicenseTask(R: StateRules, st: Step, p: Profile): TaskDef | null
     const prior = (section(R.state, "get_licensed")?.steps ?? []).filter((x) => x.id !== st.id && !["info", "rule", "optional"].includes(x.type));
     return { ...base, cta: "Send", needs: prior.map((x) => x.id),
       screens: () => [{ type: "confirm", title: "Ready to send", items: prior.map((x) => x.text) }],
-      done: () => ({ msg: `Sent to ${R.name}. We'll tell you the moment it's approved.`, doc: `${R.name} submission confirmation` }) };
+      done: () => ({ msg: `Marked as sent to ${R.name}. When ${R.name} approves you, mark it approved.`, doc: `${R.name} submission confirmation` }) };
   }
   switch (st.type) {
     case "form":
@@ -123,22 +125,22 @@ function genericLicenseTask(R: StateRules, st: Step, p: Profile): TaskDef | null
             <h4>{R.name}: {what}</h4>
             <p><b>Applicant:</b> {str(d.name)}<br /><b>Date of birth:</b> {str(d.dob)}<br /><b>Address:</b> {str(d.address)}<br />
               <b>Email:</b> {str(d.email)} · <b>Phone:</b> {str(d.phone)}<br /><b>Criminal convictions:</b> {str(d.crime)}</p>
-            <p>We fill in the official state form for you.</p></>) },
+            <p>Fill in the official state form with these details.</p></>) },
           sign(`your ${R.name} ${st.form ? "form" : "application"}`),
         ],
-        done: () => ({ msg: "Signed.", doc: `${R.name}: ${what}` }) };
+        done: () => ({ msg: "Marked as signed.", doc: `${R.name}: ${what}` }) };
     case "payment": {
       const amt = st.amount_usd ?? 0;
       return { ...base, cta: amt ? `Pay ${money(amt)}` : "Pay",
         screens: () => [{ type: "pay", title: amt ? `Pay ${money(amt)}` : "Pay the fee", lines: [[`${R.name} fee`, amt]] }],
-        done: () => ({ msg: `Paid ${money(amt)}. Receipt saved.`, doc: `Receipt: ${R.name} fees ${money(amt)}` }) };
+        done: () => ({ msg: `Marked as paid (${money(amt)}).`, doc: `Receipt: ${R.name} fees ${money(amt)}` }) };
     }
     case "notice":
     case "contract":
     case "optional":
       return { ...base, cta: "Sign & send", optional: st.type === "optional",
         screens: () => [review(`${R.name}: ${what}`, <>{contact}{st.detail && <p>{st.detail}</p>}</>), sign(what.toLowerCase())],
-        done: () => ({ msg: "Signed and sent.", doc: `${R.name}: ${what}` }) };
+        done: () => ({ msg: "Marked as signed and sent.", doc: `${R.name}: ${what}` }) };
     case "info":
     case "rule":
       return null;
@@ -147,7 +149,7 @@ function genericLicenseTask(R: StateRules, st: Step, p: Profile): TaskDef | null
         return { ...base, cta: "Book",
           screens: () => [{ type: "pick", title: "Pick a time near you", note: "Fingerprints are taken in person. Bring a photo ID.",
             options: ["Thu, 10:00 AM · IdentoGO (1.2 mi)", "Fri, 2:30 PM · IdentoGO (1.2 mi)", "Mon, 9:00 AM · Fieldprint (3.4 mi)"] }],
-          done: (d) => ({ msg: `Booked: ${str(d.pick)}. We'll remind you the day before.`, doc: `Fingerprint appointment: ${R.name}` }) };
+          done: (d) => ({ msg: `Marked as booked: ${str(d.pick)}.`, doc: `Fingerprint appointment: ${R.name}` }) };
       if (/school/i.test(st.text))
         return { ...base, cta: "Fill & sign",
           screens: () => [
@@ -155,10 +157,10 @@ function genericLicenseTask(R: StateRules, st: Step, p: Profile): TaskDef | null
             { type: "doc", title: "Review", body: (d) => (<><h4>Agent Registration</h4>{contact}<p><b>Sent to the compliance office at:</b> {str(d.schools) || "—"}</p></>) },
             sign("your school registrations"),
           ],
-          done: () => ({ msg: "Sent to your schools.", doc: `School agent registrations: ${R.name}` }) };
+          done: () => ({ msg: "Marked as sent to your schools.", doc: `School agent registrations: ${R.name}` }) };
       return { ...base, cta: "Start",
         screens: () => [{ type: "confirm", title: st.text, items: [st.detail || st.text], button: "Done" }],
-        done: () => ({ msg: "Done.", doc: undefined }) };
+        done: () => ({ msg: "Marked done.", doc: undefined }) };
   }
 }
 
@@ -167,7 +169,7 @@ export function stateTasks(code: string, p: Profile): Record<string, TaskDef> {
   const R = RULES[code], custom = customLicenseTasks(p), out: Record<string, TaskDef> = {};
   for (const st of section(code, "get_licensed")?.steps ?? []) {
     const def = custom[st.id] ?? genericLicenseTask(R, st, p);
-    if (def) out[st.id] = def;
+    if (def) out[st.id] = { ...def, link: st.source };
   }
   return out;
 }
@@ -189,7 +191,7 @@ export function athleteTasks(a: Athlete, p: Profile): TaskDef[] {
   const notice = (st: Step, title: string, h: string, body: ReactNode, due?: Date | null, needs?: string[]): TaskDef => ({
     id: st.id, title, cta: "Sign & send", due, needs,
     screens: () => [{ type: "doc", title: "Review the notice", body: () => (<><h4>{h}</h4><p>To: {st.to ?? `Athletic Director, ${a.school}`}</p>{body}</>) }, sign("the notice")],
-    done: () => ({ msg: `Sent to ${st.to ?? `the athletic director at ${a.school}`}.`, doc: `${h}: ${a.name}` }),
+    done: () => ({ msg: `Marked as sent to ${st.to ?? `the athletic director at ${a.school}`}.`, doc: `${h}: ${a.name}` }),
   });
 
   const t: TaskDef[] = before.map((st) => notice(st,
@@ -216,7 +218,7 @@ export function athleteTasks(a: Athlete, p: Profile): TaskDef[] {
         <div className="warnbox">{contractWarning(a.state)}</div></>) },
       sign("the contract"),
     ],
-    done: () => ({ msg: `You signed. We emailed it to ${a.name} to sign. Both of you get a signed copy automatically.`, doc: `NIL contract: ${a.name}`, sendsTo: a.name }),
+    done: () => ({ msg: `You signed. Send it to ${a.name} to sign, then keep a copy.`, doc: `NIL contract: ${a.name}`, sendsTo: a.name }),
   });
   for (const st of after) {
     const h = hoursAfterSigning(st.due_rule)!;

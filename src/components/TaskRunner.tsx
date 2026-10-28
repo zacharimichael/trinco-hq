@@ -99,8 +99,10 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
       <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title" onClick={(e) => e.target === e.currentTarget && onClose()}>
         <div className="modal" style={{ alignItems: "center", textAlign: "center" }}>
           <div className="bigok">✓</div>
-          <h2 id="m-title">Done</h2>
+          <h2 id="m-title">Marked done</h2>
           <p style={{ margin: 0 }}>{result.msg}</p>
+          <p className="warnline" style={{ fontWeight: 500 }}>Nothing was filed, paid or sent. This only tracks your progress.
+            {def.link && <> <a href={def.link} target="_blank" rel="noreferrer">Do it on the official site ↗</a></>}</p>
           {state.docs.at(-1)?.pdf && <p className="muted" style={{ margin: 0, fontSize: 14 }}>Signed copy saved to Documents.</p>}
           <button className="btn" id="m-close" type="button" autoFocus onClick={onClose}>Back to my list</button>
         </div>
@@ -108,12 +110,13 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
     );
 
   const signReady = sc.type !== "sign" || (!!sig && agree);
-  const nextLabel = sc.type === "sign" ? "Sign" : !last ? "Next" : sc.type === "pay" ? `Pay $${total(sc.lines)}` : sc.type === "confirm" ? sc.button ?? "Send" : "Done";
+  const nextLabel = sc.type === "sign" ? "Sign" : !last ? "Next" : sc.type === "pay" ? `Mark as paid ($${total(sc.lines)})` : sc.type === "confirm" ? (sc.button ? `Mark as ${sc.button.toLowerCase()}` : "Mark as sent") : "Done";
 
   return (
     <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal">
         <div className="stepno">Step {i + 1} of {screens.length} · {def.title}</div>
+        <p className="muted" style={{ margin: 0, fontSize: 14 }}>Tracking only. This doesn&apos;t file, pay or send anything.{def.link && <> <a href={def.link} target="_blank" rel="noreferrer">Official site ↗</a></>}</p>
         <h2 id="m-title">{sc.title}</h2>
 
         {sc.type === "fields" && sc.fields.map((f) => (
@@ -152,8 +155,7 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
             {sc.lines.map(([l, a]) => <div key={l}><span>{l}</span><span>${a}</span></div>)}
             <div className="total"><span>Total</span><span>${total(sc.lines)}</span></div>
           </div>
-          <div className="field"><label htmlFor="f-card">Card number</label><input id="f-card" defaultValue="4242 4242 4242 4242" inputMode="numeric" /></div>
-          <p className="muted" style={{ margin: 0, fontSize: 14 }}>We pay the state for you and send the receipt to your documents.</p>
+          <p className="muted" style={{ margin: 0, fontSize: 14 }}>Pay the state on its own site, then mark it paid here.</p>
         </>)}
 
         {sc.type === "confirm" && (
