@@ -4,7 +4,7 @@
   "license_required": true,
   "regulator": {
     "name": "Wisconsin Department of Safety and Professional Services (DSPS)",
-    "phone": "608-266-2112",
+    "phone": "608-266-2112 or 877-617-1565",
     "website": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
   },
   "law": {
@@ -24,18 +24,19 @@
       "steps": [
         {
           "id": "wi_app",
-          "text": "Apply on LicensE",
-          "detail": "Also complete Form 2668.",
+          "text": "Fill out Form 2668 online",
+          "detail": "Athlete Agent Registration. If you are already registered in another state, use Form 3668 instead.",
           "type": "form",
           "form": "2668",
-          "source": "https://license.wi.gov/"
+          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
         },
         {
           "id": "wi_fee",
           "text": "Pay $38",
           "type": "payment",
           "amount_usd": 38,
-          "source": "https://dsps.wi.gov/credentialing/credential-fees-and-renewal-dates/"
+          "source": "https://dsps.wi.gov/Credentialing/Renewal/RenewalDatesFees.pdf",
+          "detail": "Pay with the application. DSPS lists the fee in its Renewal Dates and Fees sheet."
         },
         {
           "id": "wi_school",

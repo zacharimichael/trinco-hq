@@ -11,7 +11,7 @@ const NAMES = US as Record<string, { n: string }>;
 
 /** One state's licensing steps, shown next to the map. Start opens each step's guided flow. */
 export function StatePanel({ code, athletes = [], onClose }: { code: string; athletes?: { name: string; href?: string; school?: string }[]; onClose: () => void }) {
-  const { state } = useStore();
+  const { state, update } = useStore();
   const run = useTaskRunner();
   const R = RULES[code];
 
@@ -59,6 +59,7 @@ export function StatePanel({ code, athletes = [], onClose }: { code: string; ath
         <div className="card sec" key={se.id}>
           <h2>{se.title}</h2>
           {se.id === "get_licensed" ? (<>
+            <p className="warnline" style={{ fontWeight: 500 }}>The app tracks your steps. It doesn&apos;t file with the state. Do each step on the state&apos;s site, then mark it done here.</p>
             {se.steps.map((st) => {
               const def = tasks[st.id];
               if (!def)
@@ -69,8 +70,10 @@ export function StatePanel({ code, athletes = [], onClose }: { code: string; ath
               const blocked = (def.needs ?? []).some((n) => !state.done[n]);
               return (
                 <div className="todo" key={st.id}>
-                  <span className="grow"><b>{def.title}</b>{st.detail && <small>{st.detail}</small>}</span>
-                  {state.done[st.id] ? <span className="okchip">✓ Done</span>
+                  <span className="grow"><b>{def.title}</b>{st.detail && <small>{st.detail}</small>}
+                    {st.source && <small><a href={st.source} target="_blank" rel="noreferrer">Official site ↗</a></small>}</span>
+                  {state.done[st.id] ? <span className="okchip">✓ Done <button type="button" className="linkbtn" data-undo={st.id} aria-label={`Undo ${def.title}`}
+                      onClick={() => update((d) => { delete d.done[st.id]; })}>Undo</button></span>
                     : blocked ? <span className="muted" style={{ fontSize: 14 }}>After the steps above</span>
                     : <button className={`btn ${def.optional ? "ghost" : ""}`} data-ltask={st.id}
                         onClick={() => run(def, (d) => { d.done[st.id] = true; })}>{def.cta}</button>}
@@ -82,8 +85,8 @@ export function StatePanel({ code, athletes = [], onClose }: { code: string; ath
                 {state.done[approvalId(code)] ? <span className="okchip">✓ Approved</span> : <span className="waitchip">● Waiting</span>}</div>
             )}
           </>) : (<>
-            {se.id === "every_athlete" && <p className="muted" style={{ margin: 0 }}>We handle these for you each time you add an athlete.</p>}
-            {se.id === "renew" && se.steps.some((st) => st.type === "deadline") && <p className="muted" style={{ margin: 0 }}>We&apos;ll remind you and you&apos;ll renew right here.</p>}
+            {se.id === "every_athlete" && <p className="muted" style={{ margin: 0 }}>These go on your to-do list each time you add an athlete.</p>}
+            {se.id === "renew" && se.steps.some((st) => st.type === "deadline") && <p className="muted" style={{ margin: 0 }}>It shows on your to-do list before it&apos;s due.</p>}
             {se.steps.map((st) => (
               <div className="step" key={st.id}>
                 <span className={`mark ${st.type === "rule" || se.id === "stay_compliant" ? "rule" : "list"}`}>
