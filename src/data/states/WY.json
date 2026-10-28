@@ -6,12 +6,13 @@
   "law": {
     "type": "UAAA",
     "name": "Uniform Athlete Agents Act variant (W.S. 33-44), no registration",
-    "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+    "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers endorsement contracts (W.S. 33-44-102). It does not use the words name, image or likeness.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) both you and your athlete agent are required to tell your athletic director, if you have an athletic director, at least seventy-two (72) hours prior to entering into an agency contract and again within seventy-two (72) hours after entering into an agency contract; and (3) you may cancel this contract within fourteen (14) days after signing it. Cancellation of the contract may not reinstate your eligibility.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "No state license. Give each athlete a disclosure form the day you first contact them.",
+  "summary": "No state license. Give each athlete a disclosure form the day you first contact them. Tell the athletic director 72 hours before and after signing.",
   "sections": [
     {
       "id": "get_licensed",
@@ -22,14 +23,14 @@
           "text": "No state license needed",
           "detail": "Wyoming has no registration. You give a disclosure form to each athlete instead.",
           "type": "info",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-104/"
         },
         {
           "id": "wy_form",
           "text": "Fill out the athlete agent disclosure form once",
-          "detail": "Required contents are in W.S. 33-44-105.",
+          "detail": "Signed under penalty of perjury. Jobs, training, references, clients, owners and any legal history. You can use another state's recent application instead.",
           "type": "form",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-105/"
         },
         {
           "id": "wy_school",
@@ -45,38 +46,59 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "wy_pre72",
+          "text": "Tell the athletic director in writing at least 72 hours before signing",
+          "detail": "Give them a copy of your disclosure form too. The athlete must also tell the athletic director.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-108/"
+        },
+        {
           "id": "wy_contract",
-          "text": "Use a written contract with all required items",
+          "text": "Use a signed, written contract with all required items",
           "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-107/"
+        },
+        {
+          "id": "wy_attach",
+          "text": "Attach a copy of your disclosure form to the contract",
+          "type": "contract",
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-107/"
         },
         {
           "id": "wy_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete box next to their signature",
+          "detail": "It must be in bold capital letters. Use the state's wording.",
           "type": "contract",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-107/"
         },
         {
           "id": "wy_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-107/"
         },
         {
           "id": "wy_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director again within 72 hours after signing",
+          "detail": "Or before the athlete's next game, if that comes first. Include a copy of your disclosure form.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-108/"
+        },
+        {
+          "id": "wy_cancel",
+          "text": "Let the athlete cancel within 14 days of signing",
+          "detail": "They don't owe you anything if they cancel. They can't give up this right.",
+          "type": "info",
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-109/"
         },
         {
           "id": "wy_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-111/"
         }
       ]
     },
@@ -87,24 +109,24 @@
         {
           "id": "wy_deliver",
           "text": "Give each athlete the disclosure form on day one",
-          "detail": "If the athlete contacted you first, within 7 days. Without it the contract is void.",
+          "detail": "If the athlete contacted you first, within 7 days. You can't sign a contract until you give it, or the contract is void.",
           "type": "deadline",
           "due_rule": "first_contact_at",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-104/"
         },
         {
           "id": "wy_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, contracts and recruiting costs. A court can order you to hand them over.",
           "type": "recurring",
-          "source": "https://law.justia.com/codes/wyoming/2021/title-33/chapter-44/section-33-44-104/"
+          "source": "https://codes.findlaw.com/wy/title-33-professions-and-occupations/wy-st-sect-33-44-110/"
         },
         {
           "id": "wy_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give the athlete anything of value before they sign",
+          "detail": "Don't give anything to anyone else to get them to sign, except another registered agent. Never lie, make false promises or ask the athlete to give up their rights.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/wyoming/title-33/chapter-44/section-33-44-111/"
         }
       ]
     }
@@ -118,7 +140,7 @@
     }
   ],
   "review_notes": [
-    "W.S. 33-44-105 (form contents) and 33-44-108 (school notice) were not read directly. Confirm the notice timing.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The statute was read on Justia (2025 edition), and the records section on FindLaw (current as of Jan 1, 2024), not on wyoleg.gov. Confirm on wyoleg.gov.",
+    "A 2026 Wyoming law bars NIL pay for high school athletes in WHSAA sports. Its bill number and any effect on agents were not checked."
   ]
 }

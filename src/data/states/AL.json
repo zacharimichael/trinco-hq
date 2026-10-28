@@ -10,12 +10,12 @@
   "law": {
     "type": "RUAAA",
     "name": "Revised Uniform Athlete Agents Act (Ala. Code 8-26B)",
-    "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+    "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/"
   },
-  "covers_nil_agents": "Yes. Endorsement deals are part of the agency contract.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract covers endorsement deals, so NIL agents must register (Ala. Code 8-26B-2). Alabama's separate 2021 NIL law was repealed in 2022.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "Register with the Alabama Athlete Agents Commission. About $200, good for 2 years. The Commission approves applications at quarterly meetings.",
+  "summary": "Register with the Alabama Athlete Agents Commission. $200, good for 2 years. The Commission approves applications at quarterly meetings.",
   "sections": [
     {
       "id": "get_licensed",
@@ -31,10 +31,10 @@
         {
           "id": "al_fee",
           "text": "Pay $200",
-          "detail": "Registration fee set by Ala. Code 8-26B-9.",
+          "detail": "$200 for a new registration. It's $100 if you already hold another state's registration.",
           "type": "payment",
           "amount_usd": 200,
-          "source": "https://law.onecle.com/alabama/title-8/chapter-26b/index.html"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-9/"
         },
         {
           "id": "al_deadline",
@@ -59,44 +59,60 @@
       "steps": [
         {
           "id": "al_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This covers contact with a parent too. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-11/"
         },
         {
           "id": "al_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in Alabama and list other states where you're registered. Add your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-10/"
         },
         {
           "id": "al_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the Warning to Student Athlete box next to their signature",
           "type": "contract",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-10/",
+          "detail": "Use the exact words below, in bold capital letters."
         },
         {
           "id": "al_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs it if the athlete is a minor.",
           "type": "contract",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-10/"
         },
         {
           "id": "al_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the separate warning when they sign",
           "type": "task",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-10/"
         },
         {
           "id": "al_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, if that comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-11/"
+        },
+        {
+          "id": "al_cancel",
+          "text": "Let the athlete cancel within 14 days",
+          "detail": "They cancel by written notice. They owe you nothing and keep anything you gave them to sign.",
+          "type": "info",
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-12/"
+        },
+        {
+          "id": "al_enroll_notice",
+          "text": "Tell the new school within 72 hours if a client enrolls later",
+          "detail": "Count from when you knew or should have known they enrolled. If you recruited them before they enrolled and they get an athletic scholarship, tell the school within 10 days.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-11/",
+          "applies": "sometimes"
         },
         {
           "id": "al_sparta",
@@ -114,16 +130,16 @@
         {
           "id": "al_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract and what you spent recruiting each athlete. The Secretary of State may inspect them.",
           "type": "recurring",
-          "source": "https://www.sos.alabama.gov/sites/default/files/2016-415.PDF"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-13/"
         },
         {
           "id": "al_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "Don't give anything of value before they sign, or to anyone but the athlete or another registered agent. Never pre-date or post-date a contract.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-14/"
         }
       ]
     },
@@ -137,7 +153,8 @@
           "type": "deadline",
           "amount_usd": 100,
           "due_rule": "issued_at + 2y",
-          "source": "https://law.onecle.com/alabama/title-8/chapter-26b/index.html"
+          "source": "https://law.justia.com/codes/alabama/title-8/chapter-26b/article-1/section-8-26b-9/",
+          "detail": "A registration lasts 2 years. It's also $100 if you renew based on another state's renewal."
         }
       ]
     }
@@ -151,7 +168,8 @@
     }
   ],
   "review_notes": [
-    "The $200 and $100 fees come from a secondary summary and a cut-off view of Ala. Code 8-26B-9. Confirm with the Secretary of State.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "Statute text was read on Justia's 2025 Code of Alabama and the 2016 act on the Secretary of State site. No amendments since Act 2016-415 were found. Confirm on the official code at alison.legislature.state.al.us before launch.",
+    "Penalties (Ala. Code 8-26B-15 and 8-26B-17) were not reviewed."
+  ],
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport."
 }

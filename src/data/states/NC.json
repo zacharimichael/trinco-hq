@@ -10,12 +10,13 @@
   "law": {
     "type": "UAAA",
     "name": "Uniform Athlete Agents Act, amended for NIL in 2025 (G.S. 78C-85 and following)",
-    "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+    "source": "https://ncleg.gov/EnactedLegislation/Statutes/HTML/ByArticle/Chapter_78C/Article_9.html"
   },
-  "covers_nil_agents": "Yes. NIL contracts are agency contracts and need their own NIL warning.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. Since July 1, 2025, NIL agency contracts are agency contracts and need their own NIL warning (G.S. 78C-86, 78C-94).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $200, renewed every year.",
+  "contract_warning": "Warning to student-athlete. Entering into an NIL contract that conflicts with state law or your institution's policies may have negative consequences, such as loss of athletic eligibility. You may cancel this NIL agency contract within 14 days after signing it.",
   "sections": [
     {
       "id": "get_licensed",
@@ -42,6 +43,20 @@
           "detail": "Most schools have their own agent sign-up.",
           "type": "task",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+        },
+        {
+          "id": "nc_attorney",
+          "text": "Some North Carolina lawyers don't need to register",
+          "detail": "A lawyer licensed and living in NC can skip registering if they don't advertise for athletes and have no more than 2 athlete clients.",
+          "type": "info",
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-88.html"
+        },
+        {
+          "id": "nc_7day",
+          "text": "If an athlete contacts you first, apply within 7 days",
+          "detail": "You can act as their agent before you're registered, but you can't sign a contract until you are.",
+          "type": "info",
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-88.html"
         }
       ]
     },
@@ -52,29 +67,38 @@
         {
           "id": "nc_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, plus any other pay you get for the deal. Anyone not on your application who gets paid, expenses the athlete pays back, your services, how long it lasts and the date signed.",
           "type": "contract",
-          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-94.html"
         },
         {
           "id": "nc_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "For a pro sports contract, put the warning to student-athlete box next to the athlete's signature",
           "type": "contract",
-          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-94.html",
+          "detail": "Bold capital letters, word for word from G.S. 78C-94(c). It is different from the NIL warning."
         },
         {
           "id": "nc_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-94.html"
         },
         {
           "id": "nc_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "For a pro sports contract, notify the athletic director within 72 hours of signing",
+          "detail": "Do it in writing, or before the athlete's next scheduled game if that comes first. NC law doesn't require this notice for NIL contracts.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-95.html",
+          "applies": "pro"
+        },
+        {
+          "id": "nc_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They owe you nothing and keep anything you gave them. This right can't be waived.",
+          "type": "info",
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-96.html"
         },
         {
           "id": "nc_sparta",
@@ -85,9 +109,10 @@
         },
         {
           "id": "nc_nil_warning",
-          "text": "Add the separate NIL warning to NIL contracts",
+          "text": "For an NIL contract, put the NIL warning box next to the athlete's signature",
           "type": "contract",
-          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-94.html",
+          "detail": "Bold capital letters. Use the exact words from G.S. 78C-94(c1)."
         }
       ]
     },
@@ -98,16 +123,23 @@
         {
           "id": "nc_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, every contract and your recruiting costs. The state can inspect them during business hours.",
           "type": "recurring",
-          "source": "https://www.sosnc.gov/manual/Athlete_Agents/Title"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-97.html"
+        },
+        {
+          "id": "nc_school_bar",
+          "text": "Don't sign an NIL client at a school you worked for in the last 2 years",
+          "detail": "This covers jobs and contracts with the school. If a client later enrolls there, the NIL contract is void.",
+          "type": "rule",
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-98.html"
         },
         {
           "id": "nc_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or gifts to get an athlete to sign",
+          "detail": "Don't give anything of value before they sign, or to anyone but the athlete or another registered agent. This is a Class I felony.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-98.html"
         }
       ]
     },
@@ -118,11 +150,11 @@
         {
           "id": "nc_renew",
           "text": "Renew every year and pay $200",
-          "detail": "If it lapses you can't act as an agent until the renewal is approved.",
+          "detail": "Your registration lasts 1 year (G.S. 78C-90). If it lapses you can't act as an agent until the renewal is approved.",
           "type": "deadline",
           "amount_usd": 200,
           "due_rule": "issued_at + 1y",
-          "source": "https://sosnc.gov/webfiles/documents/forms/athlete_agents/Application_for_Renewal_as_an_Athlete_Agent.pdf"
+          "source": "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_78C/GS_78C-93.html"
         }
       ]
     }
@@ -136,7 +168,8 @@
     }
   ],
   "review_notes": [
-    "The 2025 NIL amendment also bars school-connected agents for 2 years and exempts some in-state attorneys. Review the exact NIL warning text.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Pro sports contracts need a different warning, in G.S. 78C-94(c). Only the NIL warning is stored in contract_warning.",
+    "The list of prohibited acts in G.S. 78C-98(b) still says agents must warn athletes that signing makes them ineligible. It is unclear how that applies to NIL-only contracts. Confirm with the Secretary of State.",
+    "The application steps don't say where to send the form. Confirm the mailing address at https://sosnc.gov/divisions/athlete_agents/registration_requirements."
   ]
 }

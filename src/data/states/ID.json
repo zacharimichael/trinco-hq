@@ -6,12 +6,13 @@
   "law": {
     "type": "RUAAA",
     "name": "Revised Uniform Athlete Agents Act (Idaho Code 54-48) without registration sections",
-    "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+    "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers agents for endorsement deals (Idaho Code 54-4802). Idaho has no separate NIL agent law.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "No state license, but the act's contract and school-notice rules apply.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -22,7 +23,7 @@
           "text": "No state license needed",
           "detail": "Idaho's act has no registration. The contract and notice rules still apply.",
           "type": "info",
-          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4810"
         },
         {
           "id": "id_school",
@@ -40,50 +41,73 @@
         {
           "id": "id_pre_notice",
           "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "detail": "Send it in writing. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
           "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
         },
         {
           "id": "id_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, any other pay you get for the deal, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4810"
         },
         {
           "id": "id_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete in bold in the contract",
           "type": "contract",
-          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4810",
+          "detail": "Use the exact wording Idaho gives. If the athlete is a minor, change it to speak to the parent."
         },
         {
           "id": "id_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. If the athlete is a minor, the parent or guardian signs it instead.",
           "type": "contract",
-          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4810"
         },
         {
           "id": "id_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4810",
+          "detail": "Give them the contract and the signed eligibility warning."
         },
         {
           "id": "id_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
           "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
         },
         {
+          "id": "id_minor",
+          "text": "Have a parent or guardian sign if the athlete is a minor",
+          "type": "contract",
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4810"
+        },
+        {
+          "id": "id_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They don't owe you anything and keep what you gave them.",
+          "type": "info",
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4812"
+        },
+        {
+          "id": "id_enroll",
+          "text": "If a signed athlete later enrolls at a school, tell its athletic director within 72 hours",
+          "detail": "The 72 hours start when you learn they enrolled.",
+          "type": "notice",
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811",
+          "applies": "sometimes"
+        },
+        {
           "id": "id_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Idaho law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4814"
         }
       ]
     },
@@ -94,16 +118,16 @@
         {
           "id": "id_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent to recruit each athlete.",
           "type": "recurring",
-          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4811"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4813"
         },
         {
           "id": "id_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "No false promises. No gifts or money to the athlete before signing, or to anyone else to get them. Breaking this is a misdemeanor in Idaho.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title54/T54CH48/SECT54-4814"
         }
       ]
     }
@@ -117,6 +141,6 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The warning text was read from Idaho Code 54-4810 through a summary tool. Compare it word for word with the official page before printing contracts."
   ]
 }

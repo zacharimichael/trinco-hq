@@ -10,12 +10,13 @@
   "law": {
     "type": "RUAAA",
     "name": "Athlete agent law (S.C. Code 59-102)",
-    "source": "http://www.scstatehouse.gov/code/t59c102.php"
+    "source": "https://www.scstatehouse.gov/code/t59c102.php"
   },
-  "covers_nil_agents": "Yes. An NIL contract is an agency contract. NIL fees are capped at 20%.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An NIL contract is an agency contract (S.C. Code 59-102-20). NIL fees are capped at 20%.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Get licensed by the Department of Consumer Affairs. $1,500, good for 2 years. Register before you contact any athlete.",
+  "contract_warning": "Warning to student athlete\nIf you sign this contract:\n(1) You may lose your eligibility to compete as a student athlete in your sport;\n(2) If you have an athletic director, within seventy-two hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and\n(3) You may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -39,9 +40,9 @@
         {
           "id": "sc_first",
           "text": "Don't contact athletes until you're registered",
-          "detail": "If an athlete contacts you first, register within 7 days.",
+          "detail": "If an athlete contacts you first, apply within 7 days. You still can't sign a contract until you're registered (59-102-40).",
           "type": "rule",
-          "source": "https://consumer.sc.gov/business-resourceslaws/business-education-tools/athlete-agent-law-faqs"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
         },
         {
           "id": "sc_school",
@@ -58,49 +59,66 @@
       "steps": [
         {
           "id": "sc_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This also applies before you have someone else contact them. If the athlete reached out first, tell the athletic director within 10 days (59-102-110).",
           "type": "notice",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
         },
         {
           "id": "sc_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in South Carolina and list your other states. Add your pay and how it's figured, anyone else being paid, expenses, services, length and date signed (59-102-100).",
           "type": "contract",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
         },
         {
           "id": "sc_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the state's warning in bold capital letters next to the athlete's signature",
           "type": "contract",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php",
+          "detail": "Use the exact words in the warning box (59-102-100)."
         },
         {
           "id": "sc_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs if the athlete is a minor (59-102-100).",
           "type": "contract",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
         },
         {
           "id": "sc_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
           "type": "task",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php",
+          "detail": "Do it at signing (59-102-100)."
         },
         {
           "id": "sc_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell them too (59-102-110).",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
+        },
+        {
+          "id": "sc_cancel",
+          "text": "Let the athlete cancel in writing within 14 days",
+          "detail": "They can't give up this right (59-102-120).",
+          "type": "info",
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
+        },
+        {
+          "id": "sc_enroll",
+          "text": "If you signed before the athlete enrolled, tell the new school's athletic director within 72 hours",
+          "detail": "The clock starts when you knew or should have known they enrolled (59-102-110).",
+          "type": "notice",
+          "source": "https://www.scstatehouse.gov/code/t59c102.php",
+          "applies": "sometimes"
         },
         {
           "id": "sc_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law (59-102-140) and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -114,21 +132,29 @@
           "id": "sc_cap",
           "text": "Charge no more than 20% on NIL deals",
           "type": "rule",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php",
+          "detail": "Your pay on an NIL contract can't be more than 20% of the deal. The cap was 10% before 2024 (59-102-100)."
         },
         {
           "id": "sc_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent recruiting each athlete (59-102-130).",
           "type": "recurring",
-          "source": "http://www.scstatehouse.gov/code/t59c102.php"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
         },
         {
           "id": "sc_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or anything of value to get an athlete to sign",
+          "detail": "Don't give anything of value to other people to get them to sign either. Federal law (SPARTA) has the same kind of rules (59-102-140).",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
+        },
+        {
+          "id": "sc_ce",
+          "text": "Complete 20 hours of athlete agent education every 2 years",
+          "detail": "The state can refuse to renew you if you don't (59-102-70).",
+          "type": "recurring",
+          "source": "https://www.scstatehouse.gov/code/t59c102.php"
         }
       ]
     },
@@ -157,8 +183,8 @@
     }
   ],
   "review_notes": [
-    "A secondary source says 20 hours of continuing education are required. SCDCA's pages don't mention it. Confirm.",
-    "SCDCA says out-of-state-based fees will rise under Act 35.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Continuing education: S.C. Code 59-102-70(C) lets SCDCA act if you skip 20 hours every 2 years, but SCDCA's pages don't say which courses count. Ask SCDCA at 803-734-4200.",
+    "South Carolina's code site has one page for the whole chapter, so each step names its section in parentheses.",
+    "Editor's notes say Act 35 (2021) applies to colleges only as the Attorney General certifies. Confirm with SCDCA that the NIL rules are in effect for your athlete's school."
   ]
 }

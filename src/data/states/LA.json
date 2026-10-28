@@ -12,10 +12,11 @@
     "name": "Louisiana athlete agent law, rewritten in 2026 (R.S. 4:420 and following)",
     "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254"
   },
-  "covers_nil_agents": "Yes. Paid NIL or endorsement advice is agent work, for high school and college athletes.",
+  "covers_nil_agents": "Yes. Paid NIL or endorsement advice is agent work, for high school and college athletes (R.S. 4:421).",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register online with the Attorney General. $1,000, plus a background check and NIL training. Good for 2 years.",
+  "contract_warning": "Notice to client. (a) This athlete agent is registered with the public protection division of the Department of Justice. Registration does not imply approval or endorsement by the division of the specific terms and conditions of this contract or the competence of the athlete agent. (b) When you sign this contract, you will likely immediately lose your eligibility to compete in intercollegiate athletics. Your agent (who is an athlete agent) must give written notice that you have entered into this contract to the athletic director and the head coach of your institution or school within seventy-two hours after entering into this contract or prior to participating in intercollegiate athletics, whichever comes first. Failure by the athlete agent to provide this notice is a criminal offense. (c) Do not sign this contract until you have read it or if it contains blank spaces. (d) If you decide that you do not wish to purchase the services of the athlete agent, you may rescind this contract by notifying the athlete agent in writing of your desire to rescind the contract not later than the sixteenth day after the date on which this contract is filed with the division. However, even if you rescind this contract, the federation or association of which your institution of higher education or school is a member may not restore your eligibility to participate in intercollegiate athletics. (e) If you believe you have been unlawfully induced into signing this contract, you can contact your athletic director or head coach who can assist you to have this contract declared void and unenforceable.",
   "sections": [
     {
       "id": "get_licensed",
@@ -31,15 +32,15 @@
         {
           "id": "la_fee",
           "text": "Pay $1,000",
-          "detail": "$500 if you're already registered in another state.",
+          "detail": "$500 if you're registered based on another state's certificate.",
           "type": "payment",
           "amount_usd": 1000,
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96879"
         },
         {
           "id": "la_bg",
           "text": "Finish the background check and NIL training",
-          "detail": "Run by Advance NIL after you pay. Usually 2 to 7 business days.",
+          "detail": "Run by Advance NIL after you pay. Usually 2 to 7 business days. You pay for the background check.",
           "type": "task",
           "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
         },
@@ -59,41 +60,68 @@
         {
           "id": "la_disclosure",
           "text": "Sign a written NIL disclosure with the athlete before you start",
-          "detail": "Your registration, fee, anyone else paid, expenses, services, length and date. Without it you lose your fee.",
+          "detail": "Say you're registered here and list other states. Add your fee and how it's figured, other pay you get, anyone else paid and how much, expenses, services, length and date. Without it you lose your fee.",
           "type": "contract",
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254"
         },
         {
           "id": "la_school_report",
-          "text": "Help the athlete report the deal to their school",
+          "text": "Make sure the athlete reports each NIL deal to their school",
           "type": "task",
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254",
+          "detail": "The law puts this on you, not just the athlete. Never take an NIL deal you should know would cost them their eligibility."
+        },
+        {
+          "id": "la_pro_notice_doc",
+          "text": "Pro contracts: attach the signed Notice to Client page",
+          "detail": "Use the exact wording Louisiana gives, on its own page signed by the athlete. Part (e) must be bold capital letters.",
+          "type": "contract",
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96881"
+        },
+        {
+          "id": "la_pro_fees",
+          "text": "Pro contracts: write your fees and percentages in the contract",
+          "detail": "Charge only what's on the fee schedule you filed. On a multiyear pro deal, never take more in a year than the athlete gets that year.",
+          "type": "contract",
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96881"
         },
         {
           "id": "la_pro_notice",
-          "text": "Pro contracts: tell the athletic director and coach 7 days before contact",
+          "text": "Pro contracts: tell the athletic director and head coach 7 days before contact",
           "type": "notice",
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96882",
+          "detail": "Only for pro agent contracts, not NIL deals. Until you do, you can't contact the athlete or send them your materials.",
+          "applies": "pro"
         },
         {
           "id": "la_pro_72h",
-          "text": "Pro contracts: notify them again within 72 hours of signing",
+          "text": "Pro contracts: tell them in writing within 72 hours of signing",
           "type": "deadline",
-          "due_rule": "signed_at + 72h",
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96882",
+          "detail": "Tell the athletic director and the head coach. Do it before the athlete's next practice or game if that comes first. If you skip it, the contract is void.",
+          "applies": "pro"
         },
         {
           "id": "la_file",
-          "text": "Pro contracts: send signed contracts to the Attorney General",
+          "text": "Pro contracts: file a copy with the state if it's the athlete's first pro deal",
           "type": "task",
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96881",
+          "detail": "File it with the Public Protection Division of the Department of Justice. For a full-time student at a Louisiana college, also file it with the athletic director or president."
+        },
+        {
+          "id": "la_pro_cancel",
+          "text": "Pro contracts: the athlete can cancel before day 16",
+          "detail": "The contract does not start until the 16th day after signing. If you skip the school notice, this clock waits until you give it.",
+          "type": "info",
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96881"
         },
         {
           "id": "la_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Louisiana voids post-dated contracts. Federal law (SPARTA) bans pre-dating or post-dating them.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96881"
         }
       ]
     },
@@ -104,16 +132,23 @@
         {
           "id": "la_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Expenses for each athlete, every notice to schools and their replies, and copies of all agent and NIL contracts. Breaking this is a misdemeanor.",
           "type": "recurring",
-          "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96885"
+        },
+        {
+          "id": "la_fee_sched",
+          "text": "Pro contracts: file your contract form and fee schedule with the state first",
+          "detail": "File them with the Public Protection Division. A fee change takes effect 7 days after you file it.",
+          "type": "task",
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96881"
         },
         {
           "id": "la_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give gifts or money to recruit athletes, pay school staff, or use go-betweens",
+          "detail": "Only you may contact the athlete. No unreasonable fees. Anything of value before signing voids the contract.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96882"
         }
       ]
     },
@@ -128,7 +163,7 @@
           "due_rule": "issued_at + 2y",
           "source": "https://legis.la.gov/Legis/Law.aspx?d=96879",
           "amount_usd": 1000,
-          "detail": "$1,000 ($500 if your registration is based on another state's)."
+          "detail": "$1,000. It's $500 if your registration is based on another state's certificate."
         }
       ]
     }
@@ -142,7 +177,9 @@
     }
   ],
   "review_notes": [
-    "No cancellation right was found in the 2026 act.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The contract_warning is Louisiana's Notice to Client for pro agent contracts (R.S. 4:423). It does not apply to NIL deals. Part (e) must print in bold capitals. It was read through a summary tool, so compare it word for word with the statute.",
+    "NIL deals have no cancellation window in the law. The Attorney General may add required statements and warnings for the NIL disclosure by rule (R.S. 4:423.1). Check the Attorney General's site for those rules.",
+    "The athlete's own NIL reporting deadline is in R.S. 17:3703. It was not read. Check it there.",
+    "The banned acts in R.S. 4:424(A)(1) to (5) and the penalties in R.S. 4:426 were not read in full."
   ]
 }

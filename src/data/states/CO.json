@@ -5,13 +5,13 @@
   "regulator": null,
   "law": {
     "type": "UAAA",
-    "name": "Uniform Athlete Agents Act (C.R.S. 23-16), registration repealed in 2010; NIL athlete advisors (23-16-301)",
-    "source": "https://colorado.public.law/statutes/crs_23-16-301"
+    "name": "Uniform Athlete Agents Act (C.R.S. 23-16-201 and following), registration repealed in 2010; agent contract rules (23-16-104); NIL law (23-16-301)",
+    "source": "https://colorado.public.law/statutes/crs_23-16-209"
   },
-  "covers_nil_agents": "Partly. NIL advisors aren't registered. Legal advice must come from a licensed attorney.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes for the contract and notice rules. An agency contract covers endorsement deals (C.R.S. 23-16-202). No state registration. Only a licensed attorney may give legal representation (23-16-301(4)).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "No state license. Follow the contract rules, and only attorneys may give legal advice.",
+  "summary": "No state license. Follow the contract, warning and school-notice rules, and only attorneys may give legal advice.",
   "sections": [
     {
       "id": "get_licensed",
@@ -20,9 +20,9 @@
         {
           "id": "co_none",
           "text": "No state license needed",
-          "detail": "Colorado repealed agent registration in 2010.",
+          "detail": "Colorado repealed agent registration in 2010. A 2019 bill to bring it back was vetoed.",
           "type": "info",
-          "source": "https://colorado.public.law/statutes/crs_23-16-301"
+          "source": "https://leg.colorado.gov/bills/SB19-099"
         },
         {
           "id": "co_school",
@@ -40,23 +40,46 @@
         {
           "id": "co_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length, date signed and every guarantee you make.",
           "type": "contract",
-          "source": "https://colorado.public.law/statutes/crs_23-16-301"
+          "source": "https://colorado.public.law/statutes/crs_23-16-209"
         },
         {
           "id": "co_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put both required warnings next to their signature",
           "type": "contract",
-          "source": "https://colorado.public.law/statutes/crs_23-16-301"
+          "source": "https://colorado.public.law/statutes/crs_23-16-104",
+          "detail": "The Warning to Student Athlete box in bold capitals, plus Colorado's second warning about blank spaces and guarantees. The exact words are below."
+        },
+        {
+          "id": "co_copy",
+          "text": "Give the athlete a copy when they sign",
+          "type": "task",
+          "source": "https://colorado.public.law/statutes/crs_23-16-209"
+        },
+        {
+          "id": "co_72h",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, if that comes first. This is your duty, on top of the athlete's.",
+          "type": "deadline",
+          "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://colorado.public.law/statutes/crs_23-16-210"
         },
         {
           "id": "co_disclose",
           "text": "Make sure the athlete tells the athletic director within 72 hours",
-          "detail": "Or before their next game, whichever comes first. This is the athlete's duty for paid NIL deals.",
+          "detail": "Or before their next game, if that comes first. The athlete must tell the athletic director about every paid NIL deal, following the school's process.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://colorado.public.law/statutes/crs_23-16-301"
+          "source": "https://colorado.public.law/statutes/crs_23-16-301",
+          "applies": "sometimes"
+        },
+        {
+          "id": "co_cancel",
+          "text": "Let the athlete cancel within 14 days",
+          "detail": "They cancel by written notice. They owe you nothing and keep anything you gave them to sign.",
+          "type": "info",
+          "source": "https://colorado.public.law/statutes/crs_23-16-211"
         },
         {
           "id": "co_sparta",
@@ -75,21 +98,22 @@
           "id": "co_attorney",
           "text": "Only a licensed attorney may give the athlete legal advice",
           "type": "rule",
-          "source": "https://colorado.public.law/statutes/crs_23-16-301"
+          "source": "https://colorado.public.law/statutes/crs_23-16-301",
+          "detail": "Anyone giving a college athlete legal representation must be a licensed attorney."
         },
         {
           "id": "co_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract and what you spent recruiting each athlete.",
           "type": "recurring",
-          "source": "https://colorado.public.law/statutes/crs_23-16-301"
+          "source": "https://colorado.public.law/statutes/crs_23-16-212"
         },
         {
           "id": "co_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "Don't give anything of value before they sign, or to anyone but the athlete or another agent. Never pre-date or post-date a contract.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://colorado.public.law/statutes/crs_23-16-213"
         }
       ]
     }
@@ -103,7 +127,9 @@
     }
   ],
   "review_notes": [
-    "C.R.S. 23-16-209 (agent contract form) was not read directly.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "Statute text was read on colorado.public.law (2024 C.R.S.), not the official Colorado code. Confirm on leg.colorado.gov before launch.",
+    "The repeal of registration (C.R.S. 23-16-204 to 23-16-208) was confirmed only from secondary sites and the 2019 veto. Confirm the 2010 repeal bill on leg.colorado.gov.",
+    "Part 1 (C.R.S. 23-16-104) applies to athletes at Colorado colleges. Confirm with a lawyer that its second warning applies to NIL-only contracts."
+  ],
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility. Also add this second warning (C.R.S. 23-16-104): Warning to student athlete: Do not sign this contract until you have read it or if it contains blank spaces. Do not sign this contract if it does not specify all of the guarantees made to you by the athlete agent. If you decide that you do not wish to purchase the services of the athlete agent, you may cancel this contract by notifying the athlete agent in writing of your desire to cancel the contract within fourteen days after the date on which you sign this contract."
 }

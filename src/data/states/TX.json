@@ -10,12 +10,13 @@
   "law": {
     "type": "own",
     "name": "Texas athlete agent law (Occupations Code ch. 2051)",
-    "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm"
+    "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm"
   },
-  "covers_nil_agents": "Yes. Educ. Code 51.9246 uses this act's agent definition for NIL.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Unclear. Educ. Code 51.9246 uses this act's agent definition for NIL, but the act is written for pro and financial services deals. Ask the Secretary of State if NIL-only agents must register.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State every year. $500 plus a $50,000 bond.",
+  "contract_warning": "This athlete agent is registered with the Secretary of State of the State of Texas. Registration with the Secretary of State does not imply approval or endorsement by the Secretary of State of the competence of the athlete agent or of the specific terms and conditions of this contract.\nDo not sign this contract until you have read it or if it contains blank spaces.\nIf you decide that you do not wish to purchase the services of the athlete agent, you may cancel this contract by notifying the athlete agent in writing of your desire to cancel the contract not later than the 16th day after the date on which you sign this contract. You may not waive the right to cancel this contract. If you cancel this contract within 16 days, you are not required to pay any consideration under the contract or return any consideration received.\nYou may lose your eligibility to compete as an athlete in your sport. Cancellation of this contract may not reinstate your eligibility.\nIf you have an athletic director, within 72 hours after entering into this contract both you and your athlete agent must notify your athletic director.",
   "sections": [
     {
       "id": "get_licensed",
@@ -34,7 +35,7 @@
           "text": "Get a $50,000 surety bond (Form 2504)",
           "type": "task",
           "form": "2504",
-          "source": "https://webservices.sos.state.tx.us/forms/2501-application-packet.pdf"
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.151"
         },
         {
           "id": "tx_fin",
@@ -55,7 +56,8 @@
           "text": "Pay $500",
           "type": "payment",
           "amount_usd": 500,
-          "source": "https://www.sos.state.tx.us/statdoc/faqs2500.shtml"
+          "source": "https://www.law.cornell.edu/regulations/texas/1-Tex-Admin-Code-SS-78-10",
+          "detail": "Fees aren't refunded unless the state denies you."
         },
         {
           "id": "tx_submit",
@@ -78,36 +80,61 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "tx_form",
+          "text": "Use a contract form approved by the Secretary of State",
+          "detail": "Copy the required notice into it without changes.",
+          "type": "contract",
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.201"
+        },
+        {
           "id": "tx_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your fees and how they're figured, other pay you get for the deal, services, anyone else being paid, expenses, length and date signed.",
           "type": "contract",
-          "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm"
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.203"
         },
         {
           "id": "tx_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the state's notice in the contract so it stands out",
           "type": "contract",
-          "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm"
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.204",
+          "detail": "Use at least 10-point type in bold, capitals or underline. Use the exact words in the warning box."
         },
         {
           "id": "tx_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm"
+          "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm",
+          "detail": "The Texas sections we read don't list this, but it's good practice."
         },
         {
           "id": "tx_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 16 days.",
+          "text": "Tell the athletic director within 72 hours of signing",
+          "detail": "The contract notice says you and the athlete both must. The athlete may cancel in writing within 16 days.",
           "type": "deadline",
-          "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm"
+          "due_rule": "signed_at + 72h",
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.204"
+        },
+        {
+          "id": "tx_ad_file",
+          "text": "Send the athletic director a copy of the contract within 10 days",
+          "detail": "Do this if the athlete is a college student.",
+          "type": "deadline",
+          "due_rule": "signed_at + 10d",
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.205"
+        },
+        {
+          "id": "tx_contact",
+          "text": "If an athlete or their family asks to meet, tell the athletic director before the meeting",
+          "detail": "You may mail info about yourself to an athlete only if you send the athletic director a copy at the same time.",
+          "type": "notice",
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.351",
+          "applies": "sometimes"
         },
         {
           "id": "tx_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law (Occ. Code 2051.351) and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -119,23 +146,31 @@
       "steps": [
         {
           "id": "tx_file_contracts",
-          "text": "File a copy of each athlete contract with the Secretary of State",
-          "type": "task",
-          "source": "https://www.sos.state.tx.us/statdoc/athlete-agents.shtml"
+          "text": "File a copy of each contract with the Secretary of State within 10 days of signing",
+          "type": "deadline",
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.205",
+          "detail": "If your fees change later, file the new version too.",
+          "due_rule": "signed_at + 10d"
         },
         {
           "id": "tx_records",
-          "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "text": "Keep client records",
+          "detail": "Names and addresses, fees paid, services, contracts, recruiting costs, and travel and entertainment spending. Give the state copies if it asks.",
           "type": "recurring",
-          "source": "http://www.statutes.legis.state.tx.us/Docs/OC/htm/OC.2051.htm"
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.352"
         },
         {
           "id": "tx_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give anything of value to an athlete or their family before their last college game",
+          "detail": "Also never lie, pay school staff for referrals, or contact athletes in ways the law doesn't allow.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.351"
+        },
+        {
+          "id": "tx_ads",
+          "text": "Put your name and address in all your ads",
+          "type": "rule",
+          "source": "https://statutes.capitol.texas.gov/Docs/OC/htm/OC.2051.htm#2051.353"
         }
       ]
     },
@@ -150,7 +185,8 @@
           "amount_usd": 500,
           "form": "2505",
           "due_rule": "issued_at + 1y",
-          "source": "https://webservices.sos.state.tx.us/forms/2505-renewal-packet.pdf"
+          "source": "https://webservices.sos.state.tx.us/forms/2505-renewal-packet.pdf",
+          "detail": "Registration lasts 1 year. You can renew up to 60 days before it ends."
         }
       ]
     }
@@ -164,7 +200,9 @@
     }
   ],
   "review_notes": [
-    "Texas contract, filing deadline and school-notice rules differ from the uniform act. The athlete has 16 days to cancel. Check Occ. Code 2051.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Texas law doesn't say how many years to keep records (Occ. Code 2051.352). Ask the Secretary of State Registrations Unit.",
+    "Statute text was read on texas.public.law (marked up to date May 26, 2025) because the official site wouldn't load. Check the 2051.204 notice wording on statutes.capitol.texas.gov before you print contracts.",
+    "The sections we read don't say you must give the athlete a copy of the contract. Confirm with the Secretary of State.",
+    "The phone number 512-475-0775 isn't on the Secretary of State pages we read. Confirm it."
   ]
 }

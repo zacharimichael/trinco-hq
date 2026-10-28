@@ -10,12 +10,13 @@
   "law": {
     "type": "UAAA",
     "name": "Maryland Uniform Athlete Agents Act (licensing)",
-    "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
+    "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-401&enactments=false"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts, and anyone who \"facilitates or encourages a connection\" counts.",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement contracts, so NIL deals are covered (Bus. Reg. 4-401). Anyone who connects an athlete with another agent also counts as an agent.",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Get a license from the Department of Labor. $25 to apply, then $1,000 when approved. Good for 2 years.",
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility.",
   "sections": [
     {
       "id": "get_licensed",
@@ -64,29 +65,44 @@
         {
           "id": "md_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, plus any other pay you get for the deal. Anyone not on your license application who gets paid, expenses the athlete pays back, your services, how long it lasts and the date signed.",
           "type": "contract",
-          "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-409&enactments=false"
         },
         {
           "id": "md_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student-athlete box next to the athlete's signature",
           "type": "contract",
-          "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-409&enactments=false",
+          "detail": "Bold capital letters. Use the exact words from Maryland law."
+        },
+        {
+          "id": "md_elig_warn",
+          "text": "Tell the athlete before they sign that it may cost them their eligibility",
+          "detail": "Skipping this is against the law.",
+          "type": "task",
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-413&enactments=false"
         },
         {
           "id": "md_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-409&enactments=false"
         },
         {
           "id": "md_72h",
           "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "detail": "Do it in writing, or before the athlete's next scheduled game if that comes first. The athlete must tell them too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-410&enactments=false"
+        },
+        {
+          "id": "md_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They owe you nothing and keep anything you gave them. This right can't be waived.",
+          "type": "info",
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-411&enactments=false"
         },
         {
           "id": "md_sparta",
@@ -104,16 +120,16 @@
         {
           "id": "md_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, every contract and your recruiting costs. The state can inspect them during business hours.",
           "type": "recurring",
-          "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-412&enactments=false"
         },
         {
           "id": "md_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or gifts to get an athlete to sign",
+          "detail": "Don't give anything of value to the athlete before they sign, or to anyone but the athlete or another licensed agent. Breaking these rules is a crime, with a fine up to $10,000 and up to 1 year in jail.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-413&enactments=false"
         }
       ]
     },
@@ -126,7 +142,7 @@
           "text": "Renew every 2 years",
           "type": "deadline",
           "due_rule": "issued_at + 2y",
-          "source": "https://labor.maryland.gov/license/sports/sportsrenew.shtml",
+          "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gbr&section=4-405&enactments=false",
           "amount_usd": 1000,
           "detail": "$1,000. The license runs 2 years from the day it was issued."
         }
@@ -142,6 +158,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The Labor Department site lists no phone number. Use its contact page at https://labor.maryland.gov/contactinfo/ to confirm how to reach the program.",
+    "The $25 application fee comes from the Labor Department site, not the statute. The statute sets only the $1,000 license and renewal fees (Bus. Reg. 4-405)."
   ]
 }

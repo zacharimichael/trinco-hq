@@ -9,11 +9,11 @@
   },
   "law": {
     "type": "UAAA",
-    "name": "Uniform Athlete Agents Act (NMSA 61-14F)",
-    "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-act/"
+    "name": "Uniform Athlete Agents Act (NMSA 1978, 61-14F-1 to 61-14F-19)",
+    "source": "https://www.sos.nm.gov/wp-content/uploads/2026/04/Chapter169.pdf"
   },
-  "covers_nil_agents": "Yes. Endorsement contracts are part of the agency contract.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement contracts (NMSA 61-14F-2). Schools can't stop athletes from hiring NIL representation (NMSA 21-31-4).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $250, good for 2 years.",
   "sections": [
@@ -30,7 +30,7 @@
         {
           "id": "nm_fee",
           "text": "Pay $250",
-          "detail": "$200 if based on another state's registration. Military and veterans may get a waiver.",
+          "detail": "$200 if you use another state's registration.",
           "type": "payment",
           "amount_usd": 250,
           "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-fees/"
@@ -53,34 +53,41 @@
           "text": "Use a written contract with all required items",
           "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-act/"
+          "source": "https://law.justia.com/codes/new-mexico/chapter-61/article-14f/section-61-14f-10/"
         },
         {
           "id": "nm_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to the student athlete in bold capital letters near their signature",
+          "detail": "Use the exact words the law gives.",
           "type": "contract",
-          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-act/"
+          "source": "https://law.justia.com/codes/new-mexico/chapter-61/article-14f/section-61-14f-10/"
+        },
+        {
+          "id": "nm_tell_risk",
+          "text": "Tell the athlete before they sign that signing may cost them eligibility",
+          "type": "task",
+          "source": "https://law.justia.com/codes/new-mexico/2021/chapter-61/article-14f/section-61-14f-14/"
         },
         {
           "id": "nm_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-act/"
+          "source": "https://law.justia.com/codes/new-mexico/chapter-61/article-14f/section-61-14f-10/"
         },
         {
           "id": "nm_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
           "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-act/"
+          "source": "https://law.justia.com/codes/new-mexico/2021/chapter-61/article-14f/section-61-14f-11/"
         },
         {
           "id": "nm_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/new-mexico/2021/chapter-61/article-14f/section-61-14f-14/"
         }
       ]
     },
@@ -91,16 +98,16 @@
         {
           "id": "nm_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of your athletes, every contract and what you spent to recruit each one. The Secretary of State can inspect them.",
           "type": "recurring",
-          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-act/"
+          "source": "https://www.sos.nm.gov/wp-content/uploads/2026/04/Chapter169.pdf"
         },
         {
           "id": "nm_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give an athlete anything of value before they sign, or make false promises",
+          "detail": "Also never give anything to anyone else to get an athlete to sign. Breaking these rules is a misdemeanor.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/new-mexico/2021/chapter-61/article-14f/section-61-14f-14/"
         }
       ]
     },
@@ -114,7 +121,8 @@
           "type": "deadline",
           "amount_usd": 250,
           "due_rule": "issued_at + 2y",
-          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-fees/"
+          "source": "https://www.sos.nm.gov/commercial-services/uniform-athletes-agents/uniform-athlete-agents-fees/",
+          "detail": "Your registration lasts 2 years. It's $200 if you renew using another state's renewal."
         }
       ]
     }
@@ -128,6 +136,9 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "The statute was read from Justia (2025 edition for 61-14F-10, 2021 edition for 61-14F-11 and 61-14F-14) and the 2009 act on the Secretary of State's site. History notes show no changes since 2009. Confirm the current text on nmonesource.com.",
+    "The Secretary of State's pages don't say how to send the application or give a phone number for athlete agents. Ask the Secretary of State (325 Don Gaspar, Suite 300, Santa Fe) how to file.",
+    "An earlier version said military members and veterans may get a fee waiver. That was not found in the athlete agent law or fee page. Confirm with the Secretary of State before telling agents."
+  ],
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within seventy-two hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within fourteen days after signing it. Cancellation of this contract may not reinstate your eligibility."
 }

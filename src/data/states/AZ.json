@@ -4,12 +4,12 @@
   "license_required": false,
   "regulator": null,
   "law": {
-    "type": "UAAA",
-    "name": "Uniform Athlete Agents Act (A.R.S. 15-1761 to 15-1775), registration repealed in 2017",
-    "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+    "type": "RUAAA",
+    "name": "Revised Uniform Athlete Agents Act (A.R.S. 15-1761 to 15-1775). Registration sections repealed in 2017 (Laws 2017, ch. 223).",
+    "source": "https://www.azleg.gov/ars/15/01761.htm"
   },
-  "covers_nil_agents": "Yes. A.R.S. 15-1892(E) says NIL agents must follow the athlete agent law.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. A.R.S. 15-1892(E) says anyone who advises or represents an athlete on NIL must follow the athlete agent law. There is still no state registration.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "No state license, but the athlete agent law's contract and school-notice rules still apply.",
   "sections": [
@@ -20,9 +20,9 @@
         {
           "id": "az_none",
           "text": "No state license needed",
-          "detail": "Arizona repealed agent registration in 2017. The contract and notice rules still apply.",
+          "detail": "Arizona repealed agent registration in 2017 (A.R.S. 15-1763 to 15-1769). The contract and notice rules still apply.",
           "type": "info",
-          "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+          "source": "https://legiscan.com/AZ/text/HB2026/2017"
         },
         {
           "id": "az_school",
@@ -38,31 +38,46 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "az_nil_disclose",
+          "text": "Make sure the athlete tells the school about an NIL deal before signing",
+          "detail": "Arizona law says the athlete can't sign an NIL contract before disclosing it to their school.",
+          "type": "task",
+          "source": "https://www.azleg.gov/ars/15/01892.htm"
+        },
+        {
           "id": "az_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+          "source": "https://www.azleg.gov/ars/15/01770.htm"
         },
         {
           "id": "az_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the Warning to Student Athlete box next to their signature",
           "type": "contract",
-          "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+          "source": "https://www.azleg.gov/ars/15/01770.htm",
+          "detail": "Use the exact words below, in bold capital letters."
         },
         {
           "id": "az_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+          "source": "https://www.azleg.gov/ars/15/01770.htm"
         },
         {
           "id": "az_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, if that comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+          "source": "https://law.justia.com/codes/arizona/title-15/section-15-1771/"
+        },
+        {
+          "id": "az_cancel",
+          "text": "Let the athlete cancel within 14 days",
+          "detail": "They cancel by written notice. They owe you nothing and keep anything you gave them to sign.",
+          "type": "info",
+          "source": "https://law.justia.com/codes/arizona/title-15/section-15-1772/"
         },
         {
           "id": "az_sparta",
@@ -80,16 +95,23 @@
         {
           "id": "az_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract and what you spent recruiting each athlete.",
           "type": "recurring",
-          "source": "https://iamasundevil.asu.edu/compliance/agents/uniform-athlete-agents-act"
+          "source": "https://law.justia.com/codes/arizona/title-15/section-15-1773/"
         },
         {
           "id": "az_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "Don't give anything of value before they sign, or to anyone but the athlete or another agent. Never pre-date or post-date a contract. Breaking this is a class 1 misdemeanor.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.azleg.gov/ars/15/01774.htm"
+        },
+        {
+          "id": "az_eligibility_warn",
+          "text": "Warn the athlete before they sign that signing may cost them eligibility",
+          "detail": "The warning box in the contract does this. Skipping it is a crime in Arizona.",
+          "type": "rule",
+          "source": "https://www.azleg.gov/ars/15/01774.htm"
         }
       ]
     }
@@ -103,7 +125,7 @@
     }
   ],
   "review_notes": [
-    "Confirm that A.R.S. 15-1761 and following still has no registration section.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "Statute text was read on azleg.gov and Justia's 2025 Arizona Revised Statutes. A.R.S. 15-1772 and 15-1773 were read on Justia because azleg.gov blocked the request. Confirm them on azleg.gov."
+  ],
+  "contract_warning": "Warning to student athlete. If you sign this contract: 1. You may lose your eligibility to compete as a student athlete in your sport. 2. If you have an athletic director, within 72 hours after entering into this contract or before the next athletic event in which you may participate, whichever comes first, both you and your athlete agent must notify your athletic director. 3. You may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility."
 }

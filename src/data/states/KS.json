@@ -9,13 +9,14 @@
   },
   "law": {
     "type": "UAAA",
-    "name": "Uniform Athlete Agents Act (K.S.A. 44-1514 and following)",
-    "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0020.html"
+    "name": "Uniform Athlete Agents Act of 2003, never amended (K.S.A. 44-1517 and following)",
+    "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0017.html"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement deals, so NIL agents must register (K.S.A. 44-1517). Kansas has no NIL law of its own.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "Register with the Secretary of State. $515, good for 2 years. You file a new application each time.",
+  "summary": "Register with the Secretary of State by mail. $515, good for 2 years. You file a new application each time.",
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility.",
   "sections": [
     {
       "id": "get_licensed",
@@ -33,12 +34,13 @@
           "text": "Pay $515",
           "type": "payment",
           "amount_usd": 515,
-          "source": "https://sos.ks.gov/forms/Administration/AA.pdf"
+          "source": "https://sos.ks.gov/forms/Administration/AA.pdf",
+          "detail": "The law sets a $500 fee (K.S.A. 44-1524). The current form (rev. 1/29/26) asks for $515 for a paper filing."
         },
         {
           "id": "ks_submit",
           "text": "Mail it to the Secretary of State",
-          "detail": "915 SW Harrison St., Topeka, KS 66612.",
+          "detail": "Docking State Office Building, 915 SW Harrison St., Topeka, KS 66612. Online filing is not offered.",
           "type": "task",
           "source": "https://sos.ks.gov/forms/Administration/AA.pdf"
         },
@@ -56,38 +58,53 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "ks_warn_first",
+          "text": "Warn the athlete before signing that the contract may make them ineligible",
+          "detail": "Kansas makes it a crime to skip this.",
+          "type": "task",
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0029.html"
+        },
+        {
           "id": "ks_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, any other pay you get for the deal, anyone not in your application who gets paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0020.html"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0025.html"
         },
         {
           "id": "ks_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student-athlete next to their signature",
           "type": "contract",
-          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0020.html"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0025.html",
+          "detail": "Bold capital letters, right by the athlete's signature. Use the exact wording Kansas gives."
         },
         {
           "id": "ks_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0020.html"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0025.html"
         },
         {
           "id": "ks_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0020.html"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0026.html"
+        },
+        {
+          "id": "ks_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing.",
+          "type": "info",
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0027.html"
         },
         {
           "id": "ks_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Kansas law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0029.html"
         }
       ]
     },
@@ -98,16 +115,16 @@
         {
           "id": "ks_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent to recruit each athlete. The Secretary of State can inspect them.",
           "type": "recurring",
-          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0020.html"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0028.html"
         },
         {
           "id": "ks_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "No false promises. No gifts or money to the athlete before signing, or to anyone else to get them. Don't contact athletes until you're registered. It's a class A misdemeanor.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.ksrevisor.gov/statutes/chapters/ch44/044_015_0029.html"
         }
       ]
     },
@@ -136,6 +153,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The statute fee is $500 but the form asks for $515. Ask the Secretary of State (785-296-4564) what the extra $15 covers.",
+    "The warning wording was read through a summary tool. Compare it word for word with K.S.A. 44-1525 before printing contracts."
   ]
 }

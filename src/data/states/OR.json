@@ -9,11 +9,12 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Athlete agents (ORS 702)",
+    "name": "Revised Uniform Athlete Agents Act (ORS 702.001 to 702.065)",
     "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
   },
-  "covers_nil_agents": "Yes. ORS 702.200 lets athletes hire an agent for NIL.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. Agents for endorsement deals must register. ORS 702.200 lets athletes hire an agent for NIL, and skips the contract warning for those deals.",
+  "contract_warning": "Warning to the student athlete: If you or your parent or guardian signs this contract: (1) You may lose your eligibility to compete as a student athlete in your sport. (2) If you have an athletic director, both you and your athlete agent must notify your athletic director within 72 hours after entering into this contract, or before you participate in any interscholastic or intercollegiate sports event, whichever occurs first, that you have entered into this contract and provide the name and contact information of the athlete agent. (3) You may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Department of Education. $250 plus fingerprints.",
   "sections": [
@@ -23,10 +24,10 @@
       "steps": [
         {
           "id": "or_app",
-          "text": "Apply on the Athlete Agent Portal",
-          "detail": "Sign in ink and get it notarized. Paper form 2285-O also works.",
+          "text": "Fill out the athlete agent application",
+          "detail": "Sign it in ink and get it notarized. ODE says to send it through its secure Smartsheet upload or the Athlete Agent Portal.",
           "type": "form",
-          "source": "https://or.accessgov.com/ode/Forms/Page/ode/althlete-agent"
+          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
         },
         {
           "id": "or_prints",
@@ -40,7 +41,7 @@
           "detail": "$150 if based on another state's registration.",
           "type": "payment",
           "amount_usd": 250,
-          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.023%20Fees"
         },
         {
           "id": "or_30d",
@@ -65,51 +66,67 @@
       "steps": [
         {
           "id": "or_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This also applies before you contact a minor's parent. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.029%20Notice%20to%20athletic%20director"
         },
         {
           "id": "or_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, other pay you get for the deal, anyone else being paid, expenses, services, length and date signed. Say you're registered in Oregon and list your other states.",
           "type": "contract",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.047%20Contract%20requirements"
         },
         {
           "id": "or_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to the student athlete in bold capital letters next to their signature",
+          "detail": "Use Oregon's set wording. It is not required for an NIL deal covered by ORS 702.200.",
           "type": "contract",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.047%20Contract%20requirements"
         },
         {
           "id": "or_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "A parent or guardian signs it if the athlete is a minor. It is not required for an NIL deal covered by ORS 702.200.",
           "type": "contract",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.047%20Contract%20requirements"
+        },
+        {
+          "id": "or_minor",
+          "text": "Have a parent or guardian sign the contract if the athlete is a minor",
+          "type": "contract",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.047%20Contract%20requirements"
         },
         {
           "id": "or_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the warning when they sign",
+          "detail": "Give it to the parent if the athlete is a minor.",
           "type": "task",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.047%20Contract%20requirements"
         },
         {
           "id": "or_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. Missing this is a felony in Oregon. The athlete (or parent of a minor) may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.054%20Notice%20of%20contract"
+        },
+        {
+          "id": "or_enroll",
+          "text": "Tell the new school within 72 hours if your athlete enrolls later",
+          "detail": "Count from when you knew or should have known they enrolled.",
+          "type": "notice",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.054%20Notice%20of%20contract",
+          "applies": "sometimes"
         },
         {
           "id": "or_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Oregon and federal law (SPARTA) ban predating or postdating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.027%20Restrictions%20on%20athlete%20agents"
         }
       ]
     },
@@ -120,16 +137,23 @@
         {
           "id": "or_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Each client's name and address, each contract and what you spent to recruit each athlete. ODE may inspect them.",
           "type": "recurring",
-          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.059%20Retention%20of%20records"
         },
         {
           "id": "or_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give an athlete anything of value before they sign, or make false promises",
+          "detail": "Don't pay anyone else to steer them to you either. Giving gifts is a felony in Oregon.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.030%20Restrictions%20on%20inducement"
+        },
+        {
+          "id": "or_school_rep",
+          "text": "Don't represent an athlete at a school you worked for in the last 4 years",
+          "detail": "This applies if you represented that college or university in any way.",
+          "type": "rule",
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.027%20Restrictions%20on%20athlete%20agents"
         }
       ]
     },
@@ -143,7 +167,8 @@
           "type": "deadline",
           "amount_usd": 150,
           "due_rule": "issued_at + 2y",
-          "source": "https://www.oregon.gov/ode/schools-and-districts/ptf/Pages/Athlete-Agents.aspx"
+          "source": "https://www.oregonlegislature.gov/bills_laws/ors/ors702.html#:~:text=702.012%20Registration%20requirement",
+          "detail": "Registration lasts 2 years. The $150 renewal fee is in ORS 702.023."
         }
       ]
     }
@@ -157,7 +182,6 @@
     }
   ],
   "review_notes": [
-    "A parent may cancel for a minor in Oregon. The 2-year term comes from a secondary source.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "ORS 702.200 covers NIL deals for athletes at Oregon colleges. For those deals the contract warning and separate eligibility warning are not required, but the other rules still apply. Confirm with ODE at athlete@ode.oregon.gov how it reads this."
   ]
 }

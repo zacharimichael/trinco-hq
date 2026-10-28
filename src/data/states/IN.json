@@ -9,13 +9,14 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Uniform Athlete Agents Act with RUAAA definitions (IC 25-5.2)",
-    "source": "https://www.in.gov/attorneygeneral/2818.htm"
+    "name": "Indiana Uniform Athlete Agents Act, updated with most RUAAA changes in 2019 (IC 25-5.2)",
+    "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement deals, so NIL agents must register (IC 25-5.2-1-2). Indiana has no separate NIL agent law.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register online with the Attorney General. $700 for 2 years.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, not later than seventy-two (72) hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within fourteen (14) days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -31,7 +32,7 @@
         {
           "id": "in_fee",
           "text": "Pay $700",
-          "detail": "Covers 2 years.",
+          "detail": "One fee covers 2 years (10 IAC 4-3-1).",
           "type": "payment",
           "amount_usd": 700,
           "source": "https://regulations.justia.com/states/indiana/title-10/article-4/rule-3/section-1"
@@ -52,50 +53,73 @@
         {
           "id": "in_pre_notice",
           "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "detail": "Send it in writing. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-9/"
         },
         {
           "id": "in_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in Indiana and list other states you're registered in. Then your pay and how it's figured, anyone not in your application who gets paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-8/"
         },
         {
           "id": "in_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete next to their signature",
           "type": "contract",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-8/",
+          "detail": "Bold capital letters, right by the athlete's signature. Use the exact wording Indiana gives."
         },
         {
           "id": "in_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. If the athlete is a minor, the parent or guardian signs it instead.",
           "type": "contract",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-8/"
         },
         {
           "id": "in_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-8/",
+          "detail": "Give them the contract and the signed eligibility warning."
         },
         {
           "id": "in_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-9/"
+        },
+        {
+          "id": "in_minor",
+          "text": "Have a parent or guardian sign if the athlete is a minor",
+          "type": "contract",
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-8/"
+        },
+        {
+          "id": "in_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They don't owe you anything and keep what you gave them.",
+          "type": "info",
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-10/"
+        },
+        {
+          "id": "in_enroll",
+          "text": "If a signed athlete later enrolls at a school, tell its athletic director within 72 hours",
+          "detail": "The 72 hours start when you learn they enrolled.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-9/",
+          "applies": "sometimes"
         },
         {
           "id": "in_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Indiana law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-12/"
         }
       ]
     },
@@ -106,16 +130,16 @@
         {
           "id": "in_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent to recruit each athlete. The Attorney General can inspect them.",
           "type": "recurring",
-          "source": "https://www.in.gov/attorneygeneral/2818.htm"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-11/"
         },
         {
           "id": "in_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "No false promises. No gifts or money to the athlete before signing, or to anyone else to get them. Breaking this is a Level 6 felony in Indiana.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/indiana/title-25/article-5-2/chapter-2/section-25-5-2-2-12/"
         }
       ]
     },
@@ -143,6 +167,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The statute text came from Justia's 2025 Indiana Code, because the official iga.in.gov site could not be read. Check IC 25-5.2-2-8 to 25-5.2-2-12 there for 2026 changes.",
+    "The warning wording was read through a summary tool. Compare it word for word with IC 25-5.2-2-8 before printing contracts."
   ]
 }

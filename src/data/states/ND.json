@@ -9,11 +9,11 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Revised Uniform Athlete Agents Act",
-    "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+    "name": "Revised Uniform Athlete Agents Act (N.D.C.C. ch. 9-15.2)",
+    "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement contracts, so NIL agents must register (N.D.C.C. 9-15.2-01).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $250, good for 2 years.",
   "sections": [
@@ -24,7 +24,7 @@
         {
           "id": "nd_app",
           "text": "Fill out form SFN 60891",
-          "detail": "Athlete Agent Registration/Renewal Application.",
+          "detail": "Athlete Agent Registration/Renewal Application. If you are registered in another state, you can send that state's application and certificate instead.",
           "type": "form",
           "form": "SFN 60891",
           "source": "https://www.nd.gov/eforms/Doc/sfn60891.pdf"
@@ -34,7 +34,8 @@
           "text": "Pay $250",
           "type": "payment",
           "amount_usd": 250,
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf",
+          "detail": "Same fee if you are registered in another state."
         },
         {
           "id": "nd_submit",
@@ -58,51 +59,60 @@
       "steps": [
         {
           "id": "nd_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This also applies before you ask someone else to talk to the athlete for you. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         },
         {
           "id": "nd_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you are registered in North Dakota and list your other states. Add your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         },
         {
           "id": "nd_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to the student-athlete in bold, right above their signature",
+          "detail": "Use the exact words the law gives. If the athlete is a minor, a parent or guardian signs and the warning is reworded for them.",
           "type": "contract",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         },
         {
           "id": "nd_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs instead if the athlete is a minor.",
           "type": "contract",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         },
         {
           "id": "nd_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
           "type": "task",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         },
         {
           "id": "nd_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
           "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
+        },
+        {
+          "id": "nd_enroll_notice",
+          "text": "If the athlete enrolls at a school later, tell that athletic director within 72 hours",
+          "detail": "The clock starts when you knew or should have known they enrolled.",
+          "type": "notice",
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf",
+          "applies": "sometimes"
         },
         {
           "id": "nd_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         }
       ]
     },
@@ -113,16 +123,16 @@
         {
           "id": "nd_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of your athletes, every contract and what you spent to recruit each one. The Secretary of State can ask to see them.",
           "type": "recurring",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         },
         {
           "id": "nd_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never make false promises or give gifts that could cost an athlete eligibility",
+          "detail": "A gift is only allowed if you tell the athletic director within 72 hours and the athlete signs that they know the risk. Breaking these rules is a class A misdemeanor.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf"
         }
       ]
     },
@@ -136,7 +146,8 @@
           "type": "deadline",
           "amount_usd": 150,
           "due_rule": "issued_at + 2y",
-          "source": "https://www.sos.nd.gov/business/licensing-registration/athlete-agents"
+          "source": "https://ndlegis.gov/cencode/t09c15-2.pdf",
+          "detail": "Your registration lasts 2 years. You can renew before it runs out."
         }
       ]
     }
@@ -150,6 +161,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "North Dakota has no separate NIL law that changes agent rules, as far as this check found. Confirm with the Secretary of State (701-328-2900) that NIL-only agents register the same way."
+  ],
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student-athlete in your sport."
 }

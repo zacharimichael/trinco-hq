@@ -10,9 +10,9 @@
   "law": {
     "type": "own",
     "name": "Miller-Ayala Athlete Agents Act (Bus. & Prof. Code 18895 and following)",
-    "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+    "source": "https://california.public.law/codes/business_and_professions_code,_division_8,_chapter_2.5"
   },
-  "covers_nil_agents": "Yes. Educ. Code 67456(c) says NIL agents must be licensed under this act (attorneys through the State Bar).",
+  "covers_nil_agents": "Yes. Educ. Code 67456(c) says athlete agents who represent college athletes must be licensed under this act, and attorneys through the State Bar. Endorsement contracts are covered (Bus. & Prof. Code 18895.2).",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "File a disclosure statement with the Secretary of State ($30) and carry $100,000 in insurance or security.",
@@ -24,17 +24,17 @@
         {
           "id": "ca_form",
           "text": "Fill out the Athlete Agent Disclosure Statement (SF-AA1)",
-          "detail": "Attach the schedule of fees you'll charge athletes.",
+          "detail": "File it before you start working as an agent. Attach the schedule of fees you'll charge athletes.",
           "type": "form",
           "form": "SF-AA1",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18896"
         },
         {
           "id": "ca_security",
           "text": "Get $100,000 in errors and omissions insurance or security",
-          "detail": "Insurance, a bond or cash deposit under Bus. & Prof. Code 18897.87.",
+          "detail": "Insurance, a bond, a trust or escrow, or another allowed form (Bus. & Prof. Code 18897.87).",
           "type": "task",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.87"
         },
         {
           "id": "ca_fee",
@@ -64,31 +64,70 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "ca_contact",
+          "text": "Don't contact an athlete or their family unless the law allows it",
+          "detail": "You may send written materials if the school's president or principal gets an identical copy at the same time. If the athlete or family contacts you first, tell the school in writing by the next business day.",
+          "type": "rule",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.63"
+        },
+        {
+          "id": "ca_first_notice",
+          "text": "Give written notice the first time you contact an athlete or their family",
+          "detail": "Say your disclosure is on file with the Secretary of State under the Miller-Ayala Act, in the words the law sets.",
+          "type": "notice",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18896.6",
+          "applies": "sometimes"
+        },
+        {
           "id": "ca_contract",
-          "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "text": "Use a written contract that lists your services and fees",
+          "detail": "Describe the work you'll do and include your fee schedule.",
           "type": "contract",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897"
+        },
+        {
+          "id": "ca_disclosure_box",
+          "text": "Put the Secretary of State disclosure on page 1 in bold",
+          "detail": "It must be at least 2 points bigger than any other text on that page. The exact words are in Bus. & Prof. Code 18897.1.",
+          "type": "contract",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.1"
         },
         {
           "id": "ca_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the Warning to the Student Athlete next to their signature",
           "type": "contract",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.73",
+          "detail": "Use the exact words below, in bold type at least 10 point."
         },
         {
-          "id": "ca_copy",
-          "text": "Give the athlete a copy when they sign",
-          "type": "task",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "id": "ca_no_gifts",
+          "text": "Never give the athlete money or anything of value",
+          "type": "rule",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.6",
+          "detail": "Unless the school's written policy allows it and NCAA rules are followed."
         },
         {
           "id": "ca_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 15 days.",
+          "text": "Tell the school's president or principal in writing within 48 hours of signing",
+          "detail": "Send it to the chief administrator, not just the athletic director. The athlete must also tell them within 72 hours or before their next practice or game.",
           "type": "deadline",
-          "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "due_rule": "signed_at + 48h",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.7",
+          "to": "the school's president or principal"
+        },
+        {
+          "id": "ca_cancel",
+          "text": "Let the athlete cancel within 15 days",
+          "detail": "They cancel in writing. This right can't be waived.",
+          "type": "info",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.77"
+        },
+        {
+          "id": "ca_payments_report",
+          "text": "Report anything of value you give an athlete by the 5th of next month",
+          "detail": "Send an itemized report to the athletic director in the format the school asks.",
+          "type": "deadline",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.74"
         },
         {
           "id": "ca_sparta",
@@ -105,26 +144,46 @@
       "steps": [
         {
           "id": "ca_amend",
-          "text": "Report any change within 7 days on form SF-AA2",
-          "detail": "$20 fee.",
+          "text": "Report any change on form SF-AA2 within 7 days",
+          "detail": "File within 7 days after anything on your disclosure statement changes. The fee is $20.",
           "type": "deadline",
           "form": "SF-AA2",
           "amount_usd": 20,
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18896.2"
         },
         {
           "id": "ca_records",
-          "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "text": "Keep records for 7 years",
+          "detail": "Who hired you and what each paid you. Never make false entries.",
           "type": "recurring",
-          "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.23"
         },
         {
           "id": "ca_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never make false promises or publish misleading ads",
+          "detail": "Every ad must show your name and business address.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.37"
+        },
+        {
+          "id": "ca_trust",
+          "text": "Put any money you get for an athlete in a trust account right away",
+          "detail": "Use a state or federally chartered bank.",
+          "type": "rule",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.2"
+        },
+        {
+          "id": "ca_school_gifts",
+          "text": "Never pay a school or its staff for referrals",
+          "detail": "This includes free or cheap legal services.",
+          "type": "rule",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.67"
+        },
+        {
+          "id": "ca_financial",
+          "text": "Tell the athlete about any stake or commission when you give money advice",
+          "type": "rule",
+          "source": "https://california.public.law/codes/business_and_professions_code_section_18897.3"
         }
       ]
     },
@@ -151,7 +210,10 @@
     }
   ],
   "review_notes": [
-    "California's contract and school-notice rules (Bus. & Prof. Code 18897 and following) differ from the uniform act. The athlete has 15 days to cancel. Check the exact contract wording.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "Statute text was read on california.public.law (verified Oct 2026), not on leginfo.legislature.ca.gov, which would not load. Confirm on leginfo before launch.",
+    "The Miller-Ayala Act was written before NIL. Its warning says signing will likely end the athlete's eligibility, and 18897.6 bans giving athletes anything of value. Have a lawyer confirm how these apply to NIL-only deals.",
+    "Bus. & Prof. Code 18896.6 also requires instructions on how to get your disclosure from the Secretary of State. Confirm the exact required notice wording there.",
+    "The Secretary of State Special Filings phone number was not found. Check sos.ca.gov."
+  ],
+  "contract_warning": "Warning to the student athlete: When you sign this contract, you likely will immediately and permanently lose your eligibility to compete in interscholastic or intercollegiate sports. You must give the principal, president, or other chief administrator of your educational institution written notice that you have entered into this contract within 72 hours, or before you practice for or participate in any interscholastic or intercollegiate sports event, whichever occurs first. Do not sign this contract until you have read it and filled in any blank spaces. You may cancel this contract by notifying the athlete agent, or other party to this contract, in writing of your desire to cancel not later than the 15th day after the date you sign this contract. However, even if you cancel this contract, the federation or association to which your educational institution belongs may not restore your eligibility."
 }

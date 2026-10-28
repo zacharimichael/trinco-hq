@@ -13,6 +13,11 @@ export interface Step {
   amount_usd?: number;
   due_rule?: string;
   source?: string;
+  /** Leave out for steps every athlete needs. "sometimes": only in some cases (like a later enrollment), so it isn't made a to-do.
+   *  "pro": only for professional sports contracts, never for NIL. */
+  applies?: "sometimes" | "pro";
+  /** Who a notice goes to, when it isn't the school's athletic director. */
+  to?: string;
 }
 
 export interface Section {

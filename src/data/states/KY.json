@@ -12,10 +12,11 @@
     "name": "Revised Uniform Athlete Agents Act (KRS 164.6901 and following)",
     "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
   },
-  "covers_nil_agents": "Yes. The agency contract includes NIL agreements.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes NIL agreements, so NIL agents must register (KRS 164.6903).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Department of Professional Licensing. $300, good for 2 years.",
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after signing the contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student-athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -58,50 +59,74 @@
         {
           "id": "ky_pre_notice",
           "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "detail": "Send it in writing. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
           "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
         },
         {
           "id": "ky_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in Kentucky and list other states you're registered in. Then your pay and how it's figured, anyone not in your application who gets paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48383"
         },
         {
           "id": "ky_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student-athlete in bold in the contract",
           "type": "contract",
-          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48383",
+          "detail": "Use the exact wording Kentucky gives. If the athlete is a minor, change it to speak to the parent."
         },
         {
           "id": "ky_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. If the athlete is a minor, the parent or guardian signs it instead.",
           "type": "contract",
-          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48383"
         },
         {
           "id": "ky_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48383",
+          "detail": "Give them the contract and the signed eligibility warning."
         },
         {
           "id": "ky_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
           "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
         },
         {
+          "id": "ky_minor",
+          "text": "Have a parent or guardian sign if the athlete is a minor",
+          "detail": "The athlete must re-sign within 30 days of turning 18, or the contract ends.",
+          "type": "contract",
+          "source": "https://law.justia.com/codes/kentucky/chapter-164/section-164-6951/"
+        },
+        {
+          "id": "ky_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They don't owe you anything and keep what you gave them.",
+          "type": "info",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48385"
+        },
+        {
+          "id": "ky_enroll",
+          "text": "If a signed athlete later enrolls at a school, tell its athletic director within 72 hours",
+          "detail": "The 72 hours start when you learn they enrolled.",
+          "type": "notice",
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384",
+          "applies": "sometimes"
+        },
+        {
           "id": "ky_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Kentucky law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48961"
         }
       ]
     },
@@ -112,16 +137,23 @@
         {
           "id": "ky_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent to recruit each athlete. The Department can inspect them.",
           "type": "recurring",
-          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48384"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48386"
+        },
+        {
+          "id": "ky_reaffirm",
+          "text": "Get the contract re-signed within 30 days after the athlete stops playing at their school",
+          "detail": "If they don't re-sign it in 30 days, the contract ends. This also applies to NIL deals.",
+          "type": "deadline",
+          "source": "https://law.justia.com/codes/kentucky/chapter-164/section-164-6951/"
         },
         {
           "id": "ky_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "No false promises. No gifts or money to the athlete before signing, or to anyone else to get them. Don't contact athletes until you're registered.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://apps.legislature.ky.gov/law/Statutes/statute.aspx?id=48961"
         }
       ]
     },
@@ -151,6 +183,8 @@
   ],
   "review_notes": [
     "The regulation does not give a mailing or online filing method. Confirm with the Department.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "No phone number for the athlete agent program was found. Get one from the Department of Professional Licensing (500 Mero St., Frankfort).",
+    "The warning wording was read through a summary tool. Compare it word for word with KRS 164.6917 before printing contracts.",
+    "The criminal penalty for the banned acts in KRS 164.6925 was not read. Find it in KRS 164.6901 to 164.6935 on the legislature site."
   ]
 }

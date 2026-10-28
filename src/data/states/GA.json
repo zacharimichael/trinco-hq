@@ -10,9 +10,10 @@
   "law": {
     "type": "UAAA",
     "name": "Georgia Athlete Agent Regulatory Act (O.C.G.A. 43-4A)",
-    "source": "https://rules.sos.ga.gov/gac/54-3"
+    "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
+  "covers_nil_agents": "Probably. The act covers endorsement contracts (paid use of an athlete's fame), but it never says NIL by name.",
+  "contract_warning": "Warning to student athlete if you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility.",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $210 plus a $10,000 surety bond.",
@@ -80,34 +81,35 @@
         {
           "id": "ga_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://rules.sos.ga.gov/gac/54-3"
+          "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/section-43-4a-15/"
         },
         {
           "id": "ga_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning in bold capital letters near the athlete's signature",
+          "detail": "Use the exact words Georgia gives.",
           "type": "contract",
-          "source": "https://rules.sos.ga.gov/gac/54-3"
+          "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/section-43-4a-15/"
         },
         {
           "id": "ga_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://rules.sos.ga.gov/gac/54-3"
+          "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/section-43-4a-15/"
         },
         {
           "id": "ga_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
+          "text": "Notify the athletic director in writing within 72 hours of signing",
           "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://rules.sos.ga.gov/gac/54-3"
+          "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/section-43-4a-14/"
         },
         {
           "id": "ga_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -120,16 +122,16 @@
         {
           "id": "ga_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, contracts and recruiting costs. The Secretary of State can inspect them.",
           "type": "recurring",
-          "source": "https://rules.sos.ga.gov/gac/54-3"
+          "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/section-43-4a-10/"
         },
         {
           "id": "ga_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never lie or make false promises to sign an athlete",
+          "detail": "Don't give the athlete anything of value before they sign. Don't give anything to anyone else, like a coach, except another registered agent.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/georgia/title-43/chapter-4a/section-43-4a-13/"
         }
       ]
     },
@@ -158,6 +160,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Georgia's athlete agent law was read on Justia (2025 code) and FindLaw (current to March 2024), not the official code. Confirm 43-4A-13 to 43-4A-15 on the official code at law.lexisnexis.com/gacode.",
+    "Georgia repealed its college NIL law (O.C.G.A. 20-3-680 to 20-3-683) on July 1, 2025. Ask the Secretary of State's athlete agent board whether NIL-only agents must register."
   ]
 }
