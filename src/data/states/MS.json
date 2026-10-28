@@ -13,7 +13,7 @@
     "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
   },
   "covers_nil_agents": "Yes. Publicity-rights pay is part of the agency contract.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $200 plus a possible background check. Good for 2 years.",
   "sections": [
@@ -126,7 +126,9 @@
           "text": "Renew every 2 years",
           "type": "deadline",
           "due_rule": "issued_at + 2y",
-          "source": "https://www.sos.ms.gov/content/documents/reg_enf/AthleteAgent/11F0091.pdf"
+          "source": "https://law.justia.com/codes/mississippi/2014/title-73/chapter-42/section-73-42-17/",
+          "amount_usd": 200,
+          "detail": "$200, plus the cost of any background check."
         }
       ]
     }

@@ -13,7 +13,7 @@
     "source": "https://rules.sos.ga.gov/gac/54-3"
   },
   "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $210 plus a $10,000 surety bond.",
   "sections": [
@@ -139,10 +139,12 @@
       "steps": [
         {
           "id": "ga_renew",
-          "text": "Renew every 2 years and keep the bond active",
+          "text": "Renew by June 30 of each odd year and keep the bond active",
           "type": "deadline",
-          "due_rule": "issued_at + 2y",
-          "source": "https://rules.sos.ga.gov/gac/54-3"
+          "due_rule": "June 30 of each odd year",
+          "source": "https://sos.ga.gov/how-to-guide/how-guide-athlete-agent",
+          "amount_usd": 250,
+          "detail": "$250. Renewal opens 90 days before."
         }
       ]
     }
@@ -156,7 +158,6 @@
     }
   ],
   "review_notes": [
-    "The renewal fee and 2-year term come from secondary sources. Confirm with the Secretary of State.",
     "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
   ]
 }

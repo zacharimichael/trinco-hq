@@ -13,7 +13,7 @@
     "source": "https://law.lis.virginia.gov/vacode/title54.1/chapter5.2/"
   },
   "covers_nil_agents": "Yes. The agent definition includes NIL representation.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with DPOR. $700 for 1 year or $1,150 for 2 years.",
   "sections": [
@@ -150,7 +150,7 @@
     }
   ],
   "review_notes": [
-    "Renewal fees were unreadable on the form. Confirm with DPOR.",
+    "The renewal form (A406-4201REG) appears to list $700 for 1 year and $1,150 for 2 years, but the layout is jumbled. Confirm with DPOR.",
     "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
   ]
 }

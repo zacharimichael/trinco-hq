@@ -13,7 +13,7 @@
     "source": "https://legis.la.gov/Legis/ViewDocument.aspx?d=1481254"
   },
   "covers_nil_agents": "Yes. Paid NIL or endorsement advice is agent work, for high school and college athletes.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register online with the Attorney General. $1,000, plus a background check and NIL training. Good for 2 years.",
   "sections": [
@@ -126,7 +126,9 @@
           "text": "Renew every 2 years",
           "type": "deadline",
           "due_rule": "issued_at + 2y",
-          "source": "https://www.ag.louisiana.gov/Page/AthleteAgents"
+          "source": "https://legis.la.gov/Legis/Law.aspx?d=96879",
+          "amount_usd": 1000,
+          "detail": "$1,000 ($500 if your registration is based on another state's)."
         }
       ]
     }
@@ -140,8 +142,6 @@
     }
   ],
   "review_notes": [
-    "The AG page says $1,000 for 2 years, but the act text reads $100 a year. Confirm.",
-    "The renewal fee is not posted.",
     "No cancellation right was found in the 2026 act.",
     "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
   ]

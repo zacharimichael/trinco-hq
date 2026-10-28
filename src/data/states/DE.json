@@ -13,7 +13,7 @@
     "source": "https://delcode.delaware.gov/title24/c054/"
   },
   "covers_nil_agents": "Yes. The agency contract expressly includes NIL agreements.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Division of Professional Regulation. $183, renewed every 2 years.",
   "sections": [
@@ -123,10 +123,10 @@
       "steps": [
         {
           "id": "de_renew",
-          "text": "Renew every 2 years",
-          "detail": "The state tells you the fee. Renewing late costs 50% more.",
+          "text": "Renew by June 30 of each odd year",
+          "detail": "The state tells you the fee when you renew. Renewing late costs 50% more.",
           "type": "deadline",
-          "due_rule": "issued_at + 2y",
+          "due_rule": "June 30 of each odd year",
           "source": "https://dpr.delaware.gov/boards/athlete-agents/registration-renewal"
         }
       ]
@@ -141,7 +141,7 @@
     }
   ],
   "review_notes": [
-    "The renewal fee and exact expiration date were not listed. Check the renewal page.",
+    "Delaware doesn't post the renewal fee. It's shown when you renew in DELPROS.",
     "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
   ]
 }

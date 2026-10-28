@@ -13,7 +13,7 @@
     "source": "https://labor.maryland.gov/license/law/sportslaw.shtml"
   },
   "covers_nil_agents": "Yes. The act covers endorsement contracts, and anyone who \"facilitates or encourages a connection\" counts.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Get a license from the Department of Labor. $25 to apply, then $1,000 when approved. Good for 2 years.",
   "sections": [
@@ -126,7 +126,9 @@
           "text": "Renew every 2 years",
           "type": "deadline",
           "due_rule": "issued_at + 2y",
-          "source": "https://labor.maryland.gov/license/sports/sportsrenew.shtml"
+          "source": "https://labor.maryland.gov/license/sports/sportsrenew.shtml",
+          "amount_usd": 1000,
+          "detail": "$1,000. The license runs 2 years from the day it was issued."
         }
       ]
     }

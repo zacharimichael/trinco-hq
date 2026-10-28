@@ -1,4 +1,4 @@
-# Trin Co HQ
+# Trin Co Agency
 
 NIL agent licensing, compliance and agency management. Agents see a US map of their licenses (green, yellow, red), do every step on the site with e-signatures, and track athletes. The agency owner runs the business from **HQ**: onboarding agents, compliance across the team, athletes, deals and the commission split.
 
@@ -20,7 +20,8 @@ The site is private: everything needs sign-in, and only emails listed in Supabas
 | `src/lib/rules.ts` | Map color logic (`status`), dates and deadlines. |
 | `src/lib/tasks.tsx` | Every to-do as a guided flow: fill, review, e-sign, done. |
 | `src/components/TaskRunner.tsx` | The step-by-step modal and signature pad. |
-| `src/app/` | Screens: map with the state's steps beside it (`/?s=FL`), to-do (`/todo`), agency HQ (`/hq`). |
+| `src/app/` | Home (`/`) is the Trin Co Agency dashboard every area reports up to. Licensing and compliance lives under `/licensing`: the map with the state's steps beside it (`/licensing?s=FL`), its to-do list (`/licensing/todo`) and every state side by side (`/licensing/states`). Agents and deals is `/hq`. |
+| `scripts/check-states.mjs` | Runs before every build. Fails the build if any state file is missing a source, an amount, a section or reuses a step id. `npm run check-states` runs it alone. |
 | `src/data/schools.ts` | Every FBS and FCS school for 2026 with conference and state. Edit here when schools move; schools can also be added in the app. |
 | `src/lib/players.ts` | Player profiles (LS, K, P, K+P), school coaching contacts, NIL years. Saved in the firm's data (owner edits). |
 | `src/app/players`, `src/app/compare`, `src/app/depth` | Player list and profiles, side-by-side comparison, and depth charts with top earners, All-Americans, All-Conference, starters and backups. |

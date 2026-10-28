@@ -33,6 +33,14 @@ export interface StateRules {
   contract_warning?: string;
   /** One plain sentence for the state card. */
   summary?: string;
+  /** The law this state's rules come from. type: RUAAA or UAAA (the uniform acts), own (its own law) or none. */
+  law?: { type: string; name: string; source?: string };
+  /** Whether the law reaches NIL-only agents, in one sentence. */
+  covers_nil_agents?: string;
+  /** Pending laws that could change these rules. */
+  watch_list?: { item: string; status: string; impact: string; source?: string }[];
+  /** What still needs confirming before these rules are final. */
+  review_notes?: string[];
 }
 
 /** Every researched state. Run `npm run sync-states` to pull in new state files. */
@@ -107,6 +115,27 @@ export function renewDue(rule: string | undefined, issuedAt?: string, from = sta
 export function hoursAfterSigning(rule: string | undefined): number | null {
   const m = rule?.match(/signed_at\s*\+\s*(\d+)\s*([hd])/);
   return m ? Number(m[1]) * (m[2] === "d" ? 24 : 1) : null;
+}
+
+/** Every source link a state's rules rest on, without repeats. */
+export function sources(code: string): string[] {
+  const R = RULES[code];
+  const all = [R.law?.source, R.regulator?.website, ...R.sections.flatMap((se) => se.steps.map((st) => st.source))];
+  return [...new Set(all.filter((u): u is string => !!u && /^https?:\/\//.test(u)))];
+}
+
+/** What isn't confirmed yet in a state's rules, in plain words. Empty means nothing is known to be missing. */
+export function gaps(code: string): string[] {
+  const R = RULES[code], out: string[] = [];
+  if (R.license_required) {
+    const renew = section(code, "renew")?.steps ?? [];
+    if (!renew.length) out.push("How often to renew isn't confirmed.");
+    else {
+      if (renew.some((st) => st.type === "deadline" && st.amount_usd == null)) out.push("The renewal fee isn't confirmed.");
+      if (renew.some((st) => st.due_rule && !renewDue(st.due_rule, "2026-01-01"))) out.push("The renewal date isn't confirmed.");
+    }
+  }
+  return [...out, ...(R.review_notes ?? [])];
 }
 
 export function status(code: string, done: Done) {

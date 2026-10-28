@@ -7,6 +7,6 @@ import { useParams, useRouter } from "next/navigation";
 export default function StatePage() {
   const { code } = useParams<{ code: string }>();
   const router = useRouter();
-  useEffect(() => { router.replace(`/?s=${code.toUpperCase()}`); }, [code, router]);
+  useEffect(() => { router.replace(`/licensing?s=${code.toUpperCase()}`); }, [code, router]);
   return null;
 }

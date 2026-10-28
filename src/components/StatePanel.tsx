@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import US from "@/data/us-states.json";
-import { applied, approvalId, LABEL, RULES, status } from "@/lib/rules";
+import { applied, approvalId, fmt, gaps, LABEL, RULES, sources, status } from "@/lib/rules";
 import { stateTasks } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 import { useTaskRunner } from "./TaskRunner";
@@ -83,7 +83,7 @@ export function StatePanel({ code, athletes = [], onClose }: { code: string; ath
             )}
           </>) : (<>
             {se.id === "every_athlete" && <p className="muted" style={{ margin: 0 }}>We handle these for you each time you add an athlete.</p>}
-            {se.id === "renew" && <p className="muted" style={{ margin: 0 }}>We&apos;ll remind you and you&apos;ll renew right here.</p>}
+            {se.id === "renew" && se.steps.some((st) => st.type === "deadline") && <p className="muted" style={{ margin: 0 }}>We&apos;ll remind you and you&apos;ll renew right here.</p>}
             {se.steps.map((st) => (
               <div className="step" key={st.id}>
                 <span className={`mark ${st.type === "rule" || se.id === "stay_compliant" ? "rule" : "list"}`}>
@@ -95,6 +95,39 @@ export function StatePanel({ code, athletes = [], onClose }: { code: string; ath
           </>)}
         </div>
       ))}
+      <Proof code={code} />
+    </div>
+  );
+}
+
+/** Where a state's rules come from, when they were checked and what's still being confirmed. */
+function Proof({ code }: { code: string }) {
+  const R = RULES[code];
+  const open = gaps(code);
+  const links = sources(code);
+  const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\d?\./, ""); } catch { return u; } };
+  return (
+    <div className="card sec" id="state-proof">
+      <h2>Where this comes from</h2>
+      <div className="lines">
+        {R.law && <div><span className="muted">Law</span><span>{R.law.source ? <a href={R.law.source} target="_blank" rel="noreferrer">{R.law.name}</a> : R.law.name}</span></div>}
+        {R.regulator && <div><span className="muted">Agency</span><span>{R.regulator.website ? <a href={R.regulator.website} target="_blank" rel="noreferrer">{R.regulator.name}</a> : R.regulator.name}{R.regulator.phone && <> · <a href={`tel:${R.regulator.phone}`}>{R.regulator.phone}</a></>}</span></div>}
+        <div><span className="muted">Last checked</span><span>{fmt(`${R.last_researched}T00:00:00`)}</span></div>
+        <div><span className="muted">Lawyer checked</span><span>{R.attorney_reviewed ? "✓ Yes" : "Not yet"}</span></div>
+      </div>
+      {open.length > 0 && (
+        <details className="more">
+          <summary><span className="gapchip">{open.length} still being confirmed</span></summary>
+          <ul className="srcs">{open.map((g) => <li key={g}>{g}</li>)}</ul>
+        </details>
+      )}
+      {(R.watch_list ?? []).map((w) => (
+        <p key={w.item} className="muted" style={{ margin: 0, fontSize: 15 }}><b>Watch:</b> {w.item}. {w.impact}</p>
+      ))}
+      <details className="more">
+        <summary>{links.length} sources</summary>
+        <ul className="srcs">{links.map((u) => <li key={u}><a href={u} target="_blank" rel="noreferrer">{host(u)}</a></li>)}</ul>
+      </details>
     </div>
   );
 }

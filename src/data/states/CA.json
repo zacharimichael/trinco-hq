@@ -13,7 +13,7 @@
     "source": "https://bpd.cdn.sos.ca.gov/sf/forms/sf-aa1.pdf"
   },
   "covers_nil_agents": "Yes. Educ. Code 67456(c) says NIL agents must be licensed under this act (attorneys through the State Bar).",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "File a disclosure statement with the Secretary of State ($30) and carry $100,000 in insurance or security.",
   "sections": [
@@ -127,6 +127,19 @@
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
       ]
+    },
+    {
+      "id": "renew",
+      "title": "Renew",
+      "steps": [
+        {
+          "id": "ca_renew",
+          "text": "No renewal",
+          "detail": "California's rules set a $30 filing and a $20 amendment fee, and no renewal.",
+          "type": "info",
+          "source": "https://regulations.justia.com/states/california/title-2/division-7/chapter-9/section-21920/"
+        }
+      ]
     }
   ],
   "watch_list": [
@@ -138,7 +151,6 @@
     }
   ],
   "review_notes": [
-    "No renewal cycle is stated on the form. Confirm with the Secretary of State.",
     "California's contract and school-notice rules (Bus. & Prof. Code 18897 and following) differ from the uniform act. The athlete has 15 days to cancel. Check the exact contract wording.",
     "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
   ]
