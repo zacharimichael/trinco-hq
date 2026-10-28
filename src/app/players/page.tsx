@@ -33,7 +33,7 @@ export default function PlayersPage() {
     <section className="view">
       <div>
         <h1>Players</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers, kickers, punters and K+P.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers, kickers and punters.</p>
       </div>
 
       <div className="card sec" id="add-player">
@@ -42,7 +42,7 @@ export default function PlayersPage() {
           <p className="muted" style={{ margin: 0 }}>Tap their position.</p>
           <div className="addrow">
             {POSITIONS.map((x) => (
-              <button key={x} className="btn" type="button" id={`add-${x}`} onClick={() => router.push(`/players/${addPlayer(x)}`)}>+ Add {x === "KP" ? "K+P" : POS_LABEL[x].toLowerCase()}</button>
+              <button key={x} className="btn" type="button" id={`add-${x}`} onClick={() => router.push(`/players/${addPlayer(x)}`)}>+ Add {POS_LABEL[x].toLowerCase()}</button>
             ))}
           </div>
         </>) : <p className="muted" style={{ margin: 0 }}>Only the agency owner can add players.</p>}

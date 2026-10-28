@@ -1,8 +1,10 @@
 import { SCHOOLS, slug, type School } from "@/data/schools";
 
-/** The four specialist positions. K+P players get both kicker and punter ratings. */
+/** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
-export const POSITIONS: Pos[] = ["LS", "K", "P", "KP"];
+export const POSITIONS: Pos[] = ["LS", "K", "P"];
+/** The positions to show for these players: the three offered, plus K+P only if someone is still saved as K+P. */
+export const positionsFor = (ps: { pos: Pos }[]): Pos[] => (ps.some((p) => p.pos === "KP") ? [...POSITIONS, "KP"] : POSITIONS);
 export const POS_LABEL: Record<Pos, string> = { LS: "Long snapper", K: "Kicker", P: "Punter", KP: "K+P" };
 export const POS_SHORT: Record<Pos, string> = { LS: "LS", K: "K", P: "P", KP: "K+P" };
 export const kicks = (p: Pos) => p === "K" || p === "KP";
