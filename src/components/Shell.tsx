@@ -18,6 +18,10 @@ const AREAS = [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => /^\/(players|compare)/.test(p) },
     { href: "/depth", label: "Depth charts", id: "tab-depth", match: (p: string) => p.startsWith("/depth") },
   ] },
+  { href: "/calendar", label: "Calendar", id: "tab-calendar", ownerOnly: false, match: (p: string) => /^\/(calendar|calls)/.test(p), sub: [
+    { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },
+    { href: "/calls", label: "Call list", id: "sub-calls", match: (p: string) => p.startsWith("/calls") },
+  ] },
   { href: "/hq", label: "Agents & deals", id: "tab-firm", ownerOnly: true, match: (p: string) => p.startsWith("/hq"), sub: [] },
 ];
 

@@ -63,6 +63,12 @@ export interface Deal {
 /** A to-do added by hand on the To-do page. due is a YYYY-MM-DD date. */
 export interface MyTodo { id: string; title: string; due: string | null; done: boolean }
 
+/** Someone to call. due is a YYYY-MM-DD date; player links to a player profile. */
+export interface CallItem { id: string; name: string; phone: string; why: string; due: string | null; player: string | null; done: boolean }
+
+/** Something on the calendar. date is YYYY-MM-DD, time is HH:MM. */
+export interface CalEvent { id: string; date: string; time: string | null; title: string; player: string | null }
+
 export interface Me {
   memberId: string;
   /**
@@ -100,4 +106,8 @@ export interface AppState {
   licensedOn?: Record<string, string>;
   /** To-dos added by hand. */
   myTodos?: MyTodo[];
+  /** People to call. */
+  calls?: CallItem[];
+  /** Calendar events added by hand or from call notes. */
+  events?: CalEvent[];
 }

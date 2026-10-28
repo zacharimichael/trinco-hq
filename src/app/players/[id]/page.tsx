@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Choice, ContactFields, Num, Rating, Text, YesNo } from "@/components/Fields";
+import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import {
   COACH_LABEL, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
-  type CoachRole, type Film, type Player, type Talk,
+  type CoachRole, type Fact, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
@@ -17,7 +18,7 @@ const ROLES: CoachRole[] = ["HC", "GM", "ST"];
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { sc, canEdit, school, staffOf, setStaff, setPlayer, removePlayer, edit } = useScouting();
+  const { sc, canEdit, school, staffOf, setStaff, setPlayer, removePlayer } = useScouting();
   const p = sc.players.find((x) => x.id === id);
   if (!p) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">This player isn&apos;t here anymore.</p></section>;
 
@@ -37,7 +38,10 @@ export default function PlayerPage() {
           <Choice label="Position" options={POSITIONS.map((x) => POS_SHORT[x])} value={POS_SHORT[p.pos]}
             onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
+          {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
         </div>
+
+        <LogCall p={p} key={p.id} />
 
         <div className="card sec">
           <div className="formgrid">
@@ -104,6 +108,7 @@ export default function PlayerPage() {
             <label className="agree"><input type="checkbox" checked={p.allAmerican} onChange={(e) => set({ allAmerican: e.target.checked })} /> All-American</label>
             <label className="agree"><input type="checkbox" checked={p.allConference} onChange={(e) => set({ allConference: e.target.checked })} /> All-Conference</label>
           </div>
+          <Text label="Transferring?" value={p.transfer ?? ""} placeholder="e.g. In the portal" onChange={(v) => set({ transfer: v || null })} />
         </div>
 
         <div className="card sec">
@@ -117,8 +122,8 @@ export default function PlayerPage() {
           <div className="lines"><div className="total"><span>Earned so far</span><span>{money(nilTotal(p))}</span></div></div>
         </div>
 
-        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider}
-          addLater={(t) => edit((s) => { const x = s.players.find((y) => y.id === p.id); if (x) x.talks = [...x.talks, t].sort((a, b) => b.date.localeCompare(a.date)); })} />
+        <Facts facts={p.facts ?? []} onChange={(facts) => set({ facts })} />
+        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
       </fieldset>
       {/* Outside the locked fields: people the owner shared with can add film too. */}
       <FilmBox p={p} canEdit={canEdit} onChange={(film) => set({ film })} />
@@ -172,52 +177,42 @@ function PriorSchools({ value, onChange }: { value: string[]; onChange: (v: stri
   );
 }
 
-const WHO: { v: Talk["who"]; label: string }[] = [
-  { v: "Player", label: "Player" }, { v: "Parent", label: "Parent" }, { v: "HC", label: "Head coach" }, { v: "GM", label: "GM" },
-  { v: "ST", label: "Special teams" }, { v: "HSC", label: "HS coach" }, { v: "Other", label: "Other" },
-];
+const WHO_LABEL: Record<Talk["who"], string> = { Player: "Player", Parent: "Parent", HC: "Head coach", GM: "GM", ST: "Special teams", HSC: "HS coach", Other: "Other" };
 const SHORT: Record<Talk["who"], string> = { Player: "P", Parent: "Pa", HC: "HC", GM: "GM", ST: "ST", HSC: "HS", Other: "•" };
+const when = (d: string) => new Date(d).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 
-/** Local date and time for a datetime-local input. */
-const nowLocal = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
+/** Things learned on calls that have no box of their own, newest first. */
+function Facts({ facts, onChange }: { facts: Fact[]; onChange: (f: Fact[]) => void }) {
+  return (
+    <details className="card fold" id="notes" open={facts.length > 0 && facts.length <= 5}>
+      <summary><h2>Notes from calls</h2><span className="chip">{facts.length}</span></summary>
+      <div className="sec">
+        {!facts.length && <p className="muted" style={{ margin: 0 }}>Log a call above and anything that has no box lands here.</p>}
+        {facts.map((f) => (
+          <div className="step" key={f.id}>
+            <div className="grow"><div className="t">{f.label && <b>{f.label}: </b>}{f.value}</div>
+              <div className="d">{f.from} · {when(f.date)}</div></div>
+            <button type="button" className="linkbtn" aria-label="Delete this note" onClick={() => { if (confirm("Delete this note?")) onChange(facts.filter((x) => x.id !== f.id)); }}>✕</button>
+          </div>
+        ))}
+      </div>
+    </details>
+  );
+}
 
-/** Call log: every call with the player, family and coaches, newest first, so the conversation reads in order. */
-function Talks({ p, onChange, decider, addLater }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null; addLater: (t: Talk) => void }) {
-  const [who, setWho] = useState<Talk["who"] | null>(null);
-  const [when, setWhen] = useState(nowLocal);
-  const [note, setNote] = useState("");
-  const [justSaved, setJustSaved] = useState(false);
-  const entry = (): Talk => ({ date: when ? new Date(when).toISOString() : new Date().toISOString(), who: who ?? "Other", note: note.trim() });
-  const add = () => {
-    if (!note.trim()) return;
-    onChange([...p.talks, entry()].sort((a, b) => b.date.localeCompare(a.date)));
-    setNote(""); setWhen(nowLocal()); setJustSaved(true);
-  };
-  // A call typed but not saved yet is saved anyway when you leave the profile.
-  const draft = useRef<Talk | null>(null);
-  draft.current = note.trim() ? entry() : null;
-  useEffect(() => () => { if (draft.current) addLater(draft.current); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+/** Call log: every call with the player, family and coaches, newest first. Calls are logged in the box at the top. */
+function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
   const calls = [...p.talks].sort((a, b) => b.date.localeCompare(a.date));
   return (
     <details className="card fold" id="call-log">
       <summary><h2>Call log</h2><span className="chip">{calls.length} {calls.length === 1 ? "call" : "calls"}</span></summary>
       <div className="sec">
-      <Choice label="Talked to" options={WHO.map((w) => w.label)} value={WHO.find((w) => w.v === who)?.label ?? null}
-        onChange={(v) => setWho(WHO.find((w) => w.label === v)?.v ?? null)} />
-      <div className="field">
-        <label htmlFor="call-when">When</label>
-        <input id="call-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
-      </div>
-      <Text label="What was said" multiline value={note} placeholder="e.g. GM wants to see film, will offer $15k for next season" onChange={(v) => { setNote(v); setJustSaved(false); }} />
-      <div className="pair" style={{ alignItems: "center" }}>
-        <button className="btn" type="button" id="save-call" onClick={add} disabled={!note.trim()} style={{ flex: "none" }}>Save call</button>
-        {justSaved && <span className="okchip">✓ Saved</span>}
-      </div>
+      {!calls.length && <p className="muted" style={{ margin: 0 }}>No calls yet. Log one in the box at the top.</p>}
       {calls.map((t) => (
         <div className="step" key={`${t.date}-${t.note}`}>
           <span className="mark list">{SHORT[t.who] ?? "•"}</span>
-          <div className="grow"><div className="t">{t.note}</div>
-            <div className="d">{WHO.find((w) => w.v === t.who)?.label}{decider === t.who && " (decision maker)"} · {new Date(t.date).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</div></div>
+          <div className="grow"><div className="t" style={{ whiteSpace: "pre-wrap" }}>{t.note}</div>
+            <div className="d">{WHO_LABEL[t.who]}{decider === t.who && " (decision maker)"} · {when(t.date)}</div></div>
           <button type="button" className="linkbtn" aria-label="Delete this call" onClick={() => { if (confirm("Delete this call?")) onChange(p.talks.filter((x) => x !== t)); }}>✕</button>
         </div>
       ))}

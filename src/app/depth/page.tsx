@@ -105,6 +105,7 @@ function Leaderboard({ players: rows, school }: { players: Player[]; school: (id
                     {p.client && <span className="chip mine">My athlete</span>}
                     {p.allAmerican && <span className="chip">All-American</span>}
                     {p.allConference && <span className="chip">All-Conf</span>}
+                    {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
                   </div></td>
                 <td>{POS_SHORT[p.pos]}</td>
                 <td>{s?.name}<br /><small className="muted">{s?.division} · {s?.conference}</small></td>
@@ -143,7 +144,7 @@ function ByConference({ confs, players, pos, school }: { confs: string[]; player
                     <b>{p.name || "New player"}</b>
                     <small>{school(p.school)?.name}</small>
                     <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
-                    {(p.allAmerican || p.allConference || p.client) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf"].filter(Boolean).join(" · ")}</small>}
+                    {(p.allAmerican || p.allConference || p.client || p.transfer) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}
                   </Link>
                 ))}
                 {!ps.some((p) => p.pos === x) && <small className="muted">None yet</small>}
@@ -235,7 +236,7 @@ function SchoolDepth({ s, ps, pos }: { s: School; ps: Player[]; pos: Pos | "All"
               <Link key={p.id} href={`/players/${p.id}`} className="pcard">
                 <b>{p.name || "New player"}</b>
                 <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
-                {(p.allAmerican || p.allConference || p.client) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf"].filter(Boolean).join(" · ")}</small>}
+                {(p.allAmerican || p.allConference || p.client || p.transfer) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}
               </Link>
             ))}
             {canEdit && <button type="button" className="btn ghost" onClick={() => router.push(`/players/${addPlayer(x, s.id)}`)}>+ Add</button>}

@@ -52,8 +52,8 @@ function seed(): AppState {
 
 
 /** The parts of AppState each member owns, stored in member_state.data. */
-type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos">;
-const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [] });
+type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events">;
+const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [] });
 
 /** Firm-wide data the owner saves to firms.data. */
 type FirmData = { deals?: Deal[]; scouting?: Scouting };
@@ -136,6 +136,8 @@ async function loadLive(session: Session): Promise<AppState | null> {
     docs: own.docs ?? [],
     licensedOn: own.licensedOn ?? {},
     myTodos: own.myTodos ?? [],
+    calls: own.calls ?? [],
+    events: own.events ?? [],
     signatures: [],
     team,
     shared,

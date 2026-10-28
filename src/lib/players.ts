@@ -22,6 +22,8 @@ const YEAR_SHORT: Record<SchoolYear, string> = {
 export const yearShort = (y: SchoolYear | null | undefined) => (y ? YEAR_SHORT[y] : "");
 
 export interface Contact { name: string; phone: string; email: string }
+export const newId = (prefix: string) => `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
 export const blankContact = (): Contact => ({ name: "", phone: "", email: "" });
 
 export type CoachRole = "HC" | "GM" | "ST";
@@ -39,6 +41,9 @@ export interface Film {
 
 /** One entry in a player's call log. */
 export interface Talk { date: string; who: CoachRole | "Player" | "Parent" | "HSC" | "Other"; note: string }
+
+/** Something learned about a player that has no box of its own, e.g. "Visiting Auburn" or "Wants $20k". */
+export interface Fact { id: string; label: string; value: string; date: string; from: string }
 
 export interface Player {
   id: string;
@@ -94,6 +99,10 @@ export interface Player {
   nil: (number | null)[];
   film: Film[];
   talks: Talk[];
+  /** Notes pulled out of calls that don't fit a box above. */
+  facts?: Fact[];
+  /** e.g. "In the portal" or "Transferring to Auburn". Empty when staying put. */
+  transfer?: string | null;
 
   depth: "Starter" | "Backup" | null;
   allAmerican: boolean;
