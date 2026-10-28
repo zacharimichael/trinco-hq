@@ -9,11 +9,11 @@
   },
   "law": {
     "type": "UAAA",
-    "name": "Uniform Athlete Agents Act (Act 204 of 2011)",
-    "source": "https://sos.arkansas.gov/uploads/elections/Athlete%20Agent%20Act204.pdf"
+    "name": "Uniform Athlete Agents Act (Ark. Code 17-16-101 and following, amended by Act 204 of 2011)",
+    "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract covers endorsement deals (Ark. Code 17-16-102), and the NIL law says anyone who represents an athlete must hold the Arkansas license (Ark. Code 4-75-1305).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $500, good for 2 years.",
   "sections": [
@@ -30,10 +30,10 @@
         {
           "id": "ar_fee",
           "text": "Pay $500",
-          "detail": "Payable to the Secretary of State. It's $100 if you send another state's application from the last 6 months instead.",
+          "detail": "Payable to the Secretary of State. It's $100 if you hold another state's registration or send another state's application from the last 6 months.",
           "type": "payment",
           "amount_usd": 500,
-          "source": "https://sos.arkansas.gov/elections/athlete-agent-registration-information/"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-109/"
         },
         {
           "id": "ar_submit",
@@ -55,31 +55,54 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "ar_pre_notice",
+          "text": "Tell the athletic director before you first contact the athlete",
+          "detail": "If you contact an enrolled athlete by accident, tell the athletic director within 72 hours of the contact.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-111/"
+        },
+        {
           "id": "ar_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://sos.arkansas.gov/uploads/elections/Athlete%20Agent%20Act204.pdf"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-110/"
         },
         {
           "id": "ar_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the Warning to Student-Athlete box next to their signature",
           "type": "contract",
-          "source": "https://sos.arkansas.gov/uploads/elections/Athlete%20Agent%20Act204.pdf"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-110/",
+          "detail": "Use the exact words below, in bold capital letters."
         },
         {
           "id": "ar_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://sos.arkansas.gov/uploads/elections/Athlete%20Agent%20Act204.pdf"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-110/"
         },
         {
           "id": "ar_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, if that comes first. This applies to a spoken agreement too. The athlete must tell the athletic director as well.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://sos.arkansas.gov/uploads/elections/Athlete%20Agent%20Act204.pdf"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-111/"
+        },
+        {
+          "id": "ar_cancel",
+          "text": "Let the athlete cancel within 14 days",
+          "detail": "They cancel by written notice. They owe you nothing and keep anything you gave them to sign.",
+          "type": "info",
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-112/"
+        },
+        {
+          "id": "ar_nil_disclose",
+          "text": "Report each NIL deal to the school the way it asks",
+          "detail": "Tell the school's chosen official about your role and the deal's terms, parties and pay. The school sets the deadline.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/arkansas/title-4/subtitle-6/chapter-75/subchapter-13/section-4-75-1306/",
+          "applies": "sometimes"
         },
         {
           "id": "ar_sparta",
@@ -97,16 +120,16 @@
         {
           "id": "ar_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract and what you spent recruiting each athlete.",
           "type": "recurring",
-          "source": "https://sos.arkansas.gov/uploads/elections/Athlete%20Agent%20Act204.pdf"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-113/"
         },
         {
           "id": "ar_never",
           "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "detail": "Don't give anything of value before they sign, or to anyone but the athlete or another registered agent. Never pre-date or post-date a contract.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-114/"
         }
       ]
     },
@@ -120,7 +143,8 @@
           "type": "deadline",
           "amount_usd": 500,
           "due_rule": "issued_at + 2y",
-          "source": "https://sos.arkansas.gov/elections/athlete-agent-registration-information/"
+          "source": "https://law.justia.com/codes/arkansas/title-17/subtitle-2/chapter-16/subchapter-1/section-17-16-109/",
+          "detail": "A registration lasts 2 years. It's $100 if you renew based on another state's renewal."
         }
       ]
     }
@@ -134,6 +158,9 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "Statute text was read on Justia's 2024 and 2025 Arkansas Code, not the official Lexis code. Confirm on the Arkansas Code before launch.",
+    "Ark. Code 17-16-113 (records) was read on a secondary site because Justia failed to load. Confirm the 5-year rule on the official code.",
+    "Penalties (Ark. Code 17-16-115 and 17-16-117) were not reviewed in full. Act 204 of 2011 makes some violations a felony."
+  ],
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility."
 }

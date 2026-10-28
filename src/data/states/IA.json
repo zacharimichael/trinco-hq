@@ -10,10 +10,11 @@
   "law": {
     "type": "RUAAA",
     "name": "Revised Uniform Athlete Agents Act (Iowa Code ch. 9A)",
-    "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+    "source": "https://www.legis.iowa.gov/docs/code/2026/9A.pdf"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Probably. The act covers endorsement contracts (paid use of an athlete's fame), but it never says NIL by name.",
+  "contract_warning": "Warning to student athlete\nIf you sign this contract: [1] you may lose your eligibility to compete as a student athlete in your sport; [2] if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and [3] you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $500, good for 2 years.",
   "sections": [
@@ -57,49 +58,59 @@
       "steps": [
         {
           "id": "ia_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This counts for contact through a parent or anyone else too. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.111.pdf"
         },
         {
           "id": "ia_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "That you're registered in Iowa and where else, your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.110.pdf"
         },
         {
           "id": "ia_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the bold Warning to Student Athlete notice in the contract",
+          "detail": "Use the exact words Iowa gives. If the athlete is a minor, reword it for the parent.",
           "type": "contract",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.110.pdf"
         },
         {
           "id": "ia_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. If the athlete is a minor, a parent or guardian signs it and the contract.",
           "type": "contract",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.110.pdf"
         },
         {
           "id": "ia_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
+          "detail": "Give it to the parent or guardian if the athlete is a minor.",
           "type": "task",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.110.pdf"
         },
         {
           "id": "ia_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Notify the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete (or a parent, for a minor) may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.111.pdf"
+        },
+        {
+          "id": "ia_enroll",
+          "text": "If the athlete enrolls at a new school, tell its athletic director within 72 hours",
+          "detail": "The clock starts when you learn they enrolled. If you knew them before they got a sports scholarship, tell that school within 10 days.",
+          "type": "notice",
+          "source": "https://www.legis.iowa.gov/docs/code/9A.111.pdf",
+          "applies": "sometimes"
         },
         {
           "id": "ia_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -112,16 +123,16 @@
         {
           "id": "ia_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, contracts and recruiting costs. The Secretary of State can inspect them.",
           "type": "recurring",
-          "source": "https://www.legis.iowa.gov/docs/code/2024/9A.111.pdf"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.113.pdf"
         },
         {
           "id": "ia_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never lie or make false promises to sign an athlete",
+          "detail": "Don't give anything that could cost eligibility unless you tell the athletic director within 72 hours (and before the next game) and the athlete signs a written OK.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.legis.iowa.gov/docs/code/9A.114.pdf"
         }
       ]
     },
@@ -149,6 +160,6 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Iowa HF 628 (2025), a college NIL bill, was introduced but no later action was found. Check legis.iowa.gov for its status."
   ]
 }

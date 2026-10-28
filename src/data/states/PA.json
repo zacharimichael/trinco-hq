@@ -12,8 +12,9 @@
     "name": "Revised Uniform Athlete Agents Act (5 Pa.C.S. ch. 35)",
     "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
   },
-  "covers_nil_agents": "Yes. Schools and the NCAA can't block NIL agents (Act 89 of 2024).",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers endorsement deals, and a college athlete's NIL agent must act under it or be a Pennsylvania lawyer (24 P.S. 20-2004-M).",
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) If you enter into negotiations for, or sign, a professional-sports-services contract, you may lose your eligibility to compete as a student athlete in your sport; (2) If you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent shall notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) You may cancel this contract within 14 days after signing it.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the State Athletic Commission. $200 plus a state police record check.",
   "sections": [
@@ -30,9 +31,9 @@
         {
           "id": "pa_bg",
           "text": "Get a Pennsylvania State Police record check",
-          "detail": "Request it online through PATCH.",
+          "detail": "Request it online through PATCH. The law requires it with your application.",
           "type": "task",
-          "source": "https://epatch.pa.gov/home"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=5&subsctn=0"
         },
         {
           "id": "pa_fee",
@@ -40,7 +41,7 @@
           "detail": "$150 if you're registered in another state.",
           "type": "payment",
           "amount_usd": 200,
-          "source": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/programs/state-athletics/forms/Athlete%20Agent%20Application.pdf"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=9&subsctn=0"
         },
         {
           "id": "pa_submit",
@@ -64,51 +65,77 @@
       "steps": [
         {
           "id": "pa_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This also applies before you contact a minor's parent, or anyone you want to sway the athlete. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=11&subsctn=0"
         },
         {
           "id": "pa_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in Pennsylvania and list your other states. Add your pay and how it's figured, other pay you get for the deal, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=10&subsctn=0"
+        },
+        {
+          "id": "pa_nil_clause",
+          "text": "In a college NIL contract, say the athlete doesn't have to use you for anything else",
+          "detail": "Pennsylvania requires this line in any contract to find NIL deals for a college athlete.",
+          "type": "contract",
+          "source": "https://pa.gov/content/dam/copapwp-pagov/en/dos/programs/state-athletics/laws-and-regulations/nil-law.pdf"
         },
         {
           "id": "pa_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete in bold in the contract",
+          "detail": "Use Pennsylvania's set wording. If the athlete is a minor, change it to speak to the parent.",
           "type": "contract",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=10&subsctn=0"
         },
         {
           "id": "pa_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "A parent or guardian signs it if the athlete is a minor.",
           "type": "contract",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=10&subsctn=0"
         },
         {
           "id": "pa_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the warning when they sign",
+          "detail": "Give it to the parent if the athlete is a minor.",
           "type": "task",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=10&subsctn=0"
         },
         {
           "id": "pa_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell them too. The athlete (or parent of a minor) may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=11&subsctn=0"
+        },
+        {
+          "id": "pa_commission_72h",
+          "text": "Tell the State Athletic Commission within 72 hours of signing",
+          "detail": "Pennsylvania makes both you and the athlete give the commission written notice of the contract.",
+          "type": "deadline",
+          "due_rule": "signed_at + 72h",
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=11&subsctn=0",
+          "to": "Pennsylvania State Athletic Commission"
+        },
+        {
+          "id": "pa_enroll",
+          "text": "Tell the new school within 72 hours if your athlete enrolls later",
+          "detail": "Count from when you knew or should have known they enrolled.",
+          "type": "notice",
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=11&subsctn=0",
+          "applies": "sometimes"
         },
         {
           "id": "pa_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Pennsylvania and federal law (SPARTA) ban predating or postdating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=14&subsctn=0"
         }
       ]
     },
@@ -119,16 +146,16 @@
         {
           "id": "pa_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Each client's name and address, each contract and what you spent to recruit each athlete. The commission may inspect them.",
           "type": "recurring",
-          "source": "https://www.legis.state.pa.us/cfdocs/legis/LI/consCheck.cfm?txtType=HTM&ttl=05&div=0&chpt=35"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=13&subsctn=0"
         },
         {
           "id": "pa_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never mislead athletes or give them anything that could cost their eligibility",
+          "detail": "A gift is only OK if you tell the athletic director within 72 hours and the athlete signs a warning. Fines can reach $50,000.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=14&subsctn=0"
         }
       ]
     },
@@ -142,7 +169,8 @@
           "type": "deadline",
           "amount_usd": 200,
           "due_rule": "issued_at + 2y",
-          "source": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/programs/state-athletics/forms/Athlete%20Agent%20Application.pdf"
+          "source": "https://www.palegis.us/statutes/consolidated/view-statute?txtType=HTM&ttl=05&div=0&chapter=35&section=6&subsctn=0",
+          "detail": "Registration lasts 2 years. The renewal fee is $150 if you renew based on another state's registration."
         }
       ]
     }
@@ -156,7 +184,8 @@
     }
   ],
   "review_notes": [
-    "The 2-year term comes from a secondary source.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "5 Pa.C.S. 3511(i) says you must tell the commission about each contract within 72 hours. No form or address for this notice was found. Ask the State Athletic Commission how to send it.",
+    "The commission's phone number was not found on its athlete agent page. Find it on the State Athletic Commission page at pa.gov.",
+    "The step links go to single sections on palegis.us, which loads text with scripts. The full chapter was read in the official PDF on palegis.us."
   ]
 }

@@ -9,13 +9,14 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Revised Uniform Athlete Agents Act (2017)",
-    "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+    "name": "Revised Uniform Athlete Agents Act (Utah Code 58-87)",
+    "source": "https://le.utah.gov/xcode/Title58/Chapter87/58-87.html"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers endorsement contracts (Utah Code 58-87-102), and Utah's NIL law uses the same agent definition (53H-6-201).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Get licensed by DOPL. $510. Renews September 30 of even years.",
+  "contract_warning": "Warning to student athlete\nIf you sign this contract:\n(1) You may lose your eligibility to compete as a student athlete in your sport;\n(2) If you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and\n(3) You may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -50,49 +51,65 @@
       "steps": [
         {
           "id": "ut_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This also applies before you have someone else contact them. If the athlete reached out first, tell them within 10 days.",
           "type": "notice",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S302_2017050920170509.html"
         },
         {
           "id": "ut_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in Utah and list your other states. Add your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S301_2017050920170509.html"
         },
         {
           "id": "ut_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the state's warning in bold next to the athlete's signature",
           "type": "contract",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S301_2017050920170509.html",
+          "detail": "Use the exact words in the warning box."
         },
         {
           "id": "ut_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs if the athlete is a minor.",
           "type": "contract",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S301_2017050920170509.html"
         },
         {
           "id": "ut_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
           "type": "task",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S301_2017050920170509.html"
         },
         {
           "id": "ut_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell them too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S302_2017050920170509.html"
+        },
+        {
+          "id": "ut_cancel",
+          "text": "Let the athlete cancel in writing within 14 days",
+          "detail": "They can't give up this right. If they cancel, they owe you nothing.",
+          "type": "info",
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S303_2017050920170509.html"
+        },
+        {
+          "id": "ut_enroll",
+          "text": "If you signed before the athlete enrolled, tell the new school's athletic director within 72 hours",
+          "detail": "The clock starts when you knew or should have known they enrolled.",
+          "type": "notice",
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S302_2017050920170509.html",
+          "applies": "sometimes"
         },
         {
           "id": "ut_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law (58-87-401) and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -105,16 +122,23 @@
         {
           "id": "ut_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent recruiting each athlete.",
           "type": "recurring",
-          "source": "https://commerce.utah.gov/dopl/athlete-agent/laws-and-rules/"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S304_2017050920170509.html"
         },
         {
           "id": "ut_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info to get an athlete to sign",
+          "detail": "Don't contact athletes until you're licensed. Don't have anyone do these things for you.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S401_2020051220200512.html"
+        },
+        {
+          "id": "ut_gift",
+          "text": "If you give an athlete anything that could cost their eligibility, tell the athletic director within 72 hours",
+          "detail": "The athlete must also say in writing that they know it could cost their eligibility. Without both, the gift breaks the law.",
+          "type": "rule",
+          "source": "https://le.utah.gov/xcode/Title58/Chapter87/C58-87-S401_2020051220200512.html"
         }
       ]
     },
@@ -143,6 +167,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "DOPL sets the fee, not the statute (58-87-206). The $510 is from DOPL's fee schedule, updated June 30, 2026. It can change each July.",
+    "DOPL's rule page (R156-87 at adminrules.utah.gov) wouldn't load. Check it for any extra rules."
   ]
 }

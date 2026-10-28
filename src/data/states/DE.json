@@ -12,7 +12,8 @@
     "name": "Revised Uniform Athlete Agents Act (24 Del. C. ch. 54)",
     "source": "https://delcode.delaware.gov/title24/c054/"
   },
-  "covers_nil_agents": "Yes. The agency contract expressly includes NIL agreements.",
+  "covers_nil_agents": "Yes. Delaware's agency contract includes NIL agreements (24 Del. C. 5402).",
+  "contract_warning": "Warning to student athlete\nIf you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Division of Professional Regulation. $183, renewed every 2 years.",
@@ -49,49 +50,59 @@
       "steps": [
         {
           "id": "de_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This counts for contact through a parent or anyone else too. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5410"
         },
         {
           "id": "de_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "That you're registered in Delaware and where else, your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5409"
         },
         {
           "id": "de_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the bold Warning to Student Athlete notice in the contract",
+          "detail": "Use the exact words Delaware gives, in a language the athlete reads well. If the athlete is a minor, reword it for the parent.",
           "type": "contract",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5409"
         },
         {
           "id": "de_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "In a language they read well. If the athlete is a minor, a parent or guardian signs it and the contract.",
           "type": "contract",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5409"
         },
         {
           "id": "de_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
+          "detail": "Give it to the parent or guardian if the athlete is a minor.",
           "type": "task",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5409"
         },
         {
           "id": "de_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Notify the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete (or a parent, for a minor) may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5410"
+        },
+        {
+          "id": "de_enroll",
+          "text": "If the athlete enrolls at a new school, tell its athletic director within 72 hours",
+          "detail": "The clock starts when you learn they enrolled. If you knew them before they got a sports scholarship, tell that school within 10 days.",
+          "type": "notice",
+          "source": "https://delcode.delaware.gov/title24/c054/#5410",
+          "applies": "sometimes"
         },
         {
           "id": "de_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -104,16 +115,16 @@
         {
           "id": "de_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, contracts and recruiting costs. The state can inspect them.",
           "type": "recurring",
-          "source": "https://delcode.delaware.gov/title24/c054/"
+          "source": "https://delcode.delaware.gov/title24/c054/#5412"
         },
         {
           "id": "de_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never lie or make false promises to sign an athlete",
+          "detail": "Don't give anything that could cost eligibility unless you tell the athletic director within 72 hours and the athlete signs a written OK.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://delcode.delaware.gov/title24/c054/#5413"
         }
       ]
     },
@@ -141,7 +152,6 @@
     }
   ],
   "review_notes": [
-    "Delaware doesn't post the renewal fee. It's shown when you renew in DELPROS.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Delaware doesn't post the renewal fee. It's shown when you renew in DELPROS."
   ]
 }

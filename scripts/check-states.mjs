@@ -31,6 +31,7 @@ for (const f of readdirSync(dir).filter((f) => /^[A-Z]{2}\.json$/.test(f)).sort(
       const where = `step ${st.id ?? "(no id)"}`;
       if (!st.id || !st.text || !st.type) bad(`${where} needs an id, text and type`);
       if (!url(st.source)) bad(`${where} has no source link`);
+      if (st.applies && !["sometimes", "pro"].includes(st.applies)) bad(`${where} has applies "${st.applies}"; use "sometimes" or "pro"`);
       if (st.type === "payment" && typeof st.amount_usd !== "number") bad(`${where} is a payment with no amount`);
       // Step ids are saved per agent across every state, so two states can never share one.
       if (st.id && seen.has(st.id)) bad(`${where} is also used in ${seen.get(st.id)}`);

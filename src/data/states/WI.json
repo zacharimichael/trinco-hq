@@ -9,11 +9,12 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Uniform Athlete Agents Act, amended to RUAAA in 2019 (Wis. Stat. ch. 440 subch. X)",
-    "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+    "name": "Uniform Athlete Agents Act, amended to RUAAA in 2019 (Wis. Stat. ch. 440 subch. XIV)",
+    "source": "https://docs.legis.wisconsin.gov/statutes/statutes/440/xiv"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers endorsement contracts, and since 2019 it also covers paid advisors and business managers (Wis. Stat. 440.99). It does not use the words name, image or likeness.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: 1) you may lose your eligibility to compete as a student athlete in your sport; 2) if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you may participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and 3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register online with DSPS. $38. Renews June 30 of even years.",
   "sections": [
@@ -51,49 +52,65 @@
       "steps": [
         {
           "id": "wi_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This includes reaching out through someone else. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.9945"
         },
         {
           "id": "wi_contract",
-          "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "text": "Use a signed, written contract with all required items",
+          "detail": "Say you are registered in Wisconsin and list other states where you are registered. Add your pay and how it's figured, anyone else being paid, expenses and services.",
           "type": "contract",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.994"
         },
         {
           "id": "wi_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete in the contract in bold",
+          "detail": "Use the state's wording. It must be easy to see.",
           "type": "contract",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.994"
         },
         {
           "id": "wi_ack",
           "text": "Have the athlete sign a separate eligibility warning",
           "detail": "A parent or guardian signs too if the athlete is a minor.",
           "type": "contract",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.994"
         },
         {
           "id": "wi_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
           "type": "task",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.994"
         },
         {
           "id": "wi_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, if that comes first. The athlete must tell the athletic director too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.9945"
+        },
+        {
+          "id": "wi_cancel",
+          "text": "Let the athlete cancel within 14 days of signing",
+          "detail": "They don't owe you anything if they cancel. They can't give up this right.",
+          "type": "info",
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.995"
+        },
+        {
+          "id": "wi_enroll",
+          "text": "If the athlete enrolls at a school later, tell its athletic director within 72 hours",
+          "detail": "If you knew the athlete before they enrolled and they get an athletic scholarship, tell the school within 10 days of enrolling.",
+          "type": "notice",
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.9945",
+          "applies": "sometimes"
         },
         {
           "id": "wi_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it. Put the contract length in too.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -106,16 +123,23 @@
         {
           "id": "wi_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, contracts and recruiting costs. DSPS can inspect them and ask for copies.",
           "type": "recurring",
-          "source": "https://dsps.wi.gov/Pages/Professions/AthleteAgent/Default.aspx"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.9955"
+        },
+        {
+          "id": "wi_gifts",
+          "text": "Don't give gifts that could cost the athlete eligibility",
+          "detail": "If you do, tell the athletic director within 72 hours. The athlete must also sign a note saying they know the risk.",
+          "type": "rule",
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.996"
         },
         {
           "id": "wi_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never lie or make false promises to get an athlete to sign",
+          "detail": "Don't contact athletes to recruit them until you're registered. Federal law (SPARTA) has similar rules.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://docs.legis.wisconsin.gov/document/statutes/440.996"
         }
       ]
     },
@@ -144,6 +168,8 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Wis. Stat. 440.994(2) as read lists no contract length or signing date. Confirm the current text on docs.legis.wisconsin.gov.",
+    "Parts of Wis. Stat. 440.996(2) (paragraphs c, e and f) could not be read. Confirm them on docs.legis.wisconsin.gov.",
+    "The DSPS page names renewal Form 2733 in one place and Forms 2668 and 3668 in another. Ask DSPS (608-266-2112) which to use."
   ]
 }

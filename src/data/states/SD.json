@@ -10,12 +10,13 @@
   "law": {
     "type": "UAAA",
     "name": "Uniform Athlete Agents Act (SDCL 59-10)",
-    "source": "https://sdlegislature.gov/Statutes/Codified_Laws/DisplayStatute.aspx?Type=Statute&Statute=59-10"
+    "source": "https://sdlegislature.gov/Statutes/59-10"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers endorsement contracts (SDCL 59-10-2). The Board of Regents NIL policy also says NIL agents must be registered with the state.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $100, about 2 years.",
+  "contract_warning": "Warning to student-athlete\nIf you sign this contract:\n(1) You may lose your eligibility to compete as a student-athlete in your sport;\n(2) If you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and\n(3) You may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility.",
   "sections": [
     {
       "id": "get_licensed",
@@ -33,7 +34,7 @@
           "detail": "$50 if based on another state's registration.",
           "type": "payment",
           "amount_usd": 100,
-          "source": "https://sdsos.gov/general-information/miscellaneous-forms/athletic-agent-registration.aspx"
+          "source": "https://sdlegislature.gov/Statutes/59-10-9"
         },
         {
           "id": "sd_school",
@@ -53,32 +54,40 @@
           "text": "Use a written contract with all required items",
           "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://sdlegislature.gov/Statutes/Codified_Laws/DisplayStatute.aspx?Type=Statute&Statute=59-10"
+          "source": "https://sdlegislature.gov/Statutes/59-10-10"
         },
         {
           "id": "sd_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the state's warning in bold capital letters next to the athlete's signature",
           "type": "contract",
-          "source": "https://sdlegislature.gov/Statutes/Codified_Laws/DisplayStatute.aspx?Type=Statute&Statute=59-10"
+          "source": "https://sdlegislature.gov/Statutes/59-10-10",
+          "detail": "Use the exact words in the warning box."
         },
         {
           "id": "sd_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://sdlegislature.gov/Statutes/Codified_Laws/DisplayStatute.aspx?Type=Statute&Statute=59-10"
+          "source": "https://sdlegislature.gov/Statutes/59-10-10"
         },
         {
           "id": "sd_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell them too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://sdlegislature.gov/Statutes/Codified_Laws/DisplayStatute.aspx?Type=Statute&Statute=59-10"
+          "source": "https://sdlegislature.gov/Statutes/59-10-11"
+        },
+        {
+          "id": "sd_cancel",
+          "text": "Let the athlete cancel in writing within 14 days",
+          "detail": "They can't give up this right. If they cancel, they owe you nothing.",
+          "type": "info",
+          "source": "https://sdlegislature.gov/Statutes/59-10-12"
         },
         {
           "id": "sd_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law (SDCL 59-10-14) and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -91,16 +100,16 @@
         {
           "id": "sd_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent recruiting each athlete.",
           "type": "recurring",
-          "source": "https://sdlegislature.gov/Statutes/Codified_Laws/DisplayStatute.aspx?Type=Statute&Statute=59-10"
+          "source": "https://sdlegislature.gov/Statutes/59-10-13"
         },
         {
           "id": "sd_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or anything of value to get an athlete to sign",
+          "detail": "Don't contact athletes until you're registered. Federal law (SPARTA) has the same kind of rules.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://sdlegislature.gov/Statutes/59-10-14"
         }
       ]
     },
@@ -114,7 +123,8 @@
           "type": "deadline",
           "amount_usd": 25,
           "due_rule": "issued_at + 2y",
-          "source": "https://sdsos.gov/general-information/miscellaneous-forms/athletic-agent-registration.aspx"
+          "source": "https://sdlegislature.gov/Statutes/59-10-9",
+          "detail": "Registration lasts 2 years (SDCL 59-10-6)."
         }
       ]
     }
@@ -128,6 +138,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "SDCL 59-10-6 says the Secretary of the Department of Labor and Regulation issues registrations, but the Secretary of State's page takes the form and fees. Ask the Secretary of State which office files it.",
+    "The Secretary of State's athlete agent page lists no phone number. Get one from sdsos.gov/contacts."
   ]
 }

@@ -13,6 +13,7 @@
     "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
   },
   "covers_nil_agents": "Yes. The act covers endorsement contracts.",
+  "contract_warning": "Warning to student athlete: If you sign this contract: (1) You may lose your eligibility to compete as a student athlete in your sport; (2) If you have an athletic director, within seventy-two (72) hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) You may cancel this contract within fourteen (14) days after signing it. Cancellation of this contract may not reinstate your eligibility.",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Department of State. $50.",
@@ -57,28 +58,42 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "ri_contact",
+          "text": "Only reach out first to athletes who have finished college eligibility",
+          "detail": "If an athlete still has eligibility, wait for them to contact you. Then tell the athletic director before you reply. For a minor, contact the parents.",
+          "type": "rule",
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-14.1.htm"
+        },
+        {
+          "id": "ri_info_ad",
+          "text": "Give the athletic director any info before you give it to the athlete",
+          "type": "rule",
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-14.1.htm"
+        },
+        {
           "id": "ri_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, other pay you get for the deal, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-10.htm"
         },
         {
           "id": "ri_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete in bold capital letters next to their signature",
+          "detail": "Use Rhode Island's set wording.",
           "type": "contract",
-          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-10.htm"
         },
         {
           "id": "ri_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-10.htm"
         },
         {
           "id": "ri_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell them too. The athlete may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
           "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
@@ -86,9 +101,9 @@
         {
           "id": "ri_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Rhode Island and federal law (SPARTA) ban predating or postdating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-14.htm"
         }
       ]
     },
@@ -99,16 +114,16 @@
         {
           "id": "ri_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Each client's name and address, each contract and what you spent to recruit each athlete. The Secretary of State may inspect them.",
           "type": "recurring",
-          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-13.htm"
         },
         {
           "id": "ri_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give an athlete anything of value before they sign, or make false promises",
+          "detail": "Don't pay anyone else to steer them to you either, unless it's another registered agent.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-14.htm"
         }
       ]
     },
@@ -122,7 +137,7 @@
           "type": "deadline",
           "form": "662",
           "due_rule": "issued_at + 2y",
-          "source": "https://docs.sos.ri.gov/documents/BusinessServices/662-renewal-athlete-agent.pdf",
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-6.htm",
           "amount_usd": 25,
           "detail": "$25."
         }
@@ -138,8 +153,7 @@
     }
   ],
   "review_notes": [
-    "The 2-year term comes from a secondary source. The $25 renewal fee is in R.I. Gen. Laws 5-74.1-9.",
-    "A secondary source says Rhode Island agents may start contact only after eligibility ends. Check R.I. Gen. Laws 5-74.1.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Not re-read on 2026-10-28: whether endorsement deals are covered (5-74.1-2). The $50 and $25 fees (5-74.1-9) and the 2-year term (5-74.1-6) were confirmed the same day.",
+    "No Rhode Island NIL law changing agent rules was checked. Search the 2021 to 2026 Rhode Island session laws for NIL bills."
   ]
 }

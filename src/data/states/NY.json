@@ -9,13 +9,13 @@
   },
   "law": {
     "type": "UAAA",
-    "name": "Athlete agents (General Business Law art. 39-E)",
-    "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+    "name": "Uniform Athlete Agents Act (General Business Law art. 39-E, sections 899 to 899-p)",
+    "source": "https://www.nysenate.gov/legislation/laws/GBS/A39-E"
   },
-  "covers_nil_agents": "Yes. Educ. Law 6438-a says NIL agents must be registered.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. New York's 2022 NIL law (S.5891-F/A.5115-E) says agents who represent college athletes on NIL deals must be registered under GBL art. 39-E.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "Register with the Department of State. $100. Athletes can cancel within 5 days.",
+  "summary": "Register with the Department of State. $100, good for 2 years. Athletes can cancel within 5 days.",
   "sections": [
     {
       "id": "get_licensed",
@@ -31,7 +31,7 @@
         {
           "id": "ny_fee",
           "text": "Pay $100",
-          "detail": "Check, money order or card form. No cash.",
+          "detail": "This is what the Department of State charges. Pay by check, money order or card form. No cash.",
           "type": "payment",
           "amount_usd": 100,
           "source": "https://dos.ny.gov/get-athlete-agent-license"
@@ -61,34 +61,48 @@
           "text": "Use a written contract with all required items",
           "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-H"
         },
         {
           "id": "ny_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to the student-athlete in bold capital letters near their signature",
+          "detail": "Use the exact words the law gives. New York's warning says the athlete can cancel within 5 days, not 14.",
           "type": "contract",
-          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-H"
+        },
+        {
+          "id": "ny_tell_risk",
+          "text": "Tell the athlete before they sign that signing may cost them eligibility",
+          "type": "task",
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-L"
         },
         {
           "id": "ny_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-H"
         },
         {
           "id": "ny_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
           "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 5 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-I"
+        },
+        {
+          "id": "ny_nil_disclose",
+          "text": "Remind the athlete to show each NIL deal to their school before signing it",
+          "detail": "This is the athlete's job under New York's NIL law. The school tells them if anything in it clashes with school rules.",
+          "type": "info",
+          "source": "https://legislation.nysenate.gov/pdf/bills/2021/a5115e"
         },
         {
           "id": "ny_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-L"
         }
       ]
     },
@@ -99,16 +113,16 @@
         {
           "id": "ny_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of your athletes, every contract and what you spent to recruit each one. The Secretary of State can inspect them.",
           "type": "recurring",
-          "source": "https://dos.ny.gov/frequently-asked-questions-athlete-agent"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-K"
         },
         {
           "id": "ny_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give anything of value to an athlete or anyone else before they sign, or make false promises",
+          "detail": "New York has no 72-hour exception for gifts. Breaking this is a class A misdemeanor, or a felony if your registration is suspended or revoked.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-L"
         }
       ]
     },
@@ -122,7 +136,8 @@
           "type": "deadline",
           "amount_usd": 50,
           "due_rule": "issued_at + 2y",
-          "source": "https://dos.ny.gov/get-athlete-agent-license"
+          "source": "https://www.nysenate.gov/legislation/laws/GBS/899-E",
+          "detail": "Your registration lasts 2 years. The Department of State lists the renewal fee as $50."
         }
       ]
     }
@@ -136,7 +151,8 @@
     }
   ],
   "review_notes": [
-    "The 2-year term and 5-day cancellation window come from a secondary source. Confirm in GBL art. 39-E.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "Fee conflict: GBL 899-g says $300 to register and $150 to renew, but the Department of State's page says $100 and $50. The app uses the Department's numbers. Ask the Division of Licensing Services (518-474-4429) which is right.",
+    "The NIL law was added as Education Law 6438-a by S.5891-F/A.5115-E (2022), but the Senate's site now shows a different 6438-a. Confirm the current section number of the NIL law on nysenate.gov."
+  ],
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 5 days after signing it. Cancellation of this contract may not reinstate your eligibility."
 }

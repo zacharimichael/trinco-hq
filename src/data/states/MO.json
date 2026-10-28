@@ -10,12 +10,13 @@
   "law": {
     "type": "RUAAA",
     "name": "Revised Uniform Athlete Agents Act (RSMo 436.215 and following)",
-    "source": "https://pr.mo.gov/athleteagents-rules.asp"
+    "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.215"
   },
-  "covers_nil_agents": "Yes. RSMo 173.280 says only attorneys or Missouri-registered agents may represent college athletes for NIL.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. RSMo 173.280 says only attorneys or agents licensed by Missouri may represent college athletes for NIL.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Office of Athlete Agents. $102 with fingerprints. Expires June 30 of odd years.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) both you and your athlete agent are required to tell your athletic director, if you have an athletic director, within 72 hours after entering into an agency contract or before the next athletic event in which you participate, whichever occurs first, and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of the contract may not reinstate your eligibility.",
   "sections": [
     {
       "id": "get_licensed",
@@ -66,44 +67,83 @@
       "steps": [
         {
           "id": "mo_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "Tell every school where the athlete is enrolled. If the athlete reached out first, tell them within 10 days.",
           "type": "notice",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.245"
         },
         {
           "id": "mo_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you are registered in Missouri. Include your pay and how it's figured, anyone not on your application who gets paid, expenses the athlete pays back, your services, how long it lasts and the date signed.",
           "type": "contract",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.242"
+        },
+        {
+          "id": "mo_nil_terms",
+          "text": "For NIL work, spell out each side's duties and your fees in the contract",
+          "detail": "Missouri's NIL law says the deal must be in writing and signed by you both.",
+          "type": "contract",
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=173.280"
+        },
+        {
+          "id": "mo_nil_disclose",
+          "text": "Make sure the athlete shows their school your contract before signing",
+          "detail": "Missouri's NIL law says a college athlete must disclose a representation contract to the school before it is signed.",
+          "type": "task",
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=173.280"
         },
         {
           "id": "mo_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete box next to the athlete's signature",
           "type": "contract",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.242",
+          "detail": "Bold capital letters. Use the words from Missouri law. If the athlete is a minor, a parent or guardian signs and the warning is reworded for them."
         },
         {
           "id": "mo_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs instead if the athlete is a minor.",
           "type": "contract",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.242"
         },
         {
           "id": "mo_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.242",
+          "detail": "Give it to a parent or guardian if the athlete is a minor."
         },
         {
           "id": "mo_72h",
           "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "detail": "Do it in writing, or before the athlete's next scheduled game if that comes first. The athlete must tell them too, with your name and contact info.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.245"
+        },
+        {
+          "id": "mo_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They owe you nothing and keep anything you gave them. This right can't be waived.",
+          "type": "info",
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.248"
+        },
+        {
+          "id": "mo_late_enroll",
+          "text": "If the athlete enrolls at a school later, tell that athletic director within 72 hours",
+          "detail": "The clock starts when you knew or should have known they enrolled.",
+          "type": "notice",
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.245",
+          "applies": "sometimes"
+        },
+        {
+          "id": "mo_prior",
+          "text": "If you knew the athlete before they got an athletic scholarship, tell the school within 10 days of enrolling",
+          "detail": "This applies if you recruited them, or the relationship was meant to lead to a contract.",
+          "type": "notice",
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.245",
+          "applies": "sometimes"
         },
         {
           "id": "mo_sparta",
@@ -121,16 +161,23 @@
         {
           "id": "mo_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, every contract and your recruiting costs. The state can inspect them during business hours.",
           "type": "recurring",
-          "source": "https://pr.mo.gov/athleteagents-rules.asp"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.251"
+        },
+        {
+          "id": "mo_gift",
+          "text": "If you give an athlete anything that could cost their eligibility, tell the athletic director within 72 hours",
+          "detail": "The athlete must also sign a record saying it may cost them their eligibility. Without both, the gift is not allowed.",
+          "type": "rule",
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.254"
         },
         {
           "id": "mo_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info to get an athlete to sign, or pre-date or post-date a contract",
+          "detail": "Don't get anyone else to break these rules for you either.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=436.254"
         }
       ]
     },
@@ -140,11 +187,12 @@
       "steps": [
         {
           "id": "mo_renew",
-          "text": "Renew by June 30 of each odd year",
-          "detail": "The next renewal is June 30, 2027.",
+          "text": "Renew by June 30 of each odd year and pay $70",
+          "detail": "The renewal fee is $70. The next renewal is June 30, 2027.",
           "type": "deadline",
           "due_rule": "June 30 of each odd year",
-          "source": "https://pr.mo.gov/boards/athleteagents/375-0235.pdf"
+          "source": "https://www.sos.mo.gov/cmsimages/adrules/csr/current/20csr/20c2045-1.pdf",
+          "amount_usd": 70
         }
       ]
     }
@@ -158,6 +206,8 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The June 30 odd-year expiration comes from the application form (MO 375-0235, 2-2025). The statute section on the registration term was not read.",
+    "Missouri's NIL law (RSMo 173.280) was last changed in 2023 on the Revisor site. Check for 2025 or 2026 changes at https://revisor.mo.gov.",
+    "The criminal and civil penalty sections were not reviewed."
   ]
 }

@@ -182,18 +182,22 @@ const contractWarning = (code: string) => RULES[code]?.contract_warning ?? WARNI
 
 export function athleteTasks(a: Athlete, p: Profile): TaskDef[] {
   const steps = (RULES[a.state] && section(a.state, "every_athlete")?.steps) || [];
-  const before = steps.filter((st) => st.type === "notice");
-  const after = steps.filter((st) => st.type === "deadline" && hoursAfterSigning(st.due_rule) !== null);
+  // Steps that only apply sometimes, or only to pro contracts, stay on the state's page as rules, not to-dos.
+  const always = steps.filter((st) => !st.applies);
+  const before = always.filter((st) => st.type === "notice");
+  const after = always.filter((st) => st.type === "deadline" && hoursAfterSigning(st.due_rule) !== null);
   const notice = (st: Step, title: string, h: string, body: ReactNode, due?: Date | null, needs?: string[]): TaskDef => ({
     id: st.id, title, cta: "Sign & send", due, needs,
-    screens: () => [{ type: "doc", title: "Review the notice", body: () => (<><h4>{h}</h4><p>To: Athletic Director, {a.school}</p>{body}</>) }, sign("the notice")],
-    done: () => ({ msg: `Sent to the athletic director at ${a.school}.`, doc: `${h}: ${a.name}` }),
+    screens: () => [{ type: "doc", title: "Review the notice", body: () => (<><h4>{h}</h4><p>To: {st.to ?? `Athletic Director, ${a.school}`}</p>{body}</>) }, sign("the notice")],
+    done: () => ({ msg: `Sent to ${st.to ?? `the athletic director at ${a.school}`}.`, doc: `${h}: ${a.name}` }),
   });
 
   const t: TaskDef[] = before.map((st) => notice(st,
     st.id === "fl_nil_notice" ? `Tell ${a.school}'s athletic director before you contact ${first(a.name)}` : `${st.text} (${first(a.name)})`,
     "Notice to Athletic Director",
-    <p>{p.name}, an athlete agent, intends to contact {a.name} ({a.sport}) about name, image and likeness representation.</p>));
+    /before signing/i.test(st.text)
+      ? <p>{p.name}, an athlete agent, intends to enter into an agent contract with {a.name} ({a.sport}) for name, image and likeness representation.</p>
+      : <p>{p.name}, an athlete agent, intends to contact {a.name} ({a.sport}) about name, image and likeness representation.</p>));
   t.push({
     id: "contract", title: `Send ${first(a.name)} the NIL contract to sign`, cta: "Create & sign", needs: before.map((st) => st.id),
     screens: () => [

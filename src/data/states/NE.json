@@ -9,11 +9,11 @@
   },
   "law": {
     "type": "UAAA",
-    "name": "Uniform Athlete Agents Act (2009)",
+    "name": "Nebraska Uniform Athlete Agents Act (Neb. Rev. Stat. 48-2601 to 48-2619)",
     "source": "https://sos.nebraska.gov/licensing/athlete-agents-statutes"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement contracts (Neb. Rev. Stat. 48-2602). The NIL law also names registered athlete agents as allowed representation (48-3602).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $300, good for 2 years.",
   "sections": [
@@ -33,7 +33,8 @@
           "text": "Pay $300",
           "type": "payment",
           "amount_usd": 300,
-          "source": "https://sos.nebraska.gov/sites/default/files/doc/Athlete_Agent_Initial_Instructions.pdf"
+          "source": "https://sos.nebraska.gov/sites/default/files/doc/Athlete_Agent_Initial_Instructions.pdf",
+          "detail": "The law lets the Secretary of State set the fee. The current fee is $300."
         },
         {
           "id": "ne_submit",
@@ -60,34 +61,49 @@
           "text": "Use a written contract with all required items",
           "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://sos.nebraska.gov/licensing/athlete-agents-statutes"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2610"
         },
         {
           "id": "ne_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to the student-athlete in bold capital letters near their signature",
+          "detail": "Use the exact words the law gives. Nebraska's wording is shorter than most states'.",
           "type": "contract",
-          "source": "https://sos.nebraska.gov/licensing/athlete-agents-statutes"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2610"
+        },
+        {
+          "id": "ne_tell_risk",
+          "text": "Tell the athlete before they sign that a pro contract may cost them eligibility",
+          "detail": "Do this out loud or in writing before signing. Skipping it on purpose is a Class I misdemeanor.",
+          "type": "task",
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2614"
         },
         {
           "id": "ne_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://sos.nebraska.gov/licensing/athlete-agents-statutes"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2610"
         },
         {
           "id": "ne_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
           "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://sos.nebraska.gov/licensing/athlete-agents-statutes"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2611"
+        },
+        {
+          "id": "ne_nil_disclose",
+          "text": "Remind the athlete to report each paid NIL deal to their school",
+          "detail": "This is the athlete's job, not yours. Each school names the person who gets the report.",
+          "type": "info",
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-3604"
         },
         {
           "id": "ne_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2614"
         }
       ]
     },
@@ -98,16 +114,16 @@
         {
           "id": "ne_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of your athletes, every contract and what you spent to recruit each one. The Secretary of State can inspect them.",
           "type": "recurring",
-          "source": "https://sos.nebraska.gov/licensing/athlete-agents-statutes"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2613"
         },
         {
           "id": "ne_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give an athlete anything of value before they sign, or make false promises",
+          "detail": "Also never give anything to anyone else to get an athlete to sign. Nebraska has no 72-hour exception for gifts.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=48-2614"
         }
       ]
     },
@@ -121,7 +137,8 @@
           "type": "deadline",
           "amount_usd": 150,
           "due_rule": "issued_at + 2y",
-          "source": "https://sos.nebraska.gov/sites/default/files/doc/Athlete_Agent_Initial_Instructions.pdf"
+          "source": "https://sos.nebraska.gov/sites/default/files/doc/Athlete_Agent_Initial_Instructions.pdf",
+          "detail": "Your registration lasts 2 years. The state sends renewal papers before it runs out."
         }
       ]
     }
@@ -132,9 +149,16 @@
       "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
       "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
       "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    },
+    {
+      "item": "Nebraska LB370 (2025)",
+      "status": "Indefinitely postponed on April 17, 2026. It is dead for this session.",
+      "impact": "It would have added NIL agent rules, like a written fee schedule and a 15-day cancel right.",
+      "source": "https://nebraskalegislature.gov/FloorDocs/109/PDF/Intro/LB370.pdf"
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
-  ]
+    "The $300 and $150 fees come from the Secretary of State's instructions, not the statute (the statute lets the state set fees by rule). Confirm in the Rules and Regulations PDF on sos.nebraska.gov/licensing/athlete-agents."
+  ],
+  "contract_warning": "Warning to student-athlete. (1) If you enter into negotiations for, or sign, a professional-sports-services contract, you may lose your eligibility to compete as a student-athlete in your sport; (2) if you have an athletic director, within 72 hours after entering into this contract, both you and your athlete agent must notify your athletic director; and (3) you may cancel this contract within 14 days after signing it."
 }

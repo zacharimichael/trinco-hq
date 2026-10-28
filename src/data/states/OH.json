@@ -12,8 +12,9 @@
     "name": "Ohio athlete agent law (ORC 4771), NIL amendment effective March 20, 2026",
     "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
   },
-  "covers_nil_agents": "Yes. NIL agent contracts can't run past the athlete's eligibility.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. Ohio's agent law covers anyone who markets an athlete, and NIL agent contracts can't run past the athlete's eligibility.",
+  "contract_warning": "Warning to the student athlete: when you sign this contract, you may immediately lose your eligibility to compete in any amateur or intercollegiate athletics. Accordingly, you must give written notice that you have entered into this contract to the athletic director or person of similar position at the educational institution or institution of higher education in which you are enrolled, or to which you have formally acknowledged your plans to attend, prior to the earlier of participating in or practicing for an officially sanctioned athletic competition or intercollegiate athletic event, or seventy-two hours after entering into this contract. Do not sign this contract until you have read it and filled in any blank spaces. Under Ohio law, as a student athlete signing this contract, you have the right to rescind this contract for a period of up to ten days after the latest of the following occurrences: (a) The date the contract is signed; (b) The date the athletic director or person of similar position at the educational institution or institution of higher education in which you are enrolled, or have acknowledged plans to attend, receives notice of this contract; or (c) The last date you participate in an officially sanctioned athletic competition or intercollegiate athletic event if no notice of this contract is provided to the athletic director or person of similar position. Despite cancellation of this contract, the educational institution, institution of higher education, or intercollegiate athletic association or conference to which your institution of higher education belongs may not restore your eligibility to participate in amateur or intercollegiate athletics. If you sign this contract prior to the last officially sanctioned athletic competition or intercollegiate athletic event you participate in and fail to notify your institution of this contract, your athletic team may be required to forfeit all games in which you participated after signing. Such action also may cause your athletic team to be declared ineligible for post-season play.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Ohio Athletic Commission. $500 plus a $15,000 bond or $50,000 insurance. Good for 2 years.",
   "sections": [
@@ -25,7 +26,8 @@
           "id": "oh_app",
           "text": "Fill out the Athlete Agent registration packet",
           "type": "form",
-          "source": "https://aco.ohio.gov/wps/wcm/connect/gov/8df30ca0-6962-49e8-8eed-c05efcda2ed8/Athlete+Agent+Packet.pdf?MOD=AJPERES"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07",
+          "detail": "The law also asks for proof of your athlete trust account and a statement of your training in contracts and negotiation. Ohio lawyers send a certificate of good standing instead."
         },
         {
           "id": "oh_bond",
@@ -63,38 +65,54 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "oh_contact",
+          "text": "Wait for the athlete to contact you first",
+          "detail": "Ohio only lets you contact an athlete after they reach out to you. Then you must give notice to their school.",
+          "type": "rule",
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.15"
+        },
+        {
+          "id": "oh_materials",
+          "text": "Send the athletic director a copy of anything you send the athlete",
+          "detail": "Send the copy at the same time. This covers any written materials.",
+          "type": "rule",
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.15"
+        },
+        {
           "id": "oh_contract",
-          "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "text": "Use a written contract on a form the Ohio Athletic Commission approved",
+          "detail": "It must hold the whole deal and follow state and federal law. On page one, in bold 12-point type, say you are registered with the commission and that this does not mean it approves the contract.",
           "type": "contract",
-          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.02"
         },
         {
           "id": "oh_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put Ohio's warning to the student athlete next to their signature",
+          "detail": "Use bold 12-point type. The exact words are set by law.",
           "type": "contract",
-          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.02"
         },
         {
-          "id": "oh_copy",
-          "text": "Give the athlete a copy when they sign",
-          "type": "task",
-          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
+          "id": "oh_nil_term",
+          "text": "End any NIL contract when the athlete's college eligibility ends",
+          "detail": "Ohio bans NIL agent contracts that run past eligibility. This started March 20, 2026.",
+          "type": "contract",
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.021"
         },
         {
           "id": "oh_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 10 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next practice or game, whichever comes first. The athlete must tell them too. The athlete may cancel for 10 days after the latest of signing or the school getting notice.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.02"
         },
         {
           "id": "oh_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Ohio and federal law (SPARTA) ban post-dating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.17"
         }
       ]
     },
@@ -110,24 +128,45 @@
           "source": "https://aco.ohio.gov/wps/wcm/connect/gov/8df30ca0-6962-49e8-8eed-c05efcda2ed8/Athlete+Agent+Packet.pdf?MOD=AJPERES"
         },
         {
+          "id": "oh_trust",
+          "text": "Put all money you get for an athlete in an interest-bearing trust account",
+          "detail": "Use a bank the commission approves and tell the commission where it is. Never mix it with your own money.",
+          "type": "rule",
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.12"
+        },
+        {
           "id": "oh_no_post",
           "text": "Don't take a fee on NIL deals after eligibility ends",
+          "detail": "You can't ask for the athlete's NIL pay or NIL rights after their eligibility ends.",
           "type": "rule",
-          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.12"
+        },
+        {
+          "id": "oh_fee_share",
+          "text": "Share fees only with your own employees, and only with the athlete's written OK",
+          "type": "rule",
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.12"
+        },
+        {
+          "id": "oh_invest",
+          "text": "Tell the athlete and the commission if you own part of an investment you suggest",
+          "detail": "Also tell them about any fee you get from their investment.",
+          "type": "rule",
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.13"
         },
         {
           "id": "oh_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Each paying athlete's name and address, the fees you got, and a copy of each contract. The commission may inspect them.",
           "type": "recurring",
-          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.07"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.14"
         },
         {
           "id": "oh_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give or lend money, gifts, rides or services to recruit athletes",
+          "detail": "This includes their family and friends. Also never lie, make false promises or help break school rules. Gifts and loans are a crime in Ohio.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.17"
         }
       ]
     },
@@ -141,7 +180,8 @@
           "type": "deadline",
           "amount_usd": 500,
           "due_rule": "issued_at + 2y - 30d",
-          "source": "https://aco.ohio.gov/wps/wcm/connect/gov/8df30ca0-6962-49e8-8eed-c05efcda2ed8/Athlete+Agent+Packet.pdf?MOD=AJPERES"
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-4771.08",
+          "detail": "Registration lasts 2 years. The commission may require up to 6 hours of classes, including 2 on ethics."
         }
       ]
     }
@@ -155,8 +195,9 @@
     }
   ],
   "review_notes": [
-    "Ohio's cancellation window runs 10 days from the latest of signing, school notice or the last game. Ohio's school-notice rules differ from the uniform act. Check ORC 4771.",
-    "The ORC also mentions a trust fund (4771.12) and a training affidavit. The packet does not. Confirm.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Ohio's agent packet does not show a renewal fee. The $500 assumes renewal costs the same as a new registration. Confirm with the Ohio Athletic Commission at 330-797-2556.",
+    "The packet does not mention the trust account proof or training statement that ORC 4771.07 requires. Ask the commission how to send them.",
+    "ORC 4771.02 says contracts must be on a form the commission approved. No approved form was found. Ask the commission for it.",
+    "ORC 4771.10 lets the commission require up to 6 hours of classes per 2 years. Whether it does now was not confirmed."
   ]
 }

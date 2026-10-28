@@ -10,12 +10,13 @@
   "law": {
     "type": "RUAAA",
     "name": "Revised Uniform Athlete Agents Act (Minn. Stat. ch. 81A)",
-    "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+    "source": "https://www.revisor.mn.gov/statutes/cite/81A"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. An agency contract includes endorsement contracts, which cover pay for an athlete's publicity or fame (Minn. Stat. 81A.23).",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register online through Sircon. $500, good for 2 years.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -50,44 +51,68 @@
       "steps": [
         {
           "id": "mn_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "Tell every school where the athlete is enrolled. If the athlete reached out first, tell them within 10 days.",
           "type": "notice",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32"
         },
         {
           "id": "mn_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you are registered in Minnesota. Include your pay and how it's figured, anyone not on your application who gets paid, expenses the athlete pays back, your services, how long it lasts and the date signed.",
           "type": "contract",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.31"
         },
         {
           "id": "mn_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete box next to the athlete's signature",
           "type": "contract",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.31",
+          "detail": "Bold type. Use the words from Minnesota law. If the athlete is a minor, a parent or guardian signs and the warning is reworded for them."
         },
         {
           "id": "mn_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs instead if the athlete is a minor.",
           "type": "contract",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.31"
         },
         {
           "id": "mn_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning",
           "type": "task",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.31"
         },
         {
           "id": "mn_72h",
           "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "detail": "Do it in writing, or before the athlete's next scheduled game if that comes first. The athlete must tell them too, with your name and contact info.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32"
+        },
+        {
+          "id": "mn_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They cancel by telling you in writing. They owe you nothing and keep anything you gave them. This right can't be waived.",
+          "type": "info",
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.33"
+        },
+        {
+          "id": "mn_late_enroll",
+          "text": "If the athlete enrolls at a school later, tell that athletic director within 72 hours",
+          "detail": "The clock starts when you learn they enrolled.",
+          "type": "notice",
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32",
+          "applies": "sometimes"
+        },
+        {
+          "id": "mn_prior",
+          "text": "If you knew the athlete before they got an athletic scholarship, tell the school within 10 days of enrolling",
+          "detail": "This applies if you recruited them, or the relationship was meant to lead to a contract.",
+          "type": "notice",
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32",
+          "applies": "sometimes"
         },
         {
           "id": "mn_sparta",
@@ -105,16 +130,16 @@
         {
           "id": "mn_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, every contract and your recruiting costs for each athlete. The state can inspect them during business hours.",
           "type": "recurring",
-          "source": "https://www.revisor.mn.gov/statutes/cite/81A.32/pdf"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.34"
         },
         {
           "id": "mn_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or gifts to get an athlete to sign",
+          "detail": "Don't give anything of value to the athlete before they sign, or to anyone but the athlete or another registered agent. Don't get someone else to do it for you.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.35"
         }
       ]
     },
@@ -125,11 +150,11 @@
         {
           "id": "mn_renew",
           "text": "Renew on Sircon every 2 years and pay $400",
-          "detail": "Renewal opens 90 days before expiry.",
+          "detail": "Renewal opens 90 days before your registration ends. It runs 2 years.",
           "type": "deadline",
           "amount_usd": 400,
           "due_rule": "issued_at + 2y",
-          "source": "https://mn.gov/commerce/licensing/list/business/athlete-agent"
+          "source": "https://www.revisor.mn.gov/statutes/cite/81A.30"
         }
       ]
     }
@@ -143,6 +168,7 @@
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "No Minnesota NIL law that adds agent rules was found, and chapter 81A was last changed in 2018. Check the 2025 and 2026 session laws at https://www.revisor.mn.gov/laws/ to be sure.",
+    "The criminal and civil penalty sections (Minn. Stat. 81A.36 to 81A.362) were not reviewed."
   ]
 }

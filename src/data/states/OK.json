@@ -9,11 +9,12 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Revised Uniform Athlete Agents Act (2021)",
-    "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+    "name": "Revised Uniform Athlete Agents Act (70 O.S. 820.1 and following, 2021)",
+    "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-1/"
   },
-  "covers_nil_agents": "Yes. NIL agents must be registered and follow SPARTA.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. The act covers agents for endorsement deals, and 70 O.S. 820.24 sets rules for NIL representation agreements.",
+  "contract_warning": "Warning to student athlete. If you sign this contract: 1. You may lose your eligibility to compete as a student athlete in your sport; 2. If you have an athletic director, within seventy-two (72) hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and 3. You may cancel this contract within fourteen (14) days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Secretary of State. $1,000, good for 2 years.",
   "sections": [
@@ -32,7 +33,8 @@
           "text": "Pay $1,000",
           "type": "payment",
           "amount_usd": 1000,
-          "source": "https://forms.justia.com/oklahoma/secretary-of-state/athlete-agent-registration/application-for-registration-of-athlete-agent-72299.html"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-9/",
+          "detail": "Same fee if you're registered in another state."
         },
         {
           "id": "ok_submit",
@@ -56,51 +58,74 @@
       "steps": [
         {
           "id": "ok_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This also applies before you contact a minor's parent, or anyone you want to sway the athlete. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-11/"
         },
         {
           "id": "ok_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Say you're registered in Oklahoma and list your other states. Add your pay and how it's figured, other pay you get for the deal, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-10/"
         },
         {
           "id": "ok_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student athlete in bold in the contract",
+          "detail": "Use Oklahoma's set wording. If the athlete is a minor, change it to speak to the parent too.",
           "type": "contract",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-10/"
         },
         {
           "id": "ok_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. A parent or guardian signs it if the athlete is a minor.",
           "type": "contract",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-10/"
+        },
+        {
+          "id": "ok_minor",
+          "text": "Have a parent or guardian sign the contract if the athlete is a minor",
+          "type": "contract",
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-10/"
         },
         {
           "id": "ok_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the warning when they sign",
+          "detail": "Give it to the parent if the athlete is a minor.",
           "type": "task",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-10/"
         },
         {
           "id": "ok_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete must tell them too. The athlete (or parent of a minor) may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-11/"
+        },
+        {
+          "id": "ok_enroll",
+          "text": "Tell the new school within 72 hours if your athlete enrolls later",
+          "detail": "Count from when you knew or should have known they enrolled.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-11/",
+          "applies": "sometimes"
+        },
+        {
+          "id": "ok_nil_terms",
+          "text": "Spell out duties and fees in every NIL deal you sign",
+          "detail": "The NIL agreement must be in writing and signed by both of you. Make sure the athlete tells their school about you.",
+          "type": "contract",
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-24/"
         },
         {
           "id": "ok_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "Oklahoma and federal law (SPARTA) ban backdating or postdating it.",
           "type": "contract",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-14/"
         }
       ]
     },
@@ -111,16 +136,16 @@
         {
           "id": "ok_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Each client's name and address, each contract and what you spent to recruit each athlete. The Secretary of State may inspect them.",
           "type": "recurring",
-          "source": "https://www.sos.ok.gov/forms/FM0093.PDF"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-13/"
         },
         {
           "id": "ok_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never mislead athletes or give them anything that could cost their eligibility",
+          "detail": "A gift is only OK if you tell the athletic director within 72 hours and the athlete signs a warning. Never contact athletes while unregistered.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-14/"
         }
       ]
     },
@@ -134,7 +159,8 @@
           "type": "deadline",
           "amount_usd": 1000,
           "due_rule": "issued_at + 2y",
-          "source": "https://www.sos.ok.gov/business/forms.aspx"
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-820-6/",
+          "detail": "Use the Secretary of State's renewal form and update all your info. The fee is set in 70 O.S. 820.9."
         }
       ]
     }
@@ -148,7 +174,7 @@
     }
   ],
   "review_notes": [
-    "The fee and address were read from a copy of the SOS form on forms.justia.com because sos.ok.gov blocked automated reading. Confirm.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The statute text was read on Justia (2025 edition), because oscn.net and sos.ok.gov could not be read. Check it against the official text on oscn.net.",
+    "The mailing address was read from an older copy of the SOS form. sos.ok.gov blocked automated reading. Confirm with the Secretary of State at 405-522-2520."
   ]
 }

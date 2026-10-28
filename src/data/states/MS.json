@@ -12,10 +12,11 @@
     "name": "Uniform Athlete Agents Act (Miss. Code 73-42)",
     "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
   },
-  "covers_nil_agents": "Yes. Publicity-rights pay is part of the agency contract.",
+  "covers_nil_agents": "Yes. An agency contract includes pay for an athlete's publicity rights (Miss. Code 73-42-3(a)). Agent pay is capped at 20% of the contract.",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "Register with the Secretary of State. $200 plus a possible background check. Good for 2 years.",
+  "summary": "Register with the Secretary of State. $200 plus a possible background check. Good for 2 years. Agent pay is capped at 20%.",
+  "contract_warning": "Warning to student-athlete. If you sign this contract: (1) you may lose your eligibility to compete as a student-athlete in your sport unless this contract is serving as a publicity rights agreement pursuant to Section 37-97-103; (2) both you and your athlete agent are required to tell your athletic director, if you have an athletic director, within 72 hours after entering into an agency contract; and (3) you may cancel this contract within 14 days after signing it. Cancellation of the contract may not reinstate your eligibility.",
   "sections": [
     {
       "id": "get_licensed",
@@ -62,30 +63,60 @@
       "title": "Every new athlete",
       "steps": [
         {
+          "id": "ms_pre_notice",
+          "text": "Tell the school in writing before you first contact the athlete or their family",
+          "detail": "This covers close family too, like parents, siblings, grandparents and cousins. Send it before the first contact (Miss. Code 73-42-21).",
+          "type": "notice",
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
+        },
+        {
           "id": "ms_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, plus any other pay you get for the deal. Anyone not on your application who gets paid, expenses the athlete pays back, your services, how long it lasts and the date signed (Miss. Code 73-42-19).",
           "type": "contract",
           "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
         },
         {
+          "id": "ms_fee_cap",
+          "text": "Keep your pay at 20% or less of the contract",
+          "detail": "Mississippi caps agent pay at 20% of the agency contract (Miss. Code 73-42-3(a)).",
+          "type": "rule",
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
+        },
+        {
           "id": "ms_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the warning to student-athlete box next to the athlete's signature",
           "type": "contract",
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf",
+          "detail": "Bold capital letters. Use the exact words from Mississippi law (Miss. Code 73-42-19)."
+        },
+        {
+          "id": "ms_elig_warn",
+          "text": "Tell the athlete before they sign that it may cost them their eligibility",
+          "detail": "Skipping this is against the law (Miss. Code 73-42-27).",
+          "type": "task",
           "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
         },
         {
           "id": "ms_copy",
           "text": "Give the athlete a copy when they sign",
           "type": "task",
-          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf",
+          "detail": "Miss. Code 73-42-19."
         },
         {
           "id": "ms_72h",
           "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "detail": "Or before the athlete's next scheduled game, if that comes first. The athlete must tell them too (Miss. Code 73-42-21).",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
+        },
+        {
+          "id": "ms_cancel",
+          "text": "Let the athlete cancel within 14 days if they want",
+          "detail": "They owe you nothing and keep anything you gave them. This right can't be waived (Miss. Code 73-42-23).",
+          "type": "info",
           "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
         },
         {
@@ -104,16 +135,16 @@
         {
           "id": "ms_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, every contract and your recruiting costs. The state can inspect them (Miss. Code 73-42-25).",
           "type": "recurring",
           "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
         },
         {
           "id": "ms_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or gifts to get an athlete to sign",
+          "detail": "Don't give anything of value before they sign, or to anyone but the athlete or another registered agent. It's a felony, with a fine up to $10,000 and up to 2 years in prison (Miss. Code 73-42-27, 73-42-29).",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf"
         }
       ]
     },
@@ -126,9 +157,9 @@
           "text": "Renew every 2 years",
           "type": "deadline",
           "due_rule": "issued_at + 2y",
-          "source": "https://law.justia.com/codes/mississippi/2014/title-73/chapter-42/section-73-42-17/",
+          "source": "https://www.sos.ms.gov/sites/default/files/regulation-enforcement/Uniform%20Athlete%20Agent%20Act_2025.pdf",
           "amount_usd": 200,
-          "detail": "$200, plus the cost of any background check."
+          "detail": "$200, plus the cost of any background check (Miss. Code 73-42-11, 73-42-17)."
         }
       ]
     }
@@ -142,7 +173,8 @@
     }
   ],
   "review_notes": [
-    "A secondary source says Mississippi caps agent pay at 20% of publicity-rights deals. Confirm in Miss. Code 73-42.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "The 20% pay cap is in Miss. Code 73-42-3(a): agent pay may not exceed 20% of the agency contract. The law doesn't say how to count it. Have a lawyer confirm what the 20% is measured against.",
+    "Steps cite the Secretary of State's 2025 copy of the act. Check https://billstatus.ls.state.ms.us for any 2026 changes to chapter 73-42.",
+    "The phone number was not shown on the Secretary of State athlete agent page. Confirm it at https://www.sos.ms.gov/contact-us."
   ]
 }

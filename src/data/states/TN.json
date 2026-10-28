@@ -10,12 +10,13 @@
   "law": {
     "type": "RUAAA",
     "name": "Revised Uniform Athlete Agents Act (T.C.A. 49-7-2101 and following)",
-    "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+    "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/"
   },
-  "covers_nil_agents": "Yes. NIL agents must be registered under the act.",
-  "last_researched": "2026-10-22",
+  "covers_nil_agents": "Yes. Tenn. Code 49-7-2802(h) says NIL agents must be registered and follow the athlete agent act.",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
-  "summary": "Register with the Secretary of State. About $500, good for 2 years.",
+  "summary": "Register with the Secretary of State. $500, good for 2 years.",
+  "contract_warning": "Warning to student-athlete\nIf you sign this contract:\n(1) You may lose your eligibility to compete as a student athlete in your sport;\n(2) If you have an athletic director, within 72 hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and\n(3) You may cancel this contract within 14 days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "sections": [
     {
       "id": "get_licensed",
@@ -33,13 +34,14 @@
           "text": "Pay $500",
           "type": "payment",
           "amount_usd": 500,
-          "source": "https://sos.tn.gov/node/580"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2109/",
+          "detail": "Same fee if you're registered in another state. Fees aren't refunded."
         },
         {
           "id": "tn_7d",
           "text": "If an athlete contacts you first, apply within 7 days",
           "type": "rule",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2104/"
         },
         {
           "id": "tn_school",
@@ -56,49 +58,73 @@
       "steps": [
         {
           "id": "tn_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "Send a copy to the school's general counsel. If the athlete reached out first, tell them within 10 days.",
           "type": "notice",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2111/"
         },
         {
           "id": "tn_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length, your address for notices and date signed.",
           "type": "contract",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2110/"
+        },
+        {
+          "id": "tn_notary",
+          "text": "Sign the contract in front of a notary",
+          "detail": "Tennessee requires it. A parent or guardian signs if the athlete is a minor.",
+          "type": "contract",
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2110/"
         },
         {
           "id": "tn_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the state's warning in bold next to the athlete's signature",
           "type": "contract",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2110/",
+          "detail": "Use the exact words in the warning box."
         },
         {
           "id": "tn_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. It must be notarized too. A parent or guardian signs if the athlete is a minor.",
           "type": "contract",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2110/"
         },
         {
           "id": "tn_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a signed, notarized copy of the contract and the warning",
           "type": "task",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2110/",
+          "detail": "Do it at signing."
         },
         {
           "id": "tn_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Tell the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. Copy the school's general counsel. The athlete must tell them too.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2111/"
+        },
+        {
+          "id": "tn_cancel",
+          "text": "Let the athlete cancel in writing within 14 days",
+          "detail": "They can't give up this right. If they cancel, they owe you nothing.",
+          "type": "info",
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2112/"
+        },
+        {
+          "id": "tn_enroll",
+          "text": "If you signed before the athlete enrolled, tell the new school's athletic director within 72 hours",
+          "detail": "The clock starts when you knew or should have known they enrolled. Copy the school's general counsel.",
+          "type": "notice",
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2111/",
+          "applies": "sometimes"
         },
         {
           "id": "tn_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law (49-7-2114) and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         },
@@ -107,7 +133,14 @@
           "text": "List your Tennessee registration in every contract",
           "detail": "Also list the other states where you're registered.",
           "type": "contract",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2110/"
+        },
+        {
+          "id": "tn_nil_term",
+          "text": "Don't let an NIL deal last past the athlete's time at the school",
+          "detail": "This goes for your agent deal and the NIL deals you get them.",
+          "type": "contract",
+          "source": "https://codes.findlaw.com/tn/title-49-education/tn-code-sect-49-7-2802/"
         }
       ]
     },
@@ -118,16 +151,29 @@
         {
           "id": "tn_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses of clients, every contract, and what you spent recruiting each athlete. Count 5 years from each signing.",
           "type": "recurring",
-          "source": "https://sos.tn.gov/businesses/faqs/what-is-the-law-for-athlete-agents-in-tennessee"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2113/"
         },
         {
           "id": "tn_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never give false info or anything of value to get an athlete to sign",
+          "detail": "Don't have anyone do it for you either. Federal law (SPARTA) has the same kind of rules.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2114/"
+        },
+        {
+          "id": "tn_post",
+          "text": "Post your registration certificate in each Tennessee office",
+          "detail": "A clear copy is fine.",
+          "type": "rule",
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2114/"
+        },
+        {
+          "id": "tn_proof",
+          "text": "Show proof of registration to every athlete you contact",
+          "type": "rule",
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2114/"
         }
       ]
     },
@@ -141,7 +187,8 @@
           "type": "deadline",
           "amount_usd": 200,
           "due_rule": "issued_at + 2y",
-          "source": "https://sos.tn.gov/node/580"
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-7/part-21/section-49-7-2109/",
+          "detail": "Registration lasts 2 years and ends on the date printed on it. The state doesn't warn you."
         }
       ]
     }
@@ -155,7 +202,7 @@
     }
   ],
   "review_notes": [
-    "The $500 and $200 fees come from a secondary source. T.C.A. 49-7-2109 sets them. Confirm.",
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Statute text was read on Justia (2024 and 2025 Tennessee Code) and FindLaw (current as of Jan 2, 2024). The official code is on LexisNexis. Check it for 2025 and 2026 changes, including SB 536 (signed May 1, 2025), which changed the NIL law.",
+    "The form number SS-3067 isn't on the Secretary of State's page. Confirm it at 615-253-6658."
   ]
 }

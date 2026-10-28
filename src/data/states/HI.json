@@ -9,10 +9,11 @@
   },
   "law": {
     "type": "RUAAA",
-    "name": "Revised Uniform Athlete Agents Act (2019)",
-    "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+    "name": "Revised Uniform Athlete Agents Act (HRS ch. 481Z)",
+    "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0002.htm"
   },
-  "covers_nil_agents": "Yes. The act covers endorsement contracts.",
+  "covers_nil_agents": "Probably. The act covers endorsement contracts (paid use of an athlete's fame), but it never says NIL by name.",
+  "contract_warning": "Warning to student athlete\nIf you sign this contract: (1) you may lose your eligibility to compete as a student athlete in your sport; (2) if you have an athletic director, within seventy-two hours after signing this contract or before the next scheduled athletic event in which you participate, whichever occurs first, both you and your athlete agent must notify your athletic director that you have entered into this contract and provide the name and contact information of the athlete agent; and (3) you may cancel this contract within fourteen days after signing it. Cancellation of this contract may not reinstate your eligibility as a student athlete in your sport.",
   "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with DCCA. $357 or $497 depending on when you apply. Expires June 30 of even years.",
@@ -59,49 +60,59 @@
       "steps": [
         {
           "id": "hi_pre_notice",
-          "text": "Tell the athletic director before you first contact the athlete",
-          "detail": "If the athlete reached out first, tell the athletic director within 10 days.",
+          "text": "Tell the athletic director in writing before you first contact the athlete",
+          "detail": "This counts for contact through a parent or anyone else too. If the athlete reached out first, tell the athletic director within 10 days.",
           "type": "notice",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0011.htm"
         },
         {
           "id": "hi_contract",
           "text": "Use a written contract with all required items",
-          "detail": "Your pay and how it's figured, anyone else being paid, expenses, services, length and date signed.",
+          "detail": "That you're registered in Hawaii and where else, your pay and how it's figured, any other pay you get, anyone else being paid, expenses, services, length and date signed.",
           "type": "contract",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0010.htm"
         },
         {
           "id": "hi_warning",
-          "text": "Put the WARNING TO STUDENT ATHLETE box next to their signature",
+          "text": "Put the bold Warning to Student Athlete notice in the contract",
+          "detail": "Use the exact words Hawaii gives. If the athlete is a minor, reword it for the parent.",
           "type": "contract",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0010.htm"
         },
         {
           "id": "hi_ack",
           "text": "Have the athlete sign a separate eligibility warning",
-          "detail": "A parent or guardian signs too if the athlete is a minor.",
+          "detail": "It says signing may cost them their eligibility. If the athlete is a minor, a parent or guardian signs it and the contract.",
           "type": "contract",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0010.htm"
         },
         {
           "id": "hi_copy",
-          "text": "Give the athlete a copy when they sign",
+          "text": "Give the athlete a copy of the contract and the signed warning when they sign",
+          "detail": "Give it to the parent or guardian if the athlete is a minor.",
           "type": "task",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0010.htm"
         },
         {
           "id": "hi_72h",
-          "text": "Notify the athletic director within 72 hours of signing",
-          "detail": "Or before the athlete's next game, whichever comes first. The athlete may cancel within 14 days.",
+          "text": "Notify the athletic director in writing within 72 hours of signing",
+          "detail": "Or before the athlete's next game, whichever comes first. The athlete (or a parent, for a minor) may cancel within 14 days.",
           "type": "deadline",
           "due_rule": "min(signed_at + 72h, next_event)",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0011.htm"
+        },
+        {
+          "id": "hi_enroll",
+          "text": "If the athlete enrolls at a new school, tell its athletic director within 72 hours",
+          "detail": "The clock starts when you learn they enrolled. If you knew them before they got a sports scholarship, tell that school within 10 days.",
+          "type": "notice",
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0011.htm",
+          "applies": "sometimes"
         },
         {
           "id": "hi_sparta",
           "text": "Date the contract the day it's signed",
-          "detail": "Federal law (SPARTA) bans pre-dating or post-dating it.",
+          "detail": "State law and federal law (SPARTA) both ban pre-dating or post-dating it.",
           "type": "contract",
           "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
         }
@@ -114,16 +125,16 @@
         {
           "id": "hi_records",
           "text": "Keep client records for 5 years",
-          "detail": "Names and addresses, contracts and recruiting costs.",
+          "detail": "Names and addresses, contracts and recruiting costs. The state can inspect them.",
           "type": "recurring",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0013.htm"
         },
         {
           "id": "hi_never",
-          "text": "Never give gifts or money to recruit athletes or make false promises",
-          "detail": "This is a state and federal (SPARTA) rule.",
+          "text": "Never lie or make false promises to sign an athlete",
+          "detail": "Don't give the athlete anything of value before they sign. Don't give anything to anyone else, like a coach, except another registered agent.",
           "type": "rule",
-          "source": "https://www.ftc.gov/legal-library/browse/statutes/sports-agent-responsibility-trust-act"
+          "source": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481Z/HRS_0481Z-0014.htm"
         }
       ]
     },
@@ -149,9 +160,21 @@
       "status": "Passed the Senate on Sept 28, 2026. The House is out until Nov 9 and leaders say it won't pass as-is. It dies if not enacted by Jan 3, 2027.",
       "impact": "It would require every NIL agent to register in a state, cap agent fees at 5% of an endorsement deal and limit contracts to the athlete's eligibility.",
       "source": "https://www.nilrevolution.com/2026/10/senate-passes-the-protect-college-sports-act-of-2026-house-action-next/"
+    },
+    {
+      "item": "Hawaii SB 3261 (2026)",
+      "status": "Passed the Senate's second reading on Feb 19, 2026, then stopped in committee. It appears to have died when the 2026 session ended.",
+      "impact": "It would make anyone giving NIL or marketing help to a student athlete register as an athlete agent.",
+      "source": "https://data.capitol.hawaii.gov/sessions/session2026/bills/SB3261_.PDF"
+    },
+    {
+      "item": "Hawaii SB 3263 (2026), University of Hawaii NIL law",
+      "status": "Passed final reading in the House on May 8, 2026. Whether the governor signed it was not confirmed.",
+      "impact": "UH athletes could cancel an NIL deal within 10 business days and must report deals of $600 or more. Agents must follow HRS 481Z.",
+      "source": "https://data.capitol.hawaii.gov/sessions/session2026/bills/SB3263_CD1_.pdf"
     }
   ],
   "review_notes": [
-    "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
+    "Confirm on capitol.hawaii.gov whether SB 3263 (2026) became law. If it did, add the 10-business-day NIL cancel window for UH athletes."
   ]
 }
