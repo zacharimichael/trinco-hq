@@ -13,7 +13,7 @@
     "source": "https://webserver.rilegislature.gov/Statutes/TITLE5/5-74.1/5-74.1-11.htm"
   },
   "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with the Department of State. $50.",
   "sections": [
@@ -122,7 +122,9 @@
           "type": "deadline",
           "form": "662",
           "due_rule": "issued_at + 2y",
-          "source": "https://docs.sos.ri.gov/documents/BusinessServices/662-renewal-athlete-agent.pdf"
+          "source": "https://docs.sos.ri.gov/documents/BusinessServices/662-renewal-athlete-agent.pdf",
+          "amount_usd": 25,
+          "detail": "$25."
         }
       ]
     }
@@ -136,7 +138,7 @@
     }
   ],
   "review_notes": [
-    "The $25 renewal fee and 2-year term come from a secondary source.",
+    "The 2-year term comes from a secondary source. The $25 renewal fee is in R.I. Gen. Laws 5-74.1-9.",
     "A secondary source says Rhode Island agents may start contact only after eligibility ends. Check R.I. Gen. Laws 5-74.1.",
     "The contract and school-notice steps follow the uniform act's standard text. Check them against this state's statute before launch."
   ]

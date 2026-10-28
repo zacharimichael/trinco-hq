@@ -13,7 +13,7 @@
     "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
   },
   "covers_nil_agents": "Yes. The act covers endorsement contracts.",
-  "last_researched": "2026-10-22",
+  "last_researched": "2026-10-28",
   "attorney_reviewed": false,
   "summary": "Register with DCCA. $357 or $497 depending on when you apply. Expires June 30 of even years.",
   "sections": [
@@ -134,10 +134,11 @@
         {
           "id": "hi_renew",
           "text": "Renew by June 30 of each even year",
-          "detail": "The state mails a renewal about 2 months before. Missing it forfeits your registration.",
+          "detail": "$280. The state mails a renewal postcard May 1. Late renewal (within a year) costs $355. After that you must reapply.",
           "type": "deadline",
           "due_rule": "June 30 of each even year",
-          "source": "https://cca.hawaii.gov/pvl/files/2024/04/Require-App-Uniform-Athlete-Agent-0424.pdf"
+          "source": "https://cca.hawaii.gov/?p=4647",
+          "amount_usd": 280
         }
       ]
     }

@@ -83,7 +83,7 @@ export function StatePanel({ code, athletes = [], onClose }: { code: string; ath
             )}
           </>) : (<>
             {se.id === "every_athlete" && <p className="muted" style={{ margin: 0 }}>We handle these for you each time you add an athlete.</p>}
-            {se.id === "renew" && <p className="muted" style={{ margin: 0 }}>We&apos;ll remind you and you&apos;ll renew right here.</p>}
+            {se.id === "renew" && se.steps.some((st) => st.type === "deadline") && <p className="muted" style={{ margin: 0 }}>We&apos;ll remind you and you&apos;ll renew right here.</p>}
             {se.steps.map((st) => (
               <div className="step" key={st.id}>
                 <span className={`mark ${st.type === "rule" || se.id === "stay_compliant" ? "rule" : "list"}`}>

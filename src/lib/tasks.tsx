@@ -284,7 +284,7 @@ export function todos(s: AppState): Todo[] {
     }
   for (const code of Object.keys(RULES)) {
     if (!RULES[code].license_required || status(code, s.done).key !== "go") continue;
-    for (const st of section(code, "renew")?.steps ?? [])
+    for (const st of (section(code, "renew")?.steps ?? []).filter((x) => x.type === "deadline"))
       out.push({ key: `renew_${st.id}`, title: `Renew your ${RULES[code].name} license`, where: `${RULES[code].name}${st.amount_usd ? ` · ${money(st.amount_usd)}` : ""}`, due: renewDue(st.due_rule, s.licensedOn?.[code]), later: true });
   }
   const t = (d: Date | null) => (d ? d.getTime() : Infinity);
