@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "./store";
-import { allSchools, blankStaff, missingRosterPlayers, newPlayer, schoolById, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
+import { allSchools, missingRosterPlayers, newPlayer, schoolById, staffFor, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
 
 /** Scouting data plus the edits the player and depth chart screens need. */
 export function useScouting() {
@@ -16,7 +16,7 @@ export function useScouting() {
     canEdit,
     schools: allSchools(sc),
     school: schoolById(sc),
-    staffOf: (schoolId: string): SchoolStaff => sc.staff[schoolId] ?? blankStaff(),
+    staffOf: (schoolId: string): SchoolStaff => staffFor(sc.staff, schoolId),
     setStaff: (schoolId: string, staff: SchoolStaff) => edit((s) => { s.staff[schoolId] = staff; }),
     setPlayer: (id: string, patch: Partial<Player>) => edit((s) => {
       const p = s.players.find((x) => x.id === id);

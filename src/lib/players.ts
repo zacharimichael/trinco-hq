@@ -1,4 +1,5 @@
 import { SCHOOLS, slug, type School } from "@/data/schools";
+import { HEAD_COACHES } from "@/data/head-coaches";
 import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roster-specialists";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
@@ -34,6 +35,12 @@ export type CoachRole = "HC" | "GM" | "ST";
 export const COACH_LABEL: Record<CoachRole, string> = { HC: "Head coach", GM: "General manager", ST: "Special teams coach" };
 export interface SchoolStaff { HC: Contact; GM: Contact; ST: Contact; decider: CoachRole | null }
 export const blankStaff = (): SchoolStaff => ({ HC: blankContact(), GM: blankContact(), ST: blankContact(), decider: null });
+/** A school's saved contacts, with the 2026 head coach's name filled in when none has been typed. */
+export function staffFor(staff: Record<string, SchoolStaff>, schoolId: string): SchoolStaff {
+  const s = staff[schoolId] ?? blankStaff();
+  const hc = HEAD_COACHES[schoolId];
+  return hc && !s.HC.name.trim() ? { ...s, HC: { ...s.HC, name: hc } } : s;
+}
 
 export interface Film {
   kind: "Hudl" | "OnForm" | "Video" | "Link";

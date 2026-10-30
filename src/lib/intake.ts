@@ -1,7 +1,7 @@
 import type { Change } from "./intakeSchema";
 import type { AppState, CalEvent, CallItem } from "./model";
 import {
-  blankStaff, newId, newPlayer, NIL_YEARS, SCHOOL_YEARS, schoolById, allSchools,
+  blankStaff, newId, newPlayer, NIL_YEARS, SCHOOL_YEARS, schoolById, allSchools, staffFor,
   type CoachRole, type Player, type Pos, type Scouting, type Talk,
 } from "./players";
 
@@ -64,7 +64,7 @@ export function buildContext(s: AppState, playerId: string) {
   const full = p && (({ film, talks, hsCoach, ...rest }) => ({ ...rest, school: school(rest.school)?.name ?? "", recentCalls: talks.slice(0, 5) }))(p); // eslint-disable-line @typescript-eslint/no-unused-vars
   return {
     player: full ?? null,
-    schoolCoaches: p ? sc.staff[p.school] ?? null : null,
+    schoolCoaches: p ? staffFor(sc.staff, p.school) : null,
     otherPlayers: sc.players.filter((x) => x.id !== playerId && x.name).map(brief),
     openCalls: (s.calls ?? []).filter((c) => !c.done).map(({ name, why, due }) => ({ name, why, due })),
     addedSchools: sc.extraSchools.map((x) => x.name),
