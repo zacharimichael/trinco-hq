@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Choice, ContactFields, Num, Rating, Text, YesNo } from "@/components/Fields";
+import { Choice, ContactFields, Num, Rating, YesNo } from "@/components/Fields";
 import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
+import { TransferField } from "@/components/TransferField";
 import {
   COACH_LABEL, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
   type CoachRole, type Fact, type Film, type Player, type Talk,
@@ -108,7 +109,7 @@ export default function PlayerPage() {
             <label className="agree"><input type="checkbox" checked={p.allAmerican} onChange={(e) => set({ allAmerican: e.target.checked })} /> All-American</label>
             <label className="agree"><input type="checkbox" checked={p.allConference} onChange={(e) => set({ allConference: e.target.checked })} /> All-Conference</label>
           </div>
-          <Text label="Transferring?" value={p.transfer ?? ""} placeholder="e.g. In the portal" onChange={(v) => set({ transfer: v || null })} />
+          <TransferField value={p.transfer ?? null} onChange={(transfer) => set({ transfer })} />
         </div>
 
         <div className="card sec">

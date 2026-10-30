@@ -27,7 +27,7 @@ export const FIELDS: Record<string, { label: string; kind: Kind; options?: reado
   allAmerican: { label: "All-American", kind: "bool" },
   allConference: { label: "All-Conference", kind: "bool" },
   client: { label: "Signed with us", kind: "bool" },
-  transfer: { label: "Transferring", kind: "text", hint: "e.g. \"In the portal\" or \"Transferring to Auburn\"; \"\" if staying" },
+  transfer: { label: "Transferring", kind: "text", hint: "\"Open to transferring\" if willing to move, \"In the portal\" once entered, or e.g. \"Committed to Auburn\"; \"\" if staying" },
   lsRating: { label: "Long snapper rating", kind: "int", min: 1, max: 99 },
   kRating: { label: "Kicker rating", kind: "int", min: 1, max: 99 },
   pRating: { label: "Punter rating", kind: "int", min: 1, max: 99 },

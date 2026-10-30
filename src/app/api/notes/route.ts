@@ -35,7 +35,7 @@ Return a list of changes. Each change has a "kind":
 
 Rules:
 - Players: match people in the note to "player" (the profile this call was logged on) or "otherPlayers" by name, school, position and depth role. "Their backup snapper" means the backup LS at the same school as the player. Use the existing id when it's clearly the same person.
-- A player moving schools: set "transfer" (e.g. "In the portal", "Transferring to Auburn"). Only set "school" once they've actually enrolled somewhere new; then also add the old school with field "priorSchools".
+- A player willing or planning to move schools: set "transfer" ("Open to transferring" if they'd consider it, "In the portal" once entered, or e.g. "Committed to Auburn"). This puts them on the agency's transfer list. Only set "school" once they've actually enrolled somewhere new; then also add the old school with field "priorSchools".
 - Schools: use the exact name from the school list below or from addedSchools.
 - Dates: work out real dates from words like "next Tuesday" using today's date.
 - Don't repeat what's already in the profile, on the call list or on the calendar.
