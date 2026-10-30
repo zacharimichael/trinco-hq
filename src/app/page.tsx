@@ -78,6 +78,7 @@ export default function AgencyHome() {
           <div className="summary">
             {POSITIONS.map((p) => <span className="pill ath" key={p}><b>{players.filter((x) => x.pos === p).length}</b> {POS_SHORT[p]}</span>)}
             <span className="pill ath"><b>{players.filter((x) => x.client).length}</b> Signed</span>
+            <span className="pill ath"><b>{players.filter((x) => x.name && x.transfer).length}</b> Transferring</span>
           </div>
           <p className="muted" style={{ margin: 0 }}>
             {lastCall ? <>Last call: {lastCall.player.name || "a player"}, {fmt(lastCall.date)}</> : "No calls logged yet."}
