@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Choice, ContactFields } from "@/components/Fields";
 import type { School } from "@/data/schools";
-import { COACH_LABEL, money, nilNow, overall, POS_LABEL, positionsFor, yearShort, type CoachRole, type Player, type Pos } from "@/lib/players";
+import { COACH_LABEL, coachSearchUrl, money, nilNow, overall, POS_LABEL, positionsFor, yearShort, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 const ROLES: CoachRole[] = ["HC", "GM", "ST"];
@@ -47,7 +47,7 @@ export function SchoolDepth({ s, ps, pos }: { s: School; ps: Player[]; pos: Pos 
           <div key={r} className={`coach ${staff.decider === r ? "decider" : ""}`}>
             <div className="coachhead"><b>{COACH_LABEL[r]}</b>{staff.decider === r && <span className="badge go">Decision maker</span>}</div>
             {editing ? <ContactFields value={staff[r]} onChange={(c) => setStaff(s.id, { ...staff, [r]: c })} />
-              : <small className="muted">{[staff[r].name, staff[r].phone, staff[r].email].filter(Boolean).join(" · ") || "Not added yet"}</small>}
+              : <small className="muted">{[staff[r].name, staff[r].phone, staff[r].email].filter(Boolean).join(" · ") || <>Not added yet · <a href={coachSearchUrl(s.name, r)} target="_blank" rel="noreferrer">Search for them</a></>}</small>}
           </div>
         ))}
         {editing && <Choice label="Who makes the decision?" options={ROLES.map((r) => COACH_LABEL[r])} value={staff.decider ? COACH_LABEL[staff.decider] : null}
