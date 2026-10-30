@@ -8,7 +8,7 @@ import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  COACH_LABEL, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
+  COACH_LABEL, coachSearchUrl, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
   type CoachRole, type Fact, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -140,6 +140,7 @@ export default function PlayerPage() {
                 <div className="coachhead">
                   <h3>{COACH_LABEL[r]}</h3>
                   {staff.decider === r && <span className="badge go">Decision maker</span>}
+                  {!staff[r].name.trim() && <a className="linkbtn" href={coachSearchUrl(sch.name, r)} target="_blank" rel="noreferrer">Search for them</a>}
                 </div>
                 <ContactFields value={staff[r]} onChange={(c) => setStaff(p.school, { ...staff, [r]: c })} />
               </div>
