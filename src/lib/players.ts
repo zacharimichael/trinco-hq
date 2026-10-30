@@ -1,5 +1,5 @@
 import { SCHOOLS, slug, type School } from "@/data/schools";
-import { LS_CHECKED_DATE, LS_SOURCE, ROSTER_SNAPPERS } from "@/data/long-snappers";
+import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roster-specialists";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
@@ -186,14 +186,14 @@ export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   return { ...emptyScouting(), ...s, players, staff };
 }
 
-/** Real long snappers from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
-export function missingSnappers(s: Scouting): Player[] {
+/** Real long snappers and punters from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
+export function missingRosterPlayers(s: Scouting, pos?: "LS" | "P"): Player[] {
   const have = new Set(s.players.flatMap((p) => [p.id, `${p.school}|${p.name.trim().toLowerCase()}`]));
-  return ROSTER_SNAPPERS.filter((r) => !have.has(r.id) && !have.has(`${r.school}|${r.name.toLowerCase()}`)).map((r) => ({
-    ...newPlayer("LS", r.school),
+  return ROSTER_PLAYERS.filter((r) => (!pos || r.pos === pos) && !have.has(r.id) && !have.has(`${r.school}|${r.name.toLowerCase()}`)).map((r) => ({
+    ...newPlayer(r.pos, r.school),
     id: r.id, name: r.name, year: r.year, height: r.height, weight: r.weight, priorSchools: r.priorSchools,
     source: r.checked
-      ? { label: "School roster", url: r.checked, date: LS_CHECKED_DATE }
-      : { label: LS_SOURCE.label, url: r.espn ? `https://www.espn.com/college-football/player/_/id/${r.espn}` : LS_SOURCE.url, date: LS_SOURCE.date },
+      ? { label: "School roster", url: r.checked, date: ROSTER_CHECKED_DATE }
+      : { label: ROSTER_SOURCE.label, url: r.espn ? `https://www.espn.com/college-football/player/_/id/${r.espn}` : ROSTER_SOURCE.url, date: ROSTER_SOURCE.date },
   }));
 }

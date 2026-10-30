@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "./store";
-import { allSchools, blankStaff, missingSnappers, newPlayer, schoolById, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
+import { allSchools, blankStaff, missingRosterPlayers, newPlayer, schoolById, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
 
 /** Scouting data plus the edits the player and depth chart screens need. */
 export function useScouting() {
@@ -27,8 +27,8 @@ export function useScouting() {
       edit((s) => { s.players.push(p); });
       return p.id;
     },
-    /** Adds every real long snapper from the 2026 rosters that isn't on the depth charts yet. */
-    addRosterSnappers: () => edit((s) => { s.players.push(...missingSnappers(s)); }),
+    /** Adds every real long snapper and punter from the 2026 rosters that isn't on the depth charts yet. */
+    addRosterPlayers: () => edit((s) => { s.players.push(...missingRosterPlayers(s)); }),
     removePlayer: (id: string) => edit((s) => { s.players = s.players.filter((x) => x.id !== id); }),
     edit,
   };
