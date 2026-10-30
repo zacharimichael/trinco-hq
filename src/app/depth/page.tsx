@@ -162,6 +162,7 @@ function ByConference({ confs, players, pos, school }: { confs: string[]; player
 function BySchool({ schools, players, pos }: { schools: School[]; players: Player[]; pos: Pos | "All" }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<string | null>(null);
+  const { staffOf } = useScouting();
   const at = (id: string) => players.filter((p) => p.school === id);
   const list = schools
     .filter((s) => !q || s.name.toLowerCase().includes(q.toLowerCase()))
@@ -177,7 +178,7 @@ function BySchool({ schools, players, pos }: { schools: School[]; players: Playe
         {list.map(({ s, ps }) => (
           <div key={s.id} className="card school">
             <button type="button" className="schoolhead" aria-expanded={open === s.id} onClick={() => setOpen(open === s.id ? null : s.id)}>
-              <span className="grow"><b>{s.name}</b><small>{s.division} · {s.conference} · {s.state}</small></span>
+              <span className="grow"><b>{s.name}</b><small>{[s.division, s.conference, s.state, staffOf(s.id).HC.name && `HC ${staffOf(s.id).HC.name}`].filter(Boolean).join(" · ")}</small></span>
               {ps.length > 0 && <span className="chip">{ps.length} {ps.length === 1 ? "player" : "players"} · {money(ps.reduce((a, p) => a + nilNow(p), 0))}</span>}
               <span aria-hidden>{open === s.id ? "▴" : "▾"}</span>
             </button>
