@@ -56,7 +56,8 @@ function seed(): AppState {
 type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events">;
 const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [] });
 
-const ROSTER_IDS = { LS: new Set(ROSTER_PLAYERS.filter((r) => r.pos === "LS").map((r) => r.id)), P: new Set(ROSTER_PLAYERS.filter((r) => r.pos === "P").map((r) => r.id)) };
+const ROSTER_POSITIONS = ["LS", "P", "K"] as const;
+const ROSTER_IDS = Object.fromEntries(ROSTER_POSITIONS.map((pos) => [pos, new Set(ROSTER_PLAYERS.filter((r) => r.pos === pos).map((r) => r.id))]));
 
 /** Firm-wide data the owner saves to firms.data. */
 type FirmData = { deals?: Deal[]; scouting?: Scouting };
@@ -191,10 +192,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const live = await loadLive(s);
     if (!live) return setMode("needs-firm");
     saved.current = { member: memberData(live), firm: firmData(live), stage: live.me?.stage ?? 0 };
-    // The first time an owner or editor opens the app, fill the depth charts with the real 2026 long snappers and punters,
+    // The first time an owner or editor opens the app, fill the depth charts with the real 2026 long snappers, punters and kickers,
     // each position once. Left out of the saved copy so they save like any other change. After that, the Depth charts button adds new ones.
     const lead = live.me?.role === "owner" || live.me?.role === "editor";
-    if (lead) for (const pos of ["LS", "P"] as const)
+    if (lead) for (const pos of ROSTER_POSITIONS)
       if (!live.scouting.players.some((p) => ROSTER_IDS[pos].has(p.id))) live.scouting = { ...live.scouting, players: [...live.scouting.players, ...missingRosterPlayers(live.scouting, pos)] };
     setState(live);
     setMode("live");

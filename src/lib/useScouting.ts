@@ -27,7 +27,7 @@ export function useScouting() {
       edit((s) => { s.players.push(p); });
       return p.id;
     },
-    /** Adds every real long snapper and punter from the 2026 rosters that isn't on the depth charts yet. */
+    /** Adds every real long snapper, punter and kicker from the 2026 rosters that isn't on the depth charts yet. */
     addRosterPlayers: () => edit((s) => { s.players.push(...missingRosterPlayers(s)); }),
     removePlayer: (id: string) => edit((s) => { s.players = s.players.filter((x) => x.id !== id); }),
     edit,

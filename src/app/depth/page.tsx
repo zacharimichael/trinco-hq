@@ -45,7 +45,7 @@ export default function DepthPage() {
 
       {toAdd > 0 && (
         <div className="card sec">
-          <b>{toAdd} long snappers and punters from 2026 FBS and FCS rosters aren&apos;t on your depth charts yet.</b>
+          <b>{toAdd} long snappers, punters and kickers from 2026 FBS and FCS rosters aren&apos;t on your depth charts yet.</b>
           <small className="muted">Real players only: name, school, year, height and weight from each team&apos;s roster. Each profile says where it came from.</small>
           <div><button type="button" className="btn" onClick={addRosterPlayers}>Add them</button></div>
         </div>
