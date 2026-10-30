@@ -5,7 +5,8 @@ import type { Session } from "@supabase/supabase-js";
 import type { AppState, Deal, Me, SharedFilm, SignatureRecord, TeamMember } from "./model";
 import { DAY, startOfToday } from "./rules";
 import { supabase } from "./supabase";
-import { emptyScouting, withoutDemoPlayers, type Film, type Scouting } from "./players";
+import { ROSTER_SNAPPERS } from "@/data/long-snappers";
+import { emptyScouting, missingSnappers, withoutDemoPlayers, type Film, type Scouting } from "./players";
 
 /**
  * App state, in one of two modes:
@@ -54,6 +55,8 @@ function seed(): AppState {
 /** The parts of AppState each member owns, stored in member_state.data. */
 type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events">;
 const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [] });
+
+const ROSTER_IDS = new Set(ROSTER_SNAPPERS.map((r) => r.id));
 
 /** Firm-wide data the owner saves to firms.data. */
 type FirmData = { deals?: Deal[]; scouting?: Scouting };
@@ -188,6 +191,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const live = await loadLive(s);
     if (!live) return setMode("needs-firm");
     saved.current = { member: memberData(live), firm: firmData(live), stage: live.me?.stage ?? 0 };
+    // The first time an owner or editor opens the app, fill the depth charts with the real 2026 long snappers.
+    // Left out of the saved copy so they save like any other change. After that, the Depth charts button adds new ones.
+    const lead = live.me?.role === "owner" || live.me?.role === "editor";
+    if (lead && !live.scouting.players.some((p) => ROSTER_IDS.has(p.id))) live.scouting = { ...live.scouting, players: [...live.scouting.players, ...missingSnappers(live.scouting)] };
     setState(live);
     setMode("live");
   }, []);
