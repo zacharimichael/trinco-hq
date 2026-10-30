@@ -1,6 +1,7 @@
 import { SCHOOLS, slug, type School } from "@/data/schools";
 import { HEAD_COACHES } from "@/data/head-coaches";
 import { ST_COACHES } from "@/data/special-teams-coaches";
+import { GENERAL_MANAGERS } from "@/data/general-managers";
 import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roster-specialists";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
@@ -36,12 +37,13 @@ export type CoachRole = "HC" | "GM" | "ST";
 export const COACH_LABEL: Record<CoachRole, string> = { HC: "Head coach", GM: "General manager", ST: "Special teams coach" };
 export interface SchoolStaff { HC: Contact; GM: Contact; ST: Contact; decider: CoachRole | null }
 export const blankStaff = (): SchoolStaff => ({ HC: blankContact(), GM: blankContact(), ST: blankContact(), decider: null });
-/** A school's saved contacts, with the 2026 head coach's and special teams coordinator's names filled in when none has been typed. */
+/** A school's saved contacts, with the 2026 head coach's, GM's and special teams coordinator's names filled in when none has been typed. */
 export function staffFor(staff: Record<string, SchoolStaff>, schoolId: string): SchoolStaff {
   let s = staff[schoolId] ?? blankStaff();
-  const hc = HEAD_COACHES[schoolId], st = ST_COACHES[schoolId]?.name;
+  const hc = HEAD_COACHES[schoolId], st = ST_COACHES[schoolId]?.name, gm = GENERAL_MANAGERS[schoolId]?.name;
   if (hc && !s.HC.name.trim()) s = { ...s, HC: { ...s.HC, name: hc } };
   if (st && !s.ST.name.trim()) s = { ...s, ST: { ...s.ST, name: st } };
+  if (gm && !s.GM.name.trim()) s = { ...s, GM: { ...s.GM, name: gm } };
   return s;
 }
 /** A web search for a school's coach, for when we don't have the name. */
