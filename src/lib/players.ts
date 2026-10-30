@@ -186,8 +186,8 @@ export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   return { ...emptyScouting(), ...s, players, staff };
 }
 
-/** Real long snappers and punters from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
-export function missingRosterPlayers(s: Scouting, pos?: "LS" | "P"): Player[] {
+/** Real long snappers, punters and kickers from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
+export function missingRosterPlayers(s: Scouting, pos?: "LS" | "P" | "K"): Player[] {
   const have = new Set(s.players.flatMap((p) => [p.id, `${p.school}|${p.name.trim().toLowerCase()}`]));
   return ROSTER_PLAYERS.filter((r) => (!pos || r.pos === pos) && !have.has(r.id) && !have.has(`${r.school}|${r.name.toLowerCase()}`)).map((r) => ({
     ...newPlayer(r.pos, r.school),
