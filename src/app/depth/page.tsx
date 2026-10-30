@@ -2,22 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Choice, ContactFields, Text } from "@/components/Fields";
-import type { Division, School } from "@/data/schools";
-import { COACH_LABEL, customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type CoachRole, type Player, type Pos } from "@/lib/players";
+import { Choice, Text } from "@/components/Fields";
+import { depthOrder, SchoolDepth } from "@/components/SchoolDepth";
+import { DIVISIONS, type Division, type School } from "@/data/schools";
+import { customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 
 const BOARDS = ["By school", "By conference", "Top earners", "All-Americans", "All-Conference", "Starters", "Backups"] as const;
 type Board = (typeof BOARDS)[number];
-const ROLES: CoachRole[] = ["HC", "GM", "ST"];
-
-/** Starters first, then backups, then everyone else; best rating first inside each. */
-const depthOrder = (a: Player, b: Player) => {
-  const r = (p: Player) => (p.depth === "Starter" ? 0 : p.depth === "Backup" ? 1 : 2);
-  return r(a) - r(b) || (overall(b) ?? 0) - (overall(a) ?? 0);
-};
 
 export default function DepthPage() {
   const { sc, schools, school } = useScouting();
@@ -46,7 +39,7 @@ export default function DepthPage() {
     <section className="view">
       <div>
         <h1>Depth charts</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS and FCS school. LS, K and P.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS, FCS, D2 and D3 school. LS, K and P.</p>
       </div>
 
       <div className="tiles">
@@ -58,7 +51,7 @@ export default function DepthPage() {
 
       <div className="filters">
         <div className="seg"><div>
-          {(["All", "FBS", "FCS"] as const).map((x) => <button key={x} type="button" aria-pressed={div === x} onClick={() => setDiv(x)}>{x}</button>)}
+          {(["All", ...DIVISIONS] as const).map((x) => <button key={x} type="button" aria-pressed={div === x} onClick={() => setDiv(x)}>{x}</button>)}
         </div></div>
         <div className="seg"><div>
           {(["All", ...POSITIONS] as const).map((x) => <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{x === "All" ? "All positions" : POS_SHORT[x]}</button>)}
@@ -188,7 +181,7 @@ function BySchool({ schools, players, pos }: { schools: School[]; players: Playe
   );
 }
 
-/** For schools that move up to FCS/FBS or aren't on the list yet. */
+/** For schools that change division or aren't on the list yet. */
 function AddSchool() {
   const { canEdit, edit, schools } = useScouting();
   const [name, setName] = useState("");
@@ -212,50 +205,9 @@ function AddSchool() {
           <Text label="Conference" value={conference} onChange={setConference} />
           <Text label="State (2 letters)" value={st} onChange={setSt} placeholder="TX" />
         </div>
-        <Choice label="Division" options={["FBS", "FCS"] as const} value={division} onChange={setDivision} />
+        <Choice label="Division" options={DIVISIONS} value={division} onChange={setDivision} />
         <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={add} disabled={!name.trim()}>Add school</button>
       </div>
     </details>
-  );
-}
-
-function SchoolDepth({ s, ps, pos }: { s: School; ps: Player[]; pos: Pos | "All" }) {
-  const router = useRouter();
-  const { canEdit, addPlayer, staffOf, setStaff } = useScouting();
-  const [editing, setEditing] = useState(false);
-  const staff = staffOf(s.id);
-  const shown = pos === "All" ? positionsFor(ps) : [pos];
-
-  return (
-    <div className="sec" style={{ marginTop: 14 }}>
-      <div className="depthgrid">
-        {shown.map((x) => (
-          <div key={x} className="pcol">
-            <div className="phead">{POS_LABEL[x]}</div>
-            {ps.filter((p) => p.pos === x).sort(depthOrder).map((p) => (
-              <Link key={p.id} href={`/players/${p.id}`} className="pcard">
-                <b>{p.name || "New player"}</b>
-                <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
-                {(p.allAmerican || p.allConference || p.client || p.transfer) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}
-              </Link>
-            ))}
-            {canEdit && <button type="button" className="btn ghost" onClick={() => router.push(`/players/${addPlayer(x, s.id)}`)}>+ Add</button>}
-          </div>
-        ))}
-      </div>
-
-      <div className="coaches">
-        {ROLES.map((r) => (
-          <div key={r} className={`coach ${staff.decider === r ? "decider" : ""}`}>
-            <div className="coachhead"><b>{COACH_LABEL[r]}</b>{staff.decider === r && <span className="badge go">Decision maker</span>}</div>
-            {editing ? <ContactFields value={staff[r]} onChange={(c) => setStaff(s.id, { ...staff, [r]: c })} />
-              : <small className="muted">{[staff[r].name, staff[r].phone, staff[r].email].filter(Boolean).join(" · ") || "Not added yet"}</small>}
-          </div>
-        ))}
-        {editing && <Choice label="Who makes the decision?" options={ROLES.map((r) => COACH_LABEL[r])} value={staff.decider ? COACH_LABEL[staff.decider] : null}
-          onChange={(v) => setStaff(s.id, { ...staff, decider: ROLES.find((r) => COACH_LABEL[r] === v) ?? null })} />}
-        {canEdit && <button type="button" className="linkbtn" onClick={() => setEditing(!editing)}>{editing ? "Done" : "Edit contacts"}</button>}
-      </div>
-    </div>
   );
 }

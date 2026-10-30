@@ -14,10 +14,11 @@ const AREAS = [
     { href: "/licensing/todo", label: "To-do", id: "tab-hub", match: (p: string) => p.startsWith("/licensing/todo") },
     { href: "/licensing/states", label: "All states", id: "sub-states", match: (p: string) => p.startsWith("/licensing/states") },
   ] },
-  { href: "/players", label: "Scouting", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|compare|depth|transfers)/.test(p), sub: [
+  { href: "/players", label: "Scouting", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|compare|depth|transfers|schools)/.test(p), sub: [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => /^\/(players|compare)/.test(p) },
     { href: "/depth", label: "Depth charts", id: "tab-depth", match: (p: string) => p.startsWith("/depth") },
     { href: "/transfers", label: "Transfers", id: "sub-transfers", match: (p: string) => p.startsWith("/transfers") },
+    { href: "/schools", label: "School map", id: "sub-schools", match: (p: string) => p.startsWith("/schools") },
   ] },
   { href: "/calendar", label: "Calendar", id: "tab-calendar", ownerOnly: false, match: (p: string) => /^\/(calendar|calls)/.test(p), sub: [
     { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },

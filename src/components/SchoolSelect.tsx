@@ -5,8 +5,8 @@ import { customSchool } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 /**
- * Type to find any FBS or FCS school. A school that isn't listed (Division II,
- * III, NAIA, JUCO) can be added with one tap; it just has no depth chart group.
+ * Type to find any FBS, FCS, D2 or D3 school. A school that isn't listed (NAIA,
+ * JUCO) can be added with one tap; it just has no depth chart group.
  */
 export function SchoolSelect({ label, value, onChange }: { label: string; value: string; onChange: (id: string) => void }) {
   const id = useId();
@@ -33,7 +33,7 @@ export function SchoolSelect({ label, value, onChange }: { label: string; value:
     <div className="field">
       <label htmlFor={id}>{label}</label>
       <input id={id} list="school-names" value={text} placeholder="Type a school" autoComplete="off" onChange={(e) => type(e.target.value)} />
-      {current && !unknown && <small className="muted">{current.division === "Other" ? "Not FBS or FCS" : `${current.division} · ${current.conference}`}</small>}
+      {current && !unknown && <small className="muted">{current.division === "Other" ? "Not NCAA" : `${current.division} · ${current.conference}`}</small>}
       {unknown && <button type="button" className="btn ghost" style={{ alignSelf: "flex-start" }} onClick={add}>+ Add &quot;{text.trim()}&quot;</button>}
       <datalist id="school-names">{schools.map((s) => <option key={s.id} value={s.name} />)}</datalist>
     </div>
