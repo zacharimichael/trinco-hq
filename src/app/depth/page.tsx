@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Choice, Text } from "@/components/Fields";
 import { depthOrder, SchoolDepth } from "@/components/SchoolDepth";
 import { DIVISIONS, type Division, type School } from "@/data/schools";
-import { customSchool, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type Player, type Pos } from "@/lib/players";
+import { customSchool, missingSnappers, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 
@@ -13,7 +13,8 @@ const BOARDS = ["By school", "By conference", "Top earners", "All-Americans", "A
 type Board = (typeof BOARDS)[number];
 
 export default function DepthPage() {
-  const { sc, schools, school } = useScouting();
+  const { sc, schools, school, canEdit, addRosterSnappers } = useScouting();
+  const toAdd = canEdit ? missingSnappers(sc).length : 0;
   const [div, setDiv] = useState<Division | "All">("All");
   const [pos, setPos] = useState<Pos | "All">("All");
   const [board, setBoard] = useState<Board>("By school");
@@ -41,6 +42,14 @@ export default function DepthPage() {
         <h1>Depth charts</h1>
         <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS, FCS, D2 and D3 school. LS, K and P.</p>
       </div>
+
+      {toAdd > 0 && (
+        <div className="card sec">
+          <b>{toAdd} long snappers from 2026 FBS and FCS rosters aren&apos;t on your depth charts yet.</b>
+          <small className="muted">Real players only: name, school, year, height and weight from each team&apos;s roster. Each profile says where it came from.</small>
+          <div><button type="button" className="btn" onClick={addRosterSnappers}>Add them</button></div>
+        </div>
+      )}
 
       <div className="tiles">
         <div className="tile2"><span className="big">{players.length}</span>Players tracked</div>

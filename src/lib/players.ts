@@ -1,4 +1,5 @@
 import { SCHOOLS, slug, type School } from "@/data/schools";
+import { LS_CHECKED_DATE, LS_SOURCE, ROSTER_SNAPPERS } from "@/data/long-snappers";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
@@ -112,6 +113,8 @@ export interface Player {
   allConference: boolean;
   /** Signed with the agency. Clients count toward "my athletes" on the map. */
   client: boolean;
+  /** Where a player added from a public roster came from. Players added by hand have none. */
+  source?: { label: string; url: string; date: string } | null;
 }
 
 /** Scouting data the agency shares: players, school staff contacts and any schools added by hand. */
@@ -181,4 +184,16 @@ export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   for (const [from, to] of Object.entries(MOVED)) if (staff[from] && !staff[to]) { staff[to] = staff[from]; delete staff[from]; }
   const players = (s.players ?? []).filter((p) => !OLD_DEMO_PLAYERS.includes(p.id)).map((p) => (MOVED[p.school] ? { ...p, school: MOVED[p.school] } : p));
   return { ...emptyScouting(), ...s, players, staff };
+}
+
+/** Real long snappers from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
+export function missingSnappers(s: Scouting): Player[] {
+  const have = new Set(s.players.flatMap((p) => [p.id, `${p.school}|${p.name.trim().toLowerCase()}`]));
+  return ROSTER_SNAPPERS.filter((r) => !have.has(r.id) && !have.has(`${r.school}|${r.name.toLowerCase()}`)).map((r) => ({
+    ...newPlayer("LS", r.school),
+    id: r.id, name: r.name, year: r.year, height: r.height, weight: r.weight, priorSchools: r.priorSchools,
+    source: r.checked
+      ? { label: "School roster", url: r.checked, date: LS_CHECKED_DATE }
+      : { label: LS_SOURCE.label, url: r.espn ? `https://www.espn.com/college-football/player/_/id/${r.espn}` : LS_SOURCE.url, date: LS_SOURCE.date },
+  }));
 }

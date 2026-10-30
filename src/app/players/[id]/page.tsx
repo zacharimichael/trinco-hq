@@ -40,6 +40,7 @@ export default function PlayerPage() {
             onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
           {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
+          {p.source && <small className="muted">From <a href={p.source.url} target="_blank" rel="noreferrer">{p.source.label}</a> ({new Date(`${p.source.date}T12:00`).toLocaleDateString([], { dateStyle: "medium" })})</small>}
         </div>
 
         <LogCall p={p} key={p.id} />
