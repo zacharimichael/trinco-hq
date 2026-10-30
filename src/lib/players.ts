@@ -22,6 +22,9 @@ const YEAR_SHORT: Record<SchoolYear, string> = {
 export const yearShort = (y: SchoolYear | null | undefined) => (y ? YEAR_SHORT[y] : "");
 
 export interface Contact { name: string; phone: string; email: string }
+/** Quick picks for a player's transfer status. Anything else can be typed, e.g. "Committed to Auburn". */
+export const TRANSFER_PICKS = ["Open to transferring", "In the portal"] as const;
+
 export const newId = (prefix: string) => `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 export const blankContact = (): Contact => ({ name: "", phone: "", email: "" });
