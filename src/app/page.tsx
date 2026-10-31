@@ -8,7 +8,7 @@ import { TodoRow } from "@/components/TodoRow";
 import { dealMoney } from "@/lib/agency";
 import { dayItems, shortDay, timeText, ymd } from "@/lib/calendar";
 import { fmt, myStates, RULES, status, TRACKED } from "@/lib/rules";
-import { POS_SHORT, POSITIONS, money } from "@/lib/players";
+import { POS_SHORT, POSITIONS, money, schoolById } from "@/lib/players";
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 
@@ -35,7 +35,11 @@ export default function AgencyHome() {
   const checked = TRACKED.map((c) => RULES[c].last_researched).sort()[0];
 
   const players = state.scouting.players;
-  const lastCall = players.flatMap((p) => p.talks.map((t) => ({ ...t, player: p }))).sort((a, b) => b.date.localeCompare(a.date))[0];
+  const schoolOf = schoolById(state.scouting);
+  const lastCall = [
+    ...players.flatMap((p) => p.talks.map((t) => ({ date: t.date, name: p.name || "a player" }))),
+    ...(state.schoolCalls ?? []).map((c) => ({ date: c.date, name: schoolOf(c.school)?.name ?? "a school" })),
+  ].sort((a, b) => b.date.localeCompare(a.date))[0];
 
   const today = ymd(new Date());
   const callsDue = (state.calls ?? []).filter((c) => !c.done && (!c.due || c.due <= today));
@@ -81,7 +85,7 @@ export default function AgencyHome() {
             <span className="pill ath"><b>{players.filter((x) => x.name && x.transfer).length}</b> Transferring</span>
           </div>
           <p className="muted" style={{ margin: 0 }}>
-            {lastCall ? <>Last call: {lastCall.player.name || "a player"}, {fmt(lastCall.date)}</> : "No calls logged yet."}
+            {lastCall ? <>Last call: {lastCall.name}, {fmt(lastCall.date)}</> : "No calls logged yet."}
           </p>
           <span className="go-on">Open scouting →</span>
         </Link>

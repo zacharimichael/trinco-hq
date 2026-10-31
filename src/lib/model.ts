@@ -63,8 +63,11 @@ export interface Deal {
 /** A to-do added by hand on the To-do page. due is a YYYY-MM-DD date. */
 export interface MyTodo { id: string; title: string; due: string | null; done: boolean }
 
-/** Someone to call. due is a YYYY-MM-DD date; player links to a player profile. */
-export interface CallItem { id: string; name: string; phone: string; why: string; due: string | null; player: string | null; done: boolean }
+/** Someone to call. due is a YYYY-MM-DD date; player links to a player profile, school to a school on the school map. */
+export interface CallItem { id: string; name: string; phone: string; why: string; due: string | null; player: string | null; school?: string | null; done: boolean }
+
+/** A call logged on a school's page, e.g. with its special teams coach. who is the coach's role; name is who it was. */
+export interface SchoolCall { id: string; school: string; who: "HC" | "GM" | "ST" | "Other"; name: string; date: string; note: string }
 
 /** Something on the calendar. date is YYYY-MM-DD, time is HH:MM. */
 export interface CalEvent { id: string; date: string; time: string | null; title: string; player: string | null }
@@ -110,4 +113,6 @@ export interface AppState {
   calls?: CallItem[];
   /** Calendar events added by hand or from call notes. */
   events?: CalEvent[];
+  /** Calls logged on school pages (School map), newest first. */
+  schoolCalls?: SchoolCall[];
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import US from "@/data/us-states.json";
 import { DIVISIONS, type Division } from "@/data/schools";
+import { SchoolCalls } from "@/components/SchoolCalls";
 import { SchoolDepth } from "@/components/SchoolDepth";
 import { cityOf, onMap, SchoolsUsMap, StateSchoolMap } from "@/components/SchoolMap";
 import { useScouting } from "@/lib/useScouting";
@@ -91,6 +92,7 @@ export default function SchoolMapPage() {
           <SchoolDepth s={picked} ps={players} pos="All" />
         </div>
       )}
+      {picked && <SchoolCalls s={picked} />}
 
       <div className="schoollist">
         {divs.filter((d) => !hide.includes(d)).map((d) => (
