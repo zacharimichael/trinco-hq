@@ -1,5 +1,5 @@
 import type { Change } from "./intakeSchema";
-import type { AppState, CalEvent, CallItem } from "./model";
+import type { AppState, CalEvent, CallItem, SchoolCall } from "./model";
 import {
   blankStaff, newId, newPlayer, NIL_YEARS, SCHOOL_YEARS, schoolById, allSchools, staffFor,
   type CoachRole, type Player, type Pos, type Scouting, type Talk,
@@ -52,8 +52,8 @@ export const WHO_LABEL: Record<Talk["who"], string> = {
   Player: "Player", Parent: "Parent", HC: "Head coach", GM: "GM", ST: "Special teams coach", HSC: "HS coach", Other: "Other",
 };
 
-/** What the AI needs to know to file a note: this player in full, everyone else in brief, and what's already on the call list. */
-export function buildContext(s: AppState, playerId: string) {
+/** What the AI needs to know to file a note: this player (or school) in full, everyone else in brief, and what's already on the call list. */
+export function buildContext(s: AppState, playerId: string | null, schoolId?: string) {
   const sc = s.scouting;
   const school = schoolById(sc);
   const p = sc.players.find((x) => x.id === playerId);
@@ -62,9 +62,16 @@ export function buildContext(s: AppState, playerId: string) {
     nil: x.nil, transfer: x.transfer ?? null,
   });
   const full = p && (({ film, talks, hsCoach, ...rest }) => ({ ...rest, school: school(rest.school)?.name ?? "", recentCalls: talks.slice(0, 5) }))(p); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const sch = schoolId ? school(schoolId) : undefined;
   return {
     player: full ?? null,
-    schoolCoaches: p ? staffFor(sc.staff, p.school) : null,
+    /** Set when the call was logged on a school's page instead of a player's profile. */
+    school: sch ? {
+      name: sch.name, division: sch.division, conference: sch.conference, state: sch.state,
+      players: sc.players.filter((x) => x.school === sch.id && x.name).map((x) => x.id),
+      recentCalls: (s.schoolCalls ?? []).filter((c) => c.school === sch.id).slice(0, 5).map(({ who, name, date, note }) => ({ who, name, date, note })),
+    } : null,
+    schoolCoaches: p ? staffFor(sc.staff, p.school) : sch ? staffFor(sc.staff, sch.id) : null,
     otherPlayers: sc.players.filter((x) => x.id !== playerId && x.name).map(brief),
     openCalls: (s.calls ?? []).filter((c) => !c.done).map(({ name, why, due }) => ({ name, why, due })),
     addedSchools: sc.extraSchools.map((x) => x.name),
@@ -121,10 +128,13 @@ export function usable(c: Change, sc: Scouting, newRefs: Set<string>): boolean {
  * Files the ticked changes. The note itself always goes into this player's call log;
  * players it mentions get it as a fact so their profiles show where the news came from.
  */
-export function applyChanges(d: AppState, opts: { playerId: string; who: Talk["who"]; when: string; note: string; changes: Change[] }) {
+export function applyChanges(d: AppState, opts: { playerId: string | null; schoolId?: string; coach?: string; who: Talk["who"]; when: string; note: string; changes: Change[] }) {
   const sc = d.scouting;
-  const me = sc.players.find((p) => p.id === opts.playerId);
-  const from = `Call with ${me?.name || "a player"} (${WHO_LABEL[opts.who].toLowerCase()})`;
+  const me = opts.playerId ? sc.players.find((p) => p.id === opts.playerId) : undefined;
+  const sch = opts.schoolId ? schoolById(sc)(opts.schoolId) : undefined;
+  const from = sch
+    ? `Call with ${sch.name} ${opts.coach ? `${WHO_LABEL[opts.who].toLowerCase()} ${opts.coach}` : WHO_LABEL[opts.who].toLowerCase()}`
+    : `Call with ${me?.name || "a player"} (${WHO_LABEL[opts.who].toLowerCase()})`;
   const ids = new Map<string, string>();
   const idOf = (ref: string) => ids.get(ref) ?? ref;
   const player = (ref: string) => sc.players.find((p) => p.id === idOf(ref));
@@ -154,7 +164,7 @@ export function applyChanges(d: AppState, opts: { playerId: string; who: Talk["w
         if (p) (p.facts ??= []).unshift({ id: newId("f"), label: c.label ?? "", value: c.value ?? "", date: opts.when, from: p.id === opts.playerId ? WHO_LABEL[opts.who] : from });
         break;
       case "call": {
-        const item: CallItem = { id: newId("c"), name: c.name ?? "", phone: c.phone ?? "", why: c.label ?? c.text, due: c.date && /^\d{4}-\d{2}-\d{2}$/.test(c.date) ? c.date : null, player: p?.id ?? null, done: false };
+        const item: CallItem = { id: newId("c"), name: c.name ?? "", phone: c.phone ?? "", why: c.label ?? c.text, due: c.date && /^\d{4}-\d{2}-\d{2}$/.test(c.date) ? c.date : null, player: p?.id ?? null, school: p ? null : sch?.id ?? null, done: false };
         (d.calls ??= []).push(item);
         break;
       }
@@ -184,4 +194,8 @@ export function applyChanges(d: AppState, opts: { playerId: string; who: Talk["w
       (p.facts ??= []).unshift({ id: newId("f"), label: "Heard on a call", value: opts.changes.filter((c) => idOf(c.player) === id).map((c) => c.text).join(". "), date: opts.when, from });
   }
   if (me) me.talks = [...me.talks, { date: opts.when, who: opts.who, note: opts.note.trim() }].sort((a, b) => b.date.localeCompare(a.date));
+  if (sch) {
+    const call: SchoolCall = { id: newId("sc"), school: sch.id, who: opts.who === "HC" || opts.who === "GM" || opts.who === "ST" ? opts.who : "Other", name: opts.coach ?? "", date: opts.when, note: opts.note.trim() };
+    d.schoolCalls = [...(d.schoolCalls ?? []), call].sort((a, b) => b.date.localeCompare(a.date));
+  }
 }

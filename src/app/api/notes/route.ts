@@ -35,6 +35,7 @@ Return a list of changes. Each change has a "kind":
 
 Rules:
 - Players: match people in the note to "player" (the profile this call was logged on) or "otherPlayers" by name, school, position and depth role. "Their backup snapper" means the backup LS at the same school as the player. Use the existing id when it's clearly the same person.
+- School calls: when agency_data.school is set, the call was logged on that school's page with one of its coaches, not on a player's profile, so agency_data.player is null. Players at that school are listed by id in school.players; "their snapper" or "the starter" means a player there. What the school needs or plans (the LS/K/P landscape, who's leaving, what they're recruiting, timelines) is already saved with the note on the school's page, so only suggest changes that belong somewhere else: players' profiles, new players, callbacks, dates and coach contacts. The coach on the call is schoolCoaches[who]; if the note gives their phone or email, add a "coach" change for that school.
 - A player willing or planning to move schools: set "transfer" ("Open to transferring" if they'd consider it, "In the portal" once entered, or e.g. "Committed to Auburn"). This puts them on the agency's transfer list. Only set "school" once they've actually enrolled somewhere new; then also add the old school with field "priorSchools".
 - Schools: use the exact name from the school list below or from addedSchools.
 - Dates: work out real dates from words like "next Tuesday" using today's date.
@@ -49,7 +50,7 @@ ${fieldList}
 School list:
 ${SCHOOLS.map((s) => s.name).join("; ")}`;
 
-type Body = { note: string; who: Talk["who"]; when: string; today: string; context: IntakeContext };
+type Body = { note: string; who: Talk["who"]; coach?: string; when: string; today: string; context: IntakeContext };
 
 export async function POST(req: Request) {
   if (!process.env.ANTHROPIC_API_KEY) return Response.json({ error: "no-key" }, { status: 503 });
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages: [{
         role: "user",
-        content: `Today is ${weekday}, ${today}. The call was on ${(body.when ?? today).slice(0, 10)} with: ${WHO_LABEL[body.who] ?? "Other"}.
+        content: `Today is ${weekday}, ${today}. The call was on ${(body.when ?? today).slice(0, 10)} with: ${WHO_LABEL[body.who] ?? "Other"}${body.coach ? ` ${body.coach}` : ""}${body.context?.school ? ` at ${body.context.school.name}` : ""}.
 
 <agency_data>
 ${JSON.stringify(body.context)}

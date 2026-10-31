@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { shortDay, ymd } from "@/lib/calendar";
+import { WHO_LABEL } from "@/lib/intake";
 import type { CallItem } from "@/lib/model";
-import { newId } from "@/lib/players";
+import { newId, schoolById } from "@/lib/players";
 import { useStore } from "@/lib/store";
 
 /** People to call: late and today first, then by day, then anytime. */
@@ -20,6 +21,14 @@ export default function CallsPage() {
   const [showDone, setShowDone] = useState(false);
 
   const calls = state.calls ?? [];
+  const schoolOf = schoolById(state.scouting);
+  const schoolLink = (id: string) => { const s = schoolOf(id); return s ? `/schools?s=${s.state}&school=${encodeURIComponent(s.id)}` : "/schools"; };
+  // Every call logged, on players and on schools, newest first.
+  const logged = [
+    ...state.scouting.players.flatMap((p) => p.talks.map((t) => ({ key: `p-${p.id}-${t.date}`, date: t.date, note: t.note, title: p.name || "A player", sub: WHO_LABEL[t.who], href: `/players/${p.id}#call-log` }))),
+    ...(state.schoolCalls ?? []).map((c) => ({ key: c.id, date: c.date, note: c.note, title: schoolOf(c.school)?.name ?? "A school", sub: [WHO_LABEL[c.who], c.name].filter(Boolean).join(", "), href: schoolLink(c.school) })),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+  const [showAll, setShowAll] = useState(false);
   const open = calls.filter((c) => !c.done).sort((a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999"));
   const done = calls.filter((c) => c.done);
   const set = (id: string, patch: Partial<CallItem>) => update((d) => { const c = d.calls?.find((x) => x.id === id); if (c) Object.assign(c, patch); });
@@ -33,6 +42,7 @@ export default function CallsPage() {
 
   const Row = ({ c }: { c: CallItem }) => {
     const p = c.player ? state.scouting.players.find((x) => x.id === c.player) : undefined;
+    const sch = c.school ? schoolOf(c.school) : undefined;
     const late = !c.done && !!c.due && c.due < today;
     return (
       <div className="todo">
@@ -42,6 +52,7 @@ export default function CallsPage() {
           <small>
             {[c.due ? (c.due === today ? "Today" : late ? `Late, ${shortDay(c.due)}` : shortDay(c.due)) : "Anytime", c.phone].filter(Boolean).join(" · ")}
             {p && <> · <Link href={`/players/${p.id}#log-call`}>{p.name}</Link></>}
+            {sch && <> · <Link href={schoolLink(sch.id)}>{sch.name}</Link></>}
           </small>
         </span>
         {c.phone && !c.done && <a className="btn ghost" href={`tel:${c.phone.replace(/[^\d+]/g, "")}`}>📞 Call</a>}
@@ -57,7 +68,7 @@ export default function CallsPage() {
     <section className="view">
       <div className="card next" id="call-list">
         <h2>Calls to make</h2>
-        {!open.length && <p className="muted" style={{ margin: 0 }}>Nobody to call. Add someone below, or log a call on a player and the AI adds callbacks here.</p>}
+        {!open.length && <p className="muted" style={{ margin: 0 }}>Nobody to call. Add someone below, or log a call on a player or school and the AI adds callbacks here.</p>}
         {open.map((c) => <Row key={c.id} c={c} />)}
       </div>
 
@@ -80,6 +91,21 @@ export default function CallsPage() {
         </div>
         <button className="btn" type="submit" disabled={!name.trim()} style={{ alignSelf: "flex-start" }}>+ Add to call list</button>
       </form>
+
+      <div className="card sec" id="calls-logged">
+        <h2>Calls you&apos;ve logged</h2>
+        {!logged.length && <p className="muted" style={{ margin: 0 }}>None yet. Log a call on a player, or on a school from the School map.</p>}
+        {(showAll ? logged : logged.slice(0, 10)).map((c) => (
+          <Link key={c.key} href={c.href} className="step" style={{ color: "inherit", textDecoration: "none" }}>
+            <div className="grow">
+              <div className="t">{c.title}<span className="muted" style={{ fontWeight: 400 }}> · {c.sub}</span></div>
+              <div className="d" style={{ whiteSpace: "pre-wrap" }}>{c.note.length > 160 ? `${c.note.slice(0, 160)}…` : c.note}</div>
+              <div className="d">{new Date(c.date).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</div>
+            </div>
+          </Link>
+        ))}
+        {logged.length > 10 && <button className="linkbtn" type="button" onClick={() => setShowAll(!showAll)} style={{ alignSelf: "flex-start" }}>{showAll ? "Show fewer" : `Show all ${logged.length}`}</button>}
+      </div>
 
       {!!done.length && (
         <div className="card sec">

@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Choice } from "@/components/Fields";
 import { applyChanges, buildContext, FIELDS, findSchool, usable, type Change } from "@/lib/intake";
-import { COACH_LABEL, money, POS_LABEL, type CoachRole, type Player, type Talk } from "@/lib/players";
+import type { School } from "@/data/schools";
+import { COACH_LABEL, money, POS_LABEL, staffFor, type CoachRole, type Player, type Talk } from "@/lib/players";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
@@ -19,14 +20,24 @@ const day = (d: string) => new Date(`${d}T00:00:00`).toLocaleDateString([], { we
 
 type Step = { s: "write" } | { s: "sorting" } | { s: "review"; changes: Change[]; pick: boolean[] } | { s: "saved"; count: number };
 
+/** On a school's page you pick one of its coaches, shown by name when we have it. */
+const SCHOOL_WHO: Talk["who"][] = ["ST", "HC", "GM", "Other"];
+const SCHOOL_SHORT: Record<string, string> = { ST: "Special teams", HC: "Head coach", GM: "GM", Other: "Someone else" };
+
 /**
  * Log a call: type or paste what was said, the AI sorts it into the right places
  * (this profile, other players, depth charts, NIL, coaches, call list, calendar),
- * you tick what's right and save. The note itself always goes in the call log.
+ * you tick what's right and save. The note itself always goes in the call log:
+ * the player's when it's on a profile, the school's when it's on a school page.
  */
-export function LogCall({ p }: { p: Player }) {
+export function LogCall({ p, school }: { p?: Player; school?: School }) {
   const { state, update, mode } = useStore();
-  const [who, setWho] = useState<Talk["who"] | null>(null);
+  const staff = school ? staffFor(state.scouting.staff, school.id) : null;
+  const who_ = staff
+    ? SCHOOL_WHO.map((v) => ({ v, label: v !== "Other" && staff[v as CoachRole].name.trim() ? `${SCHOOL_SHORT[v]}: ${staff[v as CoachRole].name.trim()}` : SCHOOL_SHORT[v] }))
+    : WHO;
+  const [who, setWho] = useState<Talk["who"] | null>(school ? "ST" : null);
+  const coach = staff && who && who !== "Other" ? staff[who as CoachRole]?.name.trim() || undefined : undefined;
   const [when, setWhen] = useState(nowLocal);
   const [note, setNote] = useState("");
   const [step, setStep] = useState<Step>({ s: "write" });
@@ -36,7 +47,7 @@ export function LogCall({ p }: { p: Player }) {
   const save = (changes: Change[]) => {
     const n = note.trim();
     if (!n) return;
-    update((d) => applyChanges(d, { playerId: p.id, who: who ?? "Other", when: iso(), note: n, changes }));
+    update((d) => applyChanges(d, { playerId: p?.id ?? null, schoolId: school?.id, coach, who: who ?? "Other", when: iso(), note: n, changes }));
     setNote(""); setWhen(nowLocal()); setError(null);
     setStep({ s: "saved", count: changes.length });
   };
@@ -53,7 +64,7 @@ export function LogCall({ p }: { p: Player }) {
       const res = await fetch("/api/notes", {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${data.session?.access_token ?? ""}` },
-        body: JSON.stringify({ note, who: who ?? "Other", when: iso(), today: todayLocal(), context: buildContext(state, p.id) }),
+        body: JSON.stringify({ note, who: who ?? "Other", coach, when: iso(), today: todayLocal(), context: buildContext(state, p?.id ?? null, school?.id) }),
       });
       const out = await res.json().catch(() => ({}));
       if (out.error === "no-key") { setStep({ s: "write" }); return setError({ text: "The AI isn't set up yet, so it can't sort notes. You can still save the note.", noKey: true }); }
@@ -74,15 +85,15 @@ export function LogCall({ p }: { p: Player }) {
       <div className="card sec" id="log-call">
         <h2>Here&apos;s what I found</h2>
         <p className="muted" style={{ margin: 0 }}>Untick anything that&apos;s wrong, then save.</p>
-        {step.changes.length === 0 && <p style={{ margin: 0 }}>Nothing new to file. The note will go in the call log.</p>}
+        {step.changes.length === 0 && <p style={{ margin: 0 }}>Nothing else to file. The note will go in the call log.</p>}
         <div className="found">
           {step.changes.map((c, i) => (
             <label key={i} className="foundrow">
               <input type="checkbox" checked={step.pick[i]} onChange={(e) => setStep({ ...step, pick: step.pick.map((x, j) => (j === i ? e.target.checked : x)) })} />
-              <span className="grow"><b>{c.text}</b><small>{where(c, step.changes, state.scouting.players, p.id, state.scouting)}</small></span>
+              <span className="grow"><b>{c.text}</b><small>{where(c, step.changes, state.scouting.players, p?.id ?? "", state.scouting)}</small></span>
             </label>
           ))}
-          <div className="foundrow on"><span className="okmark">✓</span><span className="grow"><b>Your note</b><small>Call log</small></span></div>
+          <div className="foundrow on"><span className="okmark">✓</span><span className="grow"><b>Your note</b><small>{school ? `${school.name} call log` : "Call log"}</small></span></div>
         </div>
         <div className="pair" style={{ alignItems: "center" }}>
           <button className="btn" type="button" id="save-found" onClick={() => save(keepRefs(chosen, step.changes))}>Save{chosen.length ? ` ${chosen.length + 1} things` : " note"}</button>
@@ -95,8 +106,8 @@ export function LogCall({ p }: { p: Player }) {
   return (
     <div className="card sec" id="log-call">
       <h2>Log a call</h2>
-      <Choice label="Talked to" options={WHO.map((w) => w.label)} value={WHO.find((w) => w.v === who)?.label ?? null}
-        onChange={(v) => setWho(WHO.find((w) => w.label === v)?.v ?? null)} />
+      <Choice label="Talked to" options={who_.map((w) => w.label)} value={who_.find((w) => w.v === who)?.label ?? null}
+        onChange={(v) => setWho(who_.find((w) => w.label === v)?.v ?? null)} />
       <div className="field">
         <label htmlFor="call-when">When</label>
         <input id="call-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
@@ -104,7 +115,9 @@ export function LogCall({ p }: { p: Player }) {
       <div className="field">
         <label htmlFor="call-note">What was said</label>
         <textarea id="call-note" rows={5} value={note} disabled={step.s === "sorting"}
-          placeholder="Type or paste anything. e.g. Their backup snapper is transferring and getting $8k a year. Call the ST coach back Friday."
+          placeholder={school
+            ? "Type or paste anything. e.g. Starter LS graduates in May, they want a free-release snapper for 2027. Call him back after signing day."
+            : "Type or paste anything. e.g. Their backup snapper is transferring and getting $8k a year. Call the ST coach back Friday."}
           onChange={(e) => { setNote(e.target.value); if (step.s === "saved") setStep({ s: "write" }); }} />
       </div>
       {error && <p className="warnline" style={{ margin: 0 }}>{error.text}</p>}
@@ -113,7 +126,7 @@ export function LogCall({ p }: { p: Player }) {
           {step.s === "sorting" ? "Sorting…" : "✨ Sort it for me"}
         </button>
         <button className="btn ghost" type="button" id="save-call" onClick={() => save([])} disabled={!note.trim() || step.s === "sorting"} style={{ flex: "none" }}>Just save the note</button>
-        {step.s === "saved" && <span className="okchip">✓ Saved{step.count ? ` with ${step.count} updates` : ""}</span>}
+        {step.s === "saved" && <span className="okchip" style={{ flex: "none" }}>✓ Saved{step.count ? ` with ${step.count} updates` : ""}</span>}
       </div>
     </div>
   );
@@ -127,7 +140,7 @@ function keepRefs(chosen: Change[], all: Change[]) {
 
 /** The small line under each finding: whose profile and which box. */
 function where(c: Change, all: Change[], players: Player[], me: string, sc: Parameters<typeof findSchool>[0]) {
-  const who = c.player === me ? "This profile"
+  const who = c.player && c.player === me ? "This profile"
     : players.find((x) => x.id === c.player)?.name || all.find((x) => x.kind === "new_player" && x.player === c.player)?.name || "";
   const spot = (() => {
     switch (c.kind) {
