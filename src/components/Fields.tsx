@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import type { Contact } from "@/lib/players";
+import { snapTime, SNAP_FAST, SNAP_SLOW, type Contact } from "@/lib/players";
 
 /** Small form controls for the player profiles: big tap targets, one tap per answer. */
 
@@ -46,6 +46,25 @@ export function Rating({ label, value, onChange, max }: { label: string; value: 
         <input id={id} type="range" min={1} max={max} value={v ?? Math.ceil(max / 2)} data-empty={v == null}
           onChange={(e) => onChange(Number(e.target.value))} />
         <output htmlFor={id} className={v == null ? "muted" : undefined}>{v ?? "—"}</output>
+      </div>
+    </div>
+  );
+}
+
+/** Snap time in seconds on a slider: slow 0.80 on the left, fast 0.60 on the right. */
+export function SnapTime({ value, onChange }: { value: number | null | undefined; onChange: (v: number | null) => void }) {
+  const id = useId();
+  const v = value == null ? null : snapTime(value);
+  // The slider counts hundredths faster than 0.80, so moving right means a quicker snap.
+  const steps = Math.round((SNAP_SLOW - SNAP_FAST) * 100);
+  return (
+    <div className="rate">
+      <label htmlFor={id}>Snap speed <span className="muted">0.80 → 0.60 sec</span></label>
+      <div className="rateline">
+        <input id={id} type="range" min={0} max={steps} value={v == null ? steps / 2 : Math.round((SNAP_SLOW - v) * 100)} data-empty={v == null}
+          aria-valuetext={v == null ? "Not set" : `${v.toFixed(2)} seconds`}
+          onChange={(e) => onChange(Math.round((SNAP_SLOW * 100 - Number(e.target.value))) / 100)} />
+        <output htmlFor={id} className={v == null ? "muted" : undefined}>{v == null ? "—" : v.toFixed(2)}</output>
       </div>
     </div>
   );

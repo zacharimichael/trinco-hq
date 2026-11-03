@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { heightText, kicks, money, nilNow, nilTotal, overall, POS_SHORT, punts, type Player } from "@/lib/players";
+import { heightText, kicks, money, nilNow, nilTotal, overall, POS_SHORT, punts, snapTime, type Player } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 type Metric = {
@@ -28,7 +28,7 @@ const GROUPS: { title: string; rows: Metric[] }[] = [
   ] },
   { title: "Snapping", rows: [
     { label: "Snap accuracy", get: (p) => p.snapAcc, max: 20, when: (p) => p.pos === "LS" },
-    { label: "Snap speed", get: (p) => p.snapSpeed, max: 20, when: (p) => p.pos === "LS" },
+    { label: "Snap speed", get: (p) => (p.snapSpeed == null ? null : snapTime(p.snapSpeed)), max: 0.8, low: true, fmt: (n) => `${n.toFixed(2)}s`, when: (p) => p.pos === "LS" },
     { label: "System", get: (p) => p.system, when: (p) => p.pos === "LS" },
     { label: "40-yard dash", get: (p) => p.forty, max: topOf((p) => p.forty ?? 0), low: true, fmt: (n) => `${n.toFixed(2)}s`, when: (p) => p.pos === "LS" },
     { label: "225 bench reps", get: (p) => p.bench, max: topOf((p) => p.bench ?? 0), when: (p) => p.pos === "LS" },

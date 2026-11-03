@@ -95,6 +95,7 @@ export interface Player {
   forty?: number | null;
   bench?: number | null;
   snapAcc?: number | null;
+  /** Snap time in seconds, 0.80 (slow) to 0.60 (fast). Old saves used a 1-20 rating; see snapTime(). */
   snapSpeed?: number | null;
   spiral?: "Loose" | "Wobble" | "Clean" | null;
 
@@ -190,6 +191,15 @@ const OLD_DEMO_PLAYERS = ["ls-tyler-brandt", "k-marco-velez", "p-ben-whitaker", 
 const MOVED: Record<string, string> = { "fcs-north-dakota-state": "fbs-north-dakota-state" };
 
 /** Removes the old made-up example players from saved data, keeping everything added by hand. */
+/** Snap time slider: 0.80 s on the left, 0.60 s on the right. */
+export const SNAP_SLOW = 0.8;
+export const SNAP_FAST = 0.6;
+/** Seconds as saved now. A value of 1 or more is an old 1-20 rating: 1 becomes 0.80 s and 20 becomes 0.60 s. */
+export function snapTime(v: number): number {
+  const sec = v >= 1 ? SNAP_SLOW - ((Math.min(20, v) - 1) / 19) * (SNAP_SLOW - SNAP_FAST) : v;
+  return Math.round(Math.min(SNAP_SLOW, Math.max(SNAP_FAST, sec)) * 100) / 100;
+}
+
 export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   if (!s) return emptyScouting();
   const staff = { ...s.staff };
@@ -197,7 +207,9 @@ export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   if (fl && fl.HC.name === "Head coach (example)") delete staff[slug("FBS-Florida")];
   // Schools that moved between FCS and FBS get a new id; point saved players and contacts at it.
   for (const [from, to] of Object.entries(MOVED)) if (staff[from] && !staff[to]) { staff[to] = staff[from]; delete staff[from]; }
-  const players = (s.players ?? []).filter((p) => !OLD_DEMO_PLAYERS.includes(p.id)).map((p) => (MOVED[p.school] ? { ...p, school: MOVED[p.school] } : p));
+  const players = (s.players ?? []).filter((p) => !OLD_DEMO_PLAYERS.includes(p.id))
+    .map((p) => (MOVED[p.school] ? { ...p, school: MOVED[p.school] } : p))
+    .map((p) => (p.snapSpeed != null && p.snapSpeed >= 1 ? { ...p, snapSpeed: snapTime(p.snapSpeed) } : p));
   return { ...emptyScouting(), ...s, players, staff };
 }
 
