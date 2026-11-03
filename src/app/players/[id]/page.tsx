@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Choice, ContactFields, Num, Rating, YesNo } from "@/components/Fields";
+import { Choice, ContactFields, Num, Rating, SnapTime, YesNo } from "@/components/Fields";
 import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
@@ -81,7 +81,7 @@ export default function PlayerPage() {
               <Num label="225 lb bench (reps)" value={p.bench} onChange={(bench) => set({ bench })} />
             </div>
             <Rating label="Snap accuracy" max={20} value={p.snapAcc} onChange={(snapAcc) => set({ snapAcc })} />
-            <Rating label="Snap speed" max={20} value={p.snapSpeed} onChange={(snapSpeed) => set({ snapSpeed })} />
+            <SnapTime value={p.snapSpeed} onChange={(snapSpeed) => set({ snapSpeed })} />
           </>)}
           {kicks(p.pos) && (<>
             {p.pos === "KP" && <h3>Kicking</h3>}

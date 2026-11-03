@@ -35,7 +35,7 @@ export const FIELDS: Record<string, { label: string; kind: Kind; options?: reado
   forty: { label: "40-yard dash", kind: "num", min: 3.5, max: 7, hint: "seconds" },
   bench: { label: "225 lb bench reps", kind: "int", min: 0, max: 60 },
   snapAcc: { label: "Snap accuracy", kind: "int", min: 1, max: 20 },
-  snapSpeed: { label: "Snap speed", kind: "int", min: 1, max: 20 },
+  snapSpeed: { label: "Snap speed", kind: "num", min: 0.6, max: 0.8, hint: "seconds, e.g. 0.68; lower is faster" },
   kPower: { label: "Kick power", kind: "int", min: 1, max: 20 },
   kAcc: { label: "Kick accuracy", kind: "int", min: 1, max: 20 },
   foot: { label: "Kicking foot", kind: "pick", options: ["Right", "Left"] },
