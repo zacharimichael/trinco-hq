@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { HS_IDS } from "@/data/hs-long-snappers";
 import Link from "next/link";
 import { byBest } from "@/lib/moves";
 import { money, bestRating, coachRating, HS_CLASS_YEARS, hsClassText, isHs, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, missingHsPlayers, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
@@ -19,6 +20,12 @@ export default function ClassesPage() {
   const [div, setDiv] = useState<"All" | "FBS" | "FCS">("All");
   const [cls, setCls] = useState<Cls>(0);
   const [all, setAll] = useState(false);
+  // Backup for the sign-in auto-load: if no high school snappers are saved yet, add them once when an owner or editor opens Classes.
+  const hsTried = useRef(false);
+  const noHs = !sc.players.some((p) => HS_IDS.has(p.id));
+  useEffect(() => {
+    if (canEdit && noHs && !hsTried.current) { hsTried.current = true; addHsPlayers(); }
+  }, [canEdit, noHs, addHsPlayers]);
   const [adding, setAdding] = useState("");
 
   const hs = isHsCls(cls);
