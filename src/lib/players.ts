@@ -169,7 +169,7 @@ export interface Scouting {
 }
 
 /** A player the agency is pitching to a school with an open spot. Committing moves them onto the player as transferTo. */
-export interface Match { id: string; player: string; school: string; stage: "Idea" | "Pitched" | "Interested"; date: string }
+export interface Match { id: string; player: string; school: string; stage: "Idea" | "Pitched" | "Connected" | "Interested"; date: string }
 /** A finished move from one school to another. */
 export interface Move { id: string; player: string; pos: Pos; from: string; to: string; date: string }
 

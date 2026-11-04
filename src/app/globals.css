@@ -334,3 +334,6 @@ textarea{font:inherit;color:var(--ink)}
 .ideas{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .ideabtn{border:1px dashed var(--accent);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-weight:600;font-size:14px;min-height:36px;cursor:pointer}
 .ideabtn small{color:var(--muted);font-weight:500}
+.addrow2{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px}
+.addrow2>input,.addrow2>.field{flex:1 1 200px;min-width:0}
+.movesboard .moveacts select{max-width:100%}

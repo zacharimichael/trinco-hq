@@ -124,7 +124,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 export function pair(s: Scouting, player: string, school: string) {
   s.matches ??= [];
-  if (!s.matches.some((m) => m.player === player && m.school === school)) s.matches.push({ id: newId("m"), player, school, stage: "Pitched", date: today() });
+  if (!s.matches.some((m) => m.player === player && m.school === school)) s.matches.push({ id: newId("m"), player, school, stage: "Connected", date: today() });
 }
 export function setStage(s: Scouting, id: string, stage: Match["stage"]) {
   const m = s.matches?.find((x) => x.id === id);
@@ -140,7 +140,22 @@ export function commit(s: Scouting, player: string, school: string, schoolName: 
   p.transferTo = school;
   p.transfer = `Committed to ${schoolName}`;
   s.matches = (s.matches ?? []).filter((m) => m.player !== player);
+  // The new school isn't looking any more. The old one is, if nobody else there is staying.
+  if (s.spots?.[spotKey(school, p.pos)] === "open") delete s.spots[spotKey(school, p.pos)];
+  const stays = s.players.some((x) => x.id !== p.id && x.pos === p.pos && x.school === p.school && !x.transfer && !x.transferTo && !graduating(x));
+  if (p.school && !stays) (s.spots ??= {})[spotKey(p.school, p.pos)] = "open";
 }
+
+/** Schools z has on the "looking for a snapper" list, newest first. */
+export function lookingSchools(sc: Scouting, pos: Pos): School[] {
+  const schools = allSchools(sc);
+  return Object.entries(sc.spots ?? {}).filter(([k, v]) => v === "open" && k.endsWith(`|${pos}`))
+    .map(([k]) => schools.find((s) => s.id === k.slice(0, -pos.length - 1)))
+    .filter((s): s is School => !!s).reverse();
+}
+
+/** Players z has on the "going to transfer" list: moving, not committed yet, not graduating. Best first. */
+export const transferring = available;
 /** Move a player for real: new school, old one into past schools, and a line in the history. Their old spot opens if nobody's left. */
 export function finishMove(s: Scouting, player: string, to: string) {
   const p = s.players.find((x) => x.id === player);
