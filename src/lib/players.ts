@@ -25,6 +25,17 @@ const YEAR_SHORT: Record<SchoolYear, string> = {
 };
 export const yearShort = (y: SchoolYear | null | undefined) => (y ? YEAR_SHORT[y] : "");
 
+/** Years of eligibility left after this season, guessed from year in school. A redshirting freshman has 4; set that by hand. */
+const LEFT_BY_YEAR: Record<SchoolYear, number> = {
+  Senior: 0, "Redshirt Senior": 0, Junior: 1, "Redshirt Junior": 1,
+  Sophomore: 2, "Redshirt Sophomore": 2, Freshman: 3, "Redshirt Freshman": 3,
+};
+export const YEARS_LEFT = [0, 1, 2, 3, 4] as const;
+/** Years left after this season: what was typed, or a guess from year in school. Null when neither is known. */
+export const yearsLeft = (p: { yearsLeft?: number | null; year?: SchoolYear | null }): number | null =>
+  p.yearsLeft ?? (p.year ? LEFT_BY_YEAR[p.year] : null);
+export const yearsLeftText = (n: number) => (n === 0 ? "Done after this season" : `${n} year${n === 1 ? "" : "s"} left`);
+
 export interface Contact { name: string; phone: string; email: string }
 /** Quick picks for a player's transfer status. Anything else can be typed, e.g. "Committed to Auburn". */
 export const TRANSFER_PICKS = ["Open to transferring", "In the portal"] as const;
@@ -123,6 +134,10 @@ export interface Player {
   facts?: Fact[];
   /** e.g. "In the portal" or "Transferring to Auburn". Empty when staying put. */
   transfer?: string | null;
+  /** School id they've committed to. Set from the Moves board; cleared once they've moved. */
+  transferTo?: string | null;
+  /** Years of eligibility left after this season (0-4), when typed. Otherwise guessed from year in school; see yearsLeft(). */
+  yearsLeft?: number | null;
 
   depth: "Starter" | "Backup" | null;
   allAmerican: boolean;
@@ -138,7 +153,18 @@ export interface Scouting {
   players: Player[];
   staff: Record<string, SchoolStaff>;
   extraSchools: School[];
+  /** Players the agency is pairing with open spots (Moves board). */
+  matches?: Match[];
+  /** Finished moves, newest first: who went from where to where. */
+  moves?: Move[];
+  /** Spots marked open or filled by hand, keyed "schoolId|pos". */
+  spots?: Record<string, "open" | "filled">;
 }
+
+/** A player the agency is pitching to a school with an open spot. Committing moves them onto the player as transferTo. */
+export interface Match { id: string; player: string; school: string; stage: "Idea" | "Pitched" | "Interested"; date: string }
+/** A finished move from one school to another. */
+export interface Move { id: string; player: string; pos: Pos; from: string; to: string; date: string }
 
 export function newPlayer(pos: Pos, school = ""): Player {
   return {
@@ -183,7 +209,7 @@ export function athletesByState(athletes: { name: string; state: string }[], s: 
   return out;
 }
 
-export const emptyScouting = (): Scouting => ({ players: [], staff: {}, extraSchools: [] });
+export const emptyScouting = (): Scouting => ({ players: [], staff: {}, extraSchools: [], matches: [], moves: [], spots: {} });
 
 // Ids and the one school of example contacts the app used to ship as demo data.
 const OLD_DEMO_PLAYERS = ["ls-tyler-brandt", "k-marco-velez", "p-ben-whitaker", "k-owen-park", "ls-caleb-moore", "kp-luke-harmon", "k-grant-ellison", "p-henry-cole", "ls-drew-sutton", "k-isaiah-grant"];

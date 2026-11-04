@@ -320,3 +320,17 @@ textarea{font:inherit;color:var(--ink)}
 .schoolbtns{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
 .schoolbtns button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer;min-height:44px}
 .schoolbtns button[aria-pressed="true"]{border-color:var(--accent)}
+
+/* Classes and Moves */
+.classtiles button.tile2{text-align:left;cursor:pointer;font:inherit;font-weight:600;font-size:14px;color:var(--muted)}
+.classtiles button.tile2[aria-pressed="true"]{border:2px solid var(--accent);background:var(--go-soft)}
+.movesboard>.card{min-width:0}
+.spot{border:1px solid var(--line);border-left:5px solid var(--off-ink);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.spot.open{border-left-color:var(--stop)} .spot.starter{border-left-color:var(--wip)} .spot.avail{border-left-color:var(--go)}
+.spothead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px}
+.pairrow,.moverow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.moverow{padding:8px 0;border-top:1px solid var(--line)}
+.moveacts{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ideas{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ideabtn{border:1px dashed var(--accent);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-weight:600;font-size:14px;min-height:36px;cursor:pointer}
+.ideabtn small{color:var(--muted);font-weight:500}

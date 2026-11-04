@@ -8,7 +8,7 @@ import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  COACH_LABEL, coachSearchUrl, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts,
+  COACH_LABEL, coachSearchUrl, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts, yearsLeft, YEARS_LEFT,
   type CoachRole, type Fact, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -53,6 +53,13 @@ export default function PlayerPage() {
               <select id="year" value={p.year ?? ""} onChange={(e) => set({ year: (e.target.value || null) as Player["year"] })}>
                 <option value="">Pick a year</option>
                 {SCHOOL_YEARS.map((y) => <option key={y}>{y}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="years-left">Years left after this season</label>
+              <select id="years-left" value={yearsLeft(p) ?? ""} onChange={(e) => set({ yearsLeft: e.target.value === "" ? null : Number(e.target.value) })}>
+                <option value="">Not sure</option>
+                {YEARS_LEFT.map((n) => <option key={n} value={n}>{n}{p.yearsLeft == null && yearsLeft(p) === n ? " (from year)" : ""}</option>)}
               </select>
             </div>
           </div>
@@ -110,7 +117,7 @@ export default function PlayerPage() {
             <label className="agree"><input type="checkbox" checked={p.allAmerican} onChange={(e) => set({ allAmerican: e.target.checked })} /> All-American</label>
             <label className="agree"><input type="checkbox" checked={p.allConference} onChange={(e) => set({ allConference: e.target.checked })} /> All-Conference</label>
           </div>
-          <TransferField value={p.transfer ?? null} onChange={(transfer) => set({ transfer })} />
+          <TransferField value={p.transfer ?? null} onChange={(transfer) => set(transfer ? { transfer } : { transfer, transferTo: null })} />
         </div>
 
         <div className="card sec">
