@@ -6,9 +6,16 @@ import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roste
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
-export const POSITIONS: Pos[] = ["LS", "K", "P"];
-/** The positions to show for these players: the three offered, plus K+P only if someone is still saved as K+P. */
-export const positionsFor = (ps: { pos: Pos }[]): Pos[] => (ps.some((p) => p.pos === "KP") ? [...POSITIONS, "KP"] : POSITIONS);
+/**
+ * The positions the app shows. Kickers and punters are hidden for now (z, 2026-11-04): saved K, P and K+P players stay in the
+ * database untouched, they just don't show anywhere and no new ones are added. To bring them back, put "K" and "P" back here.
+ */
+export const POSITIONS: Pos[] = ["LS"];
+/** True when this player's position is one the app shows right now. */
+export const shownPos = (p: { pos: Pos }) => POSITIONS.includes(p.pos);
+/** The positions to show for these players: the ones offered, plus K+P only if it's offered and someone is still saved as K+P. */
+export const positionsFor = (ps: { pos: Pos }[]): Pos[] =>
+  POSITIONS.includes("K") && POSITIONS.includes("P") && ps.some((p) => p.pos === "KP") ? [...POSITIONS, "KP"] : POSITIONS;
 export const POS_LABEL: Record<Pos, string> = { LS: "Long snapper", K: "Kicker", P: "Punter", KP: "K+P" };
 export const POS_SHORT: Record<Pos, string> = { LS: "LS", K: "K", P: "P", KP: "K+P" };
 export const kicks = (p: Pos) => p === "K" || p === "KP";
@@ -205,7 +212,7 @@ export function athletesByState(athletes: { name: string; state: string }[], s: 
   const out: Record<string, { name: string; href?: string; school?: string }[]> = {};
   const add = (code: string | undefined, a: { name: string; href?: string; school?: string }) => { if (code) (out[code] ??= []).push(a); };
   athletes.forEach((a) => add(a.state, { name: a.name }));
-  s.players.filter((p) => p.client).forEach((p) => { const sch = school(p.school); add(sch?.state, { name: p.name || "New player", href: `/players/${p.id}`, school: sch?.name }); });
+  s.players.filter((p) => p.client && shownPos(p)).forEach((p) => { const sch = school(p.school); add(sch?.state, { name: p.name || "New player", href: `/players/${p.id}`, school: sch?.name }); });
   return out;
 }
 
@@ -239,10 +246,10 @@ export function withoutDemoPlayers(s: Scouting | undefined): Scouting {
   return { ...emptyScouting(), ...s, players, staff };
 }
 
-/** Real long snappers, punters and kickers from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
+/** Real players at the shown positions from 2026 FBS and FCS rosters that aren't on the depth charts yet (same id, or same name at the same school). */
 export function missingRosterPlayers(s: Scouting, pos?: "LS" | "P" | "K"): Player[] {
   const have = new Set(s.players.flatMap((p) => [p.id, `${p.school}|${p.name.trim().toLowerCase()}`]));
-  return ROSTER_PLAYERS.filter((r) => (!pos || r.pos === pos) && !have.has(r.id) && !have.has(`${r.school}|${r.name.toLowerCase()}`)).map((r) => ({
+  return ROSTER_PLAYERS.filter((r) => (pos ? r.pos === pos : POSITIONS.includes(r.pos)) && !have.has(r.id) && !have.has(`${r.school}|${r.name.toLowerCase()}`)).map((r) => ({
     ...newPlayer(r.pos, r.school),
     id: r.id, name: r.name, year: r.year, height: r.height, weight: r.weight, priorSchools: r.priorSchools,
     source: r.checked

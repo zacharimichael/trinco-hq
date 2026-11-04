@@ -32,9 +32,9 @@ export default function ClassesPage() {
       </div>
 
       <div className="filters">
-        <div className="seg"><div>
+        {POSITIONS.length > 1 && <div className="seg"><div>
           {POSITIONS.map((x) => <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{POS_SHORT[x]}</button>)}
-        </div></div>
+        </div></div>}
         <div className="seg"><div>
           {(["All", "FBS", "FCS"] as const).map((x) => <button key={x} type="button" aria-pressed={div === x} onClick={() => setDiv(x)}>{x}</button>)}
         </div></div>

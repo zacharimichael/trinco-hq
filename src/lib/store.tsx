@@ -6,7 +6,7 @@ import type { AppState, Deal, Me, SharedFilm, SignatureRecord, TeamMember } from
 import { DAY, startOfToday } from "./rules";
 import { supabase } from "./supabase";
 import { ROSTER_PLAYERS } from "@/data/roster-specialists";
-import { emptyScouting, missingRosterPlayers, withoutDemoPlayers, type Film, type Scouting } from "./players";
+import { emptyScouting, missingRosterPlayers, POSITIONS, withoutDemoPlayers, type Film, type Scouting } from "./players";
 
 /**
  * App state, in one of two modes:
@@ -56,7 +56,7 @@ function seed(): AppState {
 type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events" | "schoolCalls">;
 const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [], schoolCalls: s.schoolCalls ?? [] });
 
-const ROSTER_POSITIONS = ["LS", "P", "K"] as const;
+const ROSTER_POSITIONS = (["LS", "P", "K"] as const).filter((pos) => POSITIONS.includes(pos));
 const ROSTER_IDS = Object.fromEntries(ROSTER_POSITIONS.map((pos) => [pos, new Set(ROSTER_PLAYERS.filter((r) => r.pos === pos).map((r) => r.id))]));
 
 /** Firm-wide data the owner saves to firms.data. */
@@ -193,8 +193,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const live = await loadLive(s);
     if (!live) return setMode("needs-firm");
     saved.current = { member: memberData(live), firm: firmData(live), stage: live.me?.stage ?? 0 };
-    // The first time an owner or editor opens the app, fill the depth charts with the real 2026 long snappers, punters and kickers,
-    // each position once. Left out of the saved copy so they save like any other change. After that, the Depth charts button adds new ones.
+    // The first time an owner or editor opens the app, fill the depth charts with the real 2026 players at each shown position
+    // (long snappers only while kickers and punters are hidden), each position once. Left out of the saved copy so they save like any other change. After that, the Depth charts button adds new ones.
     const lead = live.me?.role === "owner" || live.me?.role === "editor";
     if (lead) for (const pos of ROSTER_POSITIONS)
       if (!live.scouting.players.some((p) => ROSTER_IDS[pos].has(p.id))) live.scouting = { ...live.scouting, players: [...live.scouting.players, ...missingRosterPlayers(live.scouting, pos)] };

@@ -20,7 +20,7 @@ const fieldList = Object.entries(FIELDS)
   .map(([k, f]) => `- ${k}: ${f.label}${f.hint ? ` (${f.hint})` : ""}${f.options ? ` (one of: ${f.options.join(", ")})` : ""}${f.kind === "bool" ? " (true or false)" : ""}${f.min != null ? ` (${f.min} to ${f.max})` : ""}`)
   .join("\n");
 
-const SYSTEM = `You file call notes for Trin Co, a sports agency that represents and scouts college long snappers (LS), kickers (K) and punters (P).
+const SYSTEM = `You file call notes for Trin Co, a sports agency that represents and scouts college long snappers (LS). Kickers and punters are not tracked right now.
 
 The agent just got off a call and typed what was said. Pull out every useful fact and say where it belongs. The agent reviews your list and ticks what to save, so suggest everything useful, but never invent facts that aren't in the note.
 
@@ -28,14 +28,14 @@ Return a list of changes. Each change has a "kind":
 - "set": fill one profile box for a player. Use "player" (id), "field" and "value" (as text).
 - "nil": NIL pay for one college year. Use "player", "year" (1 to 6, the player's year in college that the money is for) and "amount" (dollars per year, a number). Use the player's year in school and NIL history to pick the year. Money for next season goes in the year after the current one.
 - "fact": anything useful that has no box: interest from schools, visits, injuries, grades, family, what they want, who represents them, rumors. Use "player", a short "label" (e.g. "Visiting", "Injury", "Wants") and "value".
-- "new_player": a long snapper, kicker or punter the note mentions who isn't in otherPlayers. Use "player" as a new ref ("new1", "new2"), "name", "pos" and "school". If the name isn't given, describe them in "name", e.g. "Florida backup LS". Then use the same ref in other changes about them.
+- "new_player": a long snapper the note mentions who isn't in otherPlayers. Use "player" as a new ref ("new1", "new2"), "name", "pos" and "school". If the name isn't given, describe them in "name", e.g. "Florida backup LS". Then use the same ref in other changes about them.
 - "call": someone the agent should call back. "name" (who), "phone" if given, "label" (why, short), "date" (YYYY-MM-DD) if a day was said, and "player" if it's about a player.
 - "event": something with a date for the calendar (visit, signing day, meeting, game). "label" (title), "date" (YYYY-MM-DD), "time" (HH:MM, 24-hour) if given, "player" if it's about a player.
 - "coach": a coach's contact at a school. "school", "role" (HC head coach, GM general manager, ST special teams coach), "name", "phone", "email". Put "decision maker" in "value" if the note says this coach makes the decisions.
 
 Rules:
 - Players: match people in the note to "player" (the profile this call was logged on) or "otherPlayers" by name, school, position and depth role. "Their backup snapper" means the backup LS at the same school as the player. Use the existing id when it's clearly the same person.
-- School calls: when agency_data.school is set, the call was logged on that school's page with one of its coaches, not on a player's profile, so agency_data.player is null. Players at that school are listed by id in school.players; "their snapper" or "the starter" means a player there. What the school needs or plans (the LS/K/P landscape, who's leaving, what they're recruiting, timelines) is already saved with the note on the school's page, so only suggest changes that belong somewhere else: players' profiles, new players, callbacks, dates and coach contacts. The coach on the call is schoolCoaches[who]; if the note gives their phone or email, add a "coach" change for that school.
+- School calls: when agency_data.school is set, the call was logged on that school's page with one of its coaches, not on a player's profile, so agency_data.player is null. Players at that school are listed by id in school.players; "their snapper" or "the starter" means a player there. What the school needs or plans (the LS landscape, who's leaving, what they're recruiting, timelines) is already saved with the note on the school's page, so only suggest changes that belong somewhere else: players' profiles, new players, callbacks, dates and coach contacts. The coach on the call is schoolCoaches[who]; if the note gives their phone or email, add a "coach" change for that school.
 - A player willing or planning to move schools: set "transfer" ("Open to transferring" if they'd consider it, "In the portal" once entered, or e.g. "Committed to Auburn"). This puts them on the agency's transfer list. Only set "school" once they've actually enrolled somewhere new; then also add the old school with field "priorSchools".
 - Schools: use the exact name from the school list below or from addedSchools.
 - Dates: work out real dates from words like "next Tuesday" using today's date.

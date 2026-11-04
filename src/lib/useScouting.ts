@@ -1,12 +1,16 @@
 "use client";
 
+import { useMemo } from "react";
 import { useStore } from "./store";
-import { allSchools, missingRosterPlayers, newPlayer, schoolById, staffFor, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
+import { allSchools, missingRosterPlayers, newPlayer, schoolById, shownPos, staffFor, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
 
 /** Scouting data plus the edits the player and depth chart screens need. */
 export function useScouting() {
   const { state, update, mode } = useStore();
-  const sc = state.scouting;
+  // Screens only see players at the shown positions (kickers and punters are hidden for now). Edits still go to the full saved data,
+  // so hidden players are kept as they are.
+  const all = state.scouting;
+  const sc = useMemo(() => ({ ...all, players: all.players.filter(shownPos) }), [all]);
   // Scouting is agency-wide and saved by the owner and anyone they shared full access with. Agents see it read-only.
   const canEdit = mode === "demo" || state.me?.role === "owner" || state.me?.role === "editor";
   const edit = (fn: (s: Scouting) => void) => update((d) => fn(d.scouting));
@@ -27,7 +31,7 @@ export function useScouting() {
       edit((s) => { s.players.push(p); });
       return p.id;
     },
-    /** Adds every real long snapper, punter and kicker from the 2026 rosters that isn't on the depth charts yet. */
+    /** Adds every real player at the shown positions from the 2026 rosters that isn't on the depth charts yet. */
     addRosterPlayers: () => edit((s) => { s.players.push(...missingRosterPlayers(s)); }),
     removePlayer: (id: string) => edit((s) => { s.players = s.players.filter((x) => x.id !== id); }),
     edit,

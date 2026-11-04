@@ -8,7 +8,7 @@ import { TodoRow } from "@/components/TodoRow";
 import { dealMoney } from "@/lib/agency";
 import { dayItems, shortDay, timeText, ymd } from "@/lib/calendar";
 import { fmt, myStates, RULES, status, TRACKED } from "@/lib/rules";
-import { POS_SHORT, POSITIONS, money, schoolById } from "@/lib/players";
+import { POS_SHORT, POSITIONS, money, schoolById, shownPos } from "@/lib/players";
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 
@@ -34,7 +34,7 @@ export default function AgencyHome() {
   const renewal = all.filter((t) => t.later && t.due).sort((a, b) => a.due!.getTime() - b.due!.getTime())[0];
   const checked = TRACKED.map((c) => RULES[c].last_researched).sort()[0];
 
-  const players = state.scouting.players;
+  const players = state.scouting.players.filter(shownPos);
   const schoolOf = schoolById(state.scouting);
   const lastCall = [
     ...players.flatMap((p) => p.talks.map((t) => ({ date: t.date, name: p.name || "a player" }))),
