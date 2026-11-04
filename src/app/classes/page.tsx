@@ -3,54 +3,60 @@
 import { useState } from "react";
 import Link from "next/link";
 import { byBest } from "@/lib/moves";
-import { money, bestRating, coachRating, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
+import { money, bestRating, coachRating, HS_CLASS_YEARS, hsClassText, isHs, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, missingHsPlayers, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
-type Cls = (typeof YEARS_LEFT)[number] | "unset";
+type Cls = (typeof YEARS_LEFT)[number] | "unset" | (typeof HS_CLASS_YEARS)[number];
+const isHsCls = (c: Cls): c is (typeof HS_CLASS_YEARS)[number] => typeof c === "number" && c > 2000;
+/** High school lists: Kohl's ranked first in their order, then Kohl's unranked and Rubio-only names. */
+const byList = (a: Player, b: Player) => (a.kohlsRank ?? 999) - (b.kohlsRank ?? 999);
 const TOP = 50;
 
-/** Top players grouped by years of eligibility left after this season: 0, 1, 2, 3 or 4. */
+/** Top players grouped by years of eligibility left after this season (0 to 4), plus high school classes of 2027 and 2028. */
 export default function ClassesPage() {
-  const { sc, school, canEdit, setPlayer, edit } = useScouting();
+  const { sc, school, canEdit, setPlayer, edit, addHsPlayers } = useScouting();
   const [pos, setPos] = useState<Pos>("LS");
   const [div, setDiv] = useState<"All" | "FBS" | "FCS">("All");
   const [cls, setCls] = useState<Cls>(0);
   const [all, setAll] = useState(false);
   const [adding, setAdding] = useState("");
 
-  const players = sc.players.filter((p) => p.name && p.pos === pos && (div === "All" || school(p.school)?.division === div));
-  const inCls = (p: Player, c: Cls) => (c === "unset" ? yearsLeft(p) == null : yearsLeft(p) === c);
+  const hs = isHsCls(cls);
+  const players = sc.players.filter((p) => p.name && p.pos === pos && (isHs(p) || div === "All" || school(p.school)?.division === div));
+  const inCls = (p: Player, c: Cls) => (isHsCls(c) ? p.hsClass === c : !isHs(p) && (c === "unset" ? yearsLeft(p) == null : yearsLeft(p) === c));
   const count = (c: Cls) => players.filter((p) => inCls(p, c)).length;
-  const list = players.filter((p) => inCls(p, cls)).sort((a, b) => byBest(a, b) || nilNow(b) - nilNow(a) || a.name.localeCompare(b.name));
+  const list = players.filter((p) => inCls(p, cls)).sort((a, b) => byBest(a, b) || (hs ? byList(a, b) : nilNow(b) - nilNow(a)) || a.name.localeCompare(b.name));
+  const missingHs = canEdit && pos === "LS" ? missingHsPlayers(sc).filter((p) => p.hsClass === cls).length : 0;
   const shown = all ? list : list.slice(0, TOP);
   const unset = count("unset");
 
   // Top ten for this class: your picks in your order, then the best rated to fill any open places.
   const key = `${pos}|${cls}`;
   const picks = cls === "unset" ? [] : (sc.top10?.[key] ?? []).map((id) => list.find((p) => p.id === id)).filter((p): p is Player => !!p);
-  const auto = list.filter((p) => bestRating(p) != null && !picks.includes(p)).slice(0, Math.max(0, 10 - picks.length));
+  const auto = list.filter((p) => (bestRating(p) != null || (hs && p.kohlsRank != null)) && !picks.includes(p)).slice(0, Math.max(0, 10 - picks.length));
   const top = [...picks.map((p) => ({ p, mine: true })), ...auto.map((p) => ({ p, mine: false }))].slice(0, 10);
   const setPicks = (ids: string[]) => edit((d) => { (d.top10 ??= {})[key] = ids.slice(0, 10); });
   const ids = picks.map((p) => p.id);
   const inTop = (p: Player) => ids.includes(p.id);
   const togglePick = (p: Player) => setPicks(inTop(p) ? ids.filter((x) => x !== p.id) : [...ids, p.id]);
+  const label = (p: Player) => `${p.name} · ${(isHs(p) ? p.hsState : school(p.school)?.name) ?? ""}`;
   const nudge = (i: number, by: number) => { const n = [...ids]; [n[i], n[i + by]] = [n[i + by], n[i]]; setPicks(n); };
-  const clsName = cls === "unset" ? "No year yet" : cls === 0 ? "0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`;
+  const clsName = hs ? hsClassText(cls) : cls === "unset" ? "No year yet" : cls === 0 ? "0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`;
 
   return (
     <section className="view">
       <div>
         <h1>Classes</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Top {POS_LABEL[pos].toLowerCase()}s by years of eligibility left after this season. Best rated first.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Top {POS_LABEL[pos].toLowerCase()}s by years of eligibility left after this season, plus high school classes. Best rated first.</p>
       </div>
 
       <div className="filters">
         {POSITIONS.length > 1 && <div className="seg"><div>
           {POSITIONS.map((x) => <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{POS_SHORT[x]}</button>)}
         </div></div>}
-        <div className="seg"><div>
+        {!hs && <div className="seg"><div>
           {(["All", "FBS", "FCS"] as const).map((x) => <button key={x} type="button" aria-pressed={div === x} onClick={() => setDiv(x)}>{x}</button>)}
-        </div></div>
+        </div></div>}
       </div>
 
       <div className="tiles classtiles">
@@ -64,17 +70,22 @@ export default function ClassesPage() {
             <span className="big">{unset}</span>No year yet
           </button>
         )}
+        {HS_CLASS_YEARS.map((c) => (
+          <button key={c} type="button" className="tile2" aria-pressed={cls === c} onClick={() => { setCls(c); setAll(false); }}>
+            <span className="big">{count(c)}</span>HS Class of {c}
+          </button>
+        ))}
       </div>
 
       {cls !== "unset" && (
         <div className="card sec" id="top-ten">
           <h2>🏆 Top 10 · {clsName}</h2>
-          <small className="muted">{canEdit ? "Type a name or tap ☆ on anyone below. Use ▲ ▼ to rank." : "The agency's ranking."}{auto.length > 0 && " Places you haven't filled show the best rated (auto)."}</small>
+          <small className="muted">{canEdit ? "Type a name or tap ☆ on anyone below. Use ▲ ▼ to rank." : "The agency's ranking."}{auto.length > 0 && (hs ? " Places you haven't filled show the best rated, then Kohl's order (auto)." : " Places you haven't filled show the best rated (auto).")}</small>
           <ol className="topten">
             {top.map(({ p, mine }, i) => (
               <li key={p.id}>
                 <span className="rank">{i + 1}</span>
-                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name, yearShort(p.year), ratingsText(p)].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
+                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[hs ? p.hsState : school(p.school)?.name, hs && p.kohlsRank != null && `Kohl's #${p.kohlsRank}`, yearShort(p.year), ratingsText(p)].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
                 {canEdit && mine && (
                   <span className="moveacts">
                     <button type="button" className="linkbtn" aria-label={`Move ${p.name} up`} disabled={i === 0} onClick={() => nudge(i, -1)}>▲</button>
@@ -91,13 +102,44 @@ export default function ClassesPage() {
             <div className="field" style={{ maxWidth: 420 }}>
               <label htmlFor="top-add">Add to the top 10</label>
               <input id="top-add" list="top-names" placeholder="Type a name" autoComplete="off" value={adding}
-                onChange={(e) => { const hit = list.find((p) => `${p.name} · ${school(p.school)?.name ?? ""}` === e.target.value); if (hit) { if (!inTop(hit)) togglePick(hit); setAdding(""); } else setAdding(e.target.value); }} />
-              <datalist id="top-names">{list.filter((p) => !inTop(p)).map((p) => <option key={p.id} value={`${p.name} · ${school(p.school)?.name ?? ""}`} />)}</datalist>
+                onChange={(e) => { const hit = list.find((p) => label(p) === e.target.value); if (hit) { if (!inTop(hit)) togglePick(hit); setAdding(""); } else setAdding(e.target.value); }} />
+              <datalist id="top-names">{list.filter((p) => !inTop(p)).map((p) => <option key={p.id} value={label(p)} />)}</datalist>
             </div>
           )}
         </div>
       )}
 
+      {hs ? (
+        <div className="card sec">
+          <h2>Everyone in the {hsClassText(cls)}</h2>
+          <small className="muted">From <a href={`https://www.kohlskicking.com/national-player-ratings/long-snappers/${cls}`} target="_blank" rel="noreferrer">Kohl&apos;s Kicking&apos;s {cls} long snapper ratings</a> and Rubio Long Snapping&apos;s lists. Kohl&apos;s order is shown until you add ratings. Special Teams University doesn&apos;t publish class lists.</small>
+          {missingHs > 0 && <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={addHsPlayers}>Add {missingHs} from the lists</button>}
+          <div className="tablewrap">
+            <table id="hs-class-list">
+              <thead><tr>{canEdit && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>State</th><th>Kohl&apos;s</th><th className="num">Player rating</th><th className="num">Coaches rating</th><th>Recruiting</th></tr></thead>
+              <tbody>
+                {shown.map((p, i) => (
+                  <tr key={p.id}>
+                    {canEdit && <td><button type="button" className="starbtn" aria-pressed={inTop(p)} disabled={!inTop(p) && ids.length >= 10}
+                      aria-label={inTop(p) ? `Take ${p.name} off the top 10` : `Add ${p.name} to the top 10`} onClick={() => togglePick(p)}>{inTop(p) ? "★" : "☆"}</button></td>}
+                    <td className="num muted">{i + 1}</td>
+                    <td><Link href={`/players/${p.id}`}><b>{p.name}</b></Link>
+                      {(p.client || p.lists?.length) && <small className="muted" style={{ display: "block" }}>
+                        {[p.client && "My athlete", p.lists?.length && `On ${p.lists.join(" + ")}`].filter(Boolean).join(" · ")}</small>}</td>
+                    <td>{p.hsState || "—"}</td>
+                    <td>{p.kohlsRank != null ? `#${p.kohlsRank}` : p.lists?.includes("Kohl's") ? "Listed" : "—"}</td>
+                    <td className="num"><b>{overall(p) ?? "—"}</b></td>
+                    <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
+                    <td><small>{p.recruiting || "—"}</small></td>
+                  </tr>
+                ))}
+                {!list.length && <tr><td colSpan={8} className="muted">Nobody here yet.</td></tr>}
+              </tbody>
+            </table>
+          </div>
+          {list.length > TOP && <button type="button" className="btn ghost" style={{ alignSelf: "flex-start" }} onClick={() => setAll(!all)}>{all ? `Show top ${TOP}` : `Show all ${list.length}`}</button>}
+        </div>
+      ) : (
       <div className="card sec">
         <h2>{cls === "unset" ? "No year in school yet" : cls === 0 ? "Everyone graduating · 0 years left" : `Everyone with ${cls} year${cls === 1 ? "" : "s"} left`}</h2>
         {cls === 0 && <small className="muted">Out of eligibility after this season, so they&apos;re kept out of transfer moves. Their spots show as holes on <Link href="/transfers">Moves</Link>.</small>}
@@ -133,6 +175,7 @@ export default function ClassesPage() {
         </div>
         {list.length > TOP && <button type="button" className="btn ghost" style={{ alignSelf: "flex-start" }} onClick={() => setAll(!all)}>{all ? `Show top ${TOP}` : `Show all ${list.length}`}</button>}
       </div>
+      )}
     </section>
   );
 }

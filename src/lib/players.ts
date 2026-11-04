@@ -3,6 +3,7 @@ import { HEAD_COACHES } from "@/data/head-coaches";
 import { ST_COACHES } from "@/data/special-teams-coaches";
 import { GENERAL_MANAGERS } from "@/data/general-managers";
 import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roster-specialists";
+import { HS_LONG_SNAPPERS } from "@/data/hs-long-snappers";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
@@ -41,6 +42,11 @@ export const YEARS_LEFT = [0, 1, 2, 3, 4] as const;
 /** Years left after this season: what was typed, or a guess from year in school. Null when neither is known. */
 export const yearsLeft = (p: { yearsLeft?: number | null; year?: SchoolYear | null }): number | null =>
   p.yearsLeft ?? (p.year ? LEFT_BY_YEAR[p.year] : null);
+/** High school classes shown on Classes, next to the college years-left groups. */
+export const HS_CLASS_YEARS = [2027, 2028] as const;
+/** A high school player: has a graduating class and no college school yet. */
+export const isHs = (p: { hsClass?: number | null }) => p.hsClass != null;
+export const hsClassText = (y: number) => `HS Class of ${y}`;
 export const yearsLeftText = (n: number) => (n === 0 ? "Graduating" : `${n} year${n === 1 ? "" : "s"} left`);
 
 export interface Contact { name: string; phone: string; email: string }
@@ -155,6 +161,16 @@ export interface Player {
   client: boolean;
   /** Where a player added from a public roster came from. Players added by hand have none. */
   source?: { label: string; url: string; date: string } | null;
+
+  // High school prospects (no college school yet)
+  /** High school graduating class, e.g. 2027. Set only for high school players. */
+  hsClass?: number | null;
+  /** Number on Kohl's Kicking's national list for the class, when ranked there. */
+  kohlsRank?: number | null;
+  /** Commitment or offers, e.g. "Committed: Notre Dame" or "Offered: Air Force". */
+  recruiting?: string | null;
+  /** Public lists the player is on, e.g. ["Kohl's", "Rubio"]. */
+  lists?: string[];
 }
 
 /** Scouting data the agency shares: players, school staff contacts and any schools added by hand. */
@@ -266,5 +282,16 @@ export function missingRosterPlayers(s: Scouting, pos?: "LS" | "P" | "K"): Playe
     source: r.checked
       ? { label: "School roster", url: r.checked, date: ROSTER_CHECKED_DATE }
       : { label: ROSTER_SOURCE.label, url: r.espn ? `https://www.espn.com/college-football/player/_/id/${r.espn}` : ROSTER_SOURCE.url, date: ROSTER_SOURCE.date },
+  }));
+}
+
+/** High school long snappers (classes of 2027 and 2028) from Kohl's Kicking and Rubio lists that aren't saved yet (same id, or same name in the same class). */
+export function missingHsPlayers(s: Scouting): Player[] {
+  const have = new Set(s.players.flatMap((p) => [p.id, `${p.hsClass ?? ""}|${p.name.trim().toLowerCase()}`]));
+  return HS_LONG_SNAPPERS.filter((r) => POSITIONS.includes("LS") && !have.has(r.id) && !have.has(`${r.hsClass}|${r.name.toLowerCase()}`)).map((r) => ({
+    ...newPlayer("LS"),
+    id: r.id, name: r.name, hsState: r.hsState, hsClass: r.hsClass, kohlsRank: r.kohlsRank, recruiting: r.recruiting || null,
+    lists: [r.kohlsGroup != null && "Kohl's", r.rubio && "Rubio"].filter((x): x is string => !!x),
+    source: r.sources[0],
   }));
 }

@@ -1,5 +1,5 @@
 import type { School } from "@/data/schools";
-import { allSchools, bestRating, newId, yearsLeft, type Match, type Player, type Pos, type Scouting } from "./players";
+import { allSchools, bestRating, isHs, newId, yearsLeft, type Match, type Player, type Pos, type Scouting } from "./players";
 
 /**
  * The Moves board: who is leaving where, which schools that leaves without a
@@ -98,7 +98,7 @@ export function openSpots(sc: Scouting, pos: Pos): Spot[] {
 export function available(sc: Scouting, pos: Pos): Player[] {
   const schools = allSchools(sc);
   return sc.players
-    .filter((p) => p.name && p.pos === pos && p.transfer && !committedTo(p, schools) && !graduating(p))
+    .filter((p) => p.name && p.pos === pos && !isHs(p) && p.transfer && !committedTo(p, schools) && !graduating(p))
     .sort(byBest);
 }
 
