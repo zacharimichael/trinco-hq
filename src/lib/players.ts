@@ -4,6 +4,7 @@ import { ST_COACHES } from "@/data/special-teams-coaches";
 import { GENERAL_MANAGERS } from "@/data/general-managers";
 import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roster-specialists";
 import { HS_LONG_SNAPPERS } from "@/data/hs-long-snappers";
+import { JUCO_LONG_SNAPPERS } from "@/data/juco-long-snappers";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
@@ -46,6 +47,8 @@ export const yearsLeft = (p: { yearsLeft?: number | null; year?: SchoolYear | nu
 export const HS_CLASS_YEARS = [2027, 2028] as const;
 /** A high school player: has a graduating class and no college school yet. */
 export const isHs = (p: { hsClass?: number | null }) => p.hsClass != null;
+/** A junior college player. Shown in the JUCO group on Classes, not in the years-left groups. */
+export const isJuco = (p: { jucoSchool?: string | null }) => !!p.jucoSchool?.trim();
 export const hsClassText = (y: number) => `HS Class of ${y}`;
 export const yearsLeftText = (n: number) => (n === 0 ? "Graduating" : `${n} year${n === 1 ? "" : "s"} left`);
 
@@ -171,6 +174,8 @@ export interface Player {
   recruiting?: string | null;
   /** Public lists the player is on, e.g. ["Kohl's", "Rubio"]. */
   lists?: string[];
+  /** Junior college (JUCO) they play at now, typed as text, e.g. "Iowa Western CC (IA)". Set only for JUCO players. */
+  jucoSchool?: string | null;
 }
 
 /** Scouting data the agency shares: players, school staff contacts and any schools added by hand. */
@@ -293,5 +298,17 @@ export function missingHsPlayers(s: Scouting): Player[] {
     id: r.id, name: r.name, hsState: r.hsState, hsClass: r.hsClass, kohlsRank: r.kohlsRank, recruiting: r.recruiting || null,
     lists: [r.kohlsGroup != null && "Kohl's", r.rubio && "Rubio"].filter((x): x is string => !!x),
     source: r.sources[0],
+  }));
+}
+
+/** JUCO long snappers from the public lists that aren't saved yet (same id, or same name at a JUCO). */
+export function missingJucoPlayers(s: Scouting): Player[] {
+  const have = new Set(s.players.flatMap((p) => [p.id, isJuco(p) ? `juco|${p.name.trim().toLowerCase()}` : ""]));
+  return JUCO_LONG_SNAPPERS.filter((r) => POSITIONS.includes("LS") && !have.has(r.id) && !have.has(`juco|${r.name.toLowerCase()}`)).map((r) => ({
+    ...newPlayer("LS"),
+    id: r.id, name: r.name, hsState: r.hsState, jucoSchool: r.school, kohlsRank: null,
+    recruiting: `Kohl's ${r.hsClass} HS list${r.kohlsRank != null ? ` #${r.kohlsRank}` : ""}: committed to ${r.school.replace(/ \(..\)$/, "")}`,
+    lists: ["Kohl's"],
+    source: { label: `Kohl's Kicking ${r.hsClass} national long snapper ratings`, url: r.url, date: "2026-11-04" },
   }));
 }

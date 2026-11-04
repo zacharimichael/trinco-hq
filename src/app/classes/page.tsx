@@ -1,32 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { HS_IDS } from "@/data/hs-long-snappers";
+import { JUCO_IDS } from "@/data/juco-long-snappers";
 import Link from "next/link";
 import { byBest } from "@/lib/moves";
-import { money, bestRating, coachRating, HS_CLASS_YEARS, hsClassText, isHs, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, missingHsPlayers, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
+import { money, bestRating, coachRating, HS_CLASS_YEARS, hsClassText, isHs, isJuco, missingJucoPlayers, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, missingHsPlayers, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
-type Cls = (typeof YEARS_LEFT)[number] | "unset" | (typeof HS_CLASS_YEARS)[number];
+type Cls = (typeof YEARS_LEFT)[number] | "unset" | (typeof HS_CLASS_YEARS)[number] | "juco";
 const isHsCls = (c: Cls): c is (typeof HS_CLASS_YEARS)[number] => typeof c === "number" && c > 2000;
 /** High school lists: Kohl's ranked first in their order, then Kohl's unranked and Rubio-only names. */
 const byList = (a: Player, b: Player) => (a.kohlsRank ?? 999) - (b.kohlsRank ?? 999);
 const TOP = 50;
 
-/** Top players grouped by years of eligibility left after this season (0 to 4), plus high school classes of 2027 and 2028. */
+/** Top players grouped by years of eligibility left after this season (0 to 4), plus JUCO and high school classes of 2027 and 2028. */
 export default function ClassesPage() {
-  const { sc, school, canEdit, setPlayer, edit, addHsPlayers } = useScouting();
+  const { sc, school, canEdit, setPlayer, edit, addHsPlayers, addJucoPlayers } = useScouting();
   const [pos, setPos] = useState<Pos>("LS");
   const [div, setDiv] = useState<"All" | "FBS" | "FCS">("All");
   const [cls, setCls] = useState<Cls>(0);
   const [all, setAll] = useState(false);
+  // Backup for the sign-in auto-load: if no high school or JUCO snappers from the lists are saved yet, add them once when an owner or editor opens Classes.
+  const tried = useRef({ hs: false, juco: false });
+  const noHs = !sc.players.some((p) => HS_IDS.has(p.id));
+  const noJuco = !sc.players.some((p) => JUCO_IDS.has(p.id));
+  useEffect(() => {
+    if (canEdit && noHs && !tried.current.hs) { tried.current.hs = true; addHsPlayers(); }
+    if (canEdit && noJuco && !tried.current.juco) { tried.current.juco = true; addJucoPlayers(); }
+  }, [canEdit, noHs, noJuco, addHsPlayers, addJucoPlayers]);
   const [adding, setAdding] = useState("");
 
   const hs = isHsCls(cls);
-  const players = sc.players.filter((p) => p.name && p.pos === pos && (isHs(p) || div === "All" || school(p.school)?.division === div));
-  const inCls = (p: Player, c: Cls) => (isHsCls(c) ? p.hsClass === c : !isHs(p) && (c === "unset" ? yearsLeft(p) == null : yearsLeft(p) === c));
+  const juco = cls === "juco";
+  const players = sc.players.filter((p) => p.name && p.pos === pos && (isHs(p) || isJuco(p) || div === "All" || school(p.school)?.division === div));
+  const inCls = (p: Player, c: Cls) => (isHsCls(c) ? p.hsClass === c : c === "juco" ? !isHs(p) && isJuco(p)
+    : !isHs(p) && !isJuco(p) && (c === "unset" ? yearsLeft(p) == null : yearsLeft(p) === c));
   const count = (c: Cls) => players.filter((p) => inCls(p, c)).length;
   const list = players.filter((p) => inCls(p, cls)).sort((a, b) => byBest(a, b) || (hs ? byList(a, b) : nilNow(b) - nilNow(a)) || a.name.localeCompare(b.name));
-  const missingHs = canEdit && pos === "LS" ? missingHsPlayers(sc).filter((p) => p.hsClass === cls).length : 0;
+  const missingHs = canEdit && pos === "LS" ? (juco ? missingJucoPlayers(sc) : missingHsPlayers(sc).filter((p) => p.hsClass === cls)).length : 0;
   const shown = all ? list : list.slice(0, TOP);
   const unset = count("unset");
 
@@ -39,22 +51,22 @@ export default function ClassesPage() {
   const ids = picks.map((p) => p.id);
   const inTop = (p: Player) => ids.includes(p.id);
   const togglePick = (p: Player) => setPicks(inTop(p) ? ids.filter((x) => x !== p.id) : [...ids, p.id]);
-  const label = (p: Player) => `${p.name} · ${(isHs(p) ? p.hsState : school(p.school)?.name) ?? ""}`;
+  const label = (p: Player) => `${p.name} · ${(isHs(p) ? p.hsState : isJuco(p) ? p.jucoSchool : school(p.school)?.name) ?? ""}`;
   const nudge = (i: number, by: number) => { const n = [...ids]; [n[i], n[i + by]] = [n[i + by], n[i]]; setPicks(n); };
-  const clsName = hs ? hsClassText(cls) : cls === "unset" ? "No year yet" : cls === 0 ? "0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`;
+  const clsName = hs ? hsClassText(cls) : juco ? "JUCO" : cls === "unset" ? "No year yet" : cls === 0 ? "0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`;
 
   return (
     <section className="view">
       <div>
         <h1>Classes</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Top {POS_LABEL[pos].toLowerCase()}s by years of eligibility left after this season, plus high school classes. Best rated first.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Top {POS_LABEL[pos].toLowerCase()}s by years of eligibility left after this season, plus JUCO and high school classes. Best rated first.</p>
       </div>
 
       <div className="filters">
         {POSITIONS.length > 1 && <div className="seg"><div>
           {POSITIONS.map((x) => <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{POS_SHORT[x]}</button>)}
         </div></div>}
-        {!hs && <div className="seg"><div>
+        {!hs && !juco && <div className="seg"><div>
           {(["All", "FBS", "FCS"] as const).map((x) => <button key={x} type="button" aria-pressed={div === x} onClick={() => setDiv(x)}>{x}</button>)}
         </div></div>}
       </div>
@@ -70,6 +82,9 @@ export default function ClassesPage() {
             <span className="big">{unset}</span>No year yet
           </button>
         )}
+        <button type="button" className="tile2" aria-pressed={juco} onClick={() => { setCls("juco"); setAll(false); }}>
+          <span className="big">{count("juco")}</span>JUCO
+        </button>
         {HS_CLASS_YEARS.map((c) => (
           <button key={c} type="button" className="tile2" aria-pressed={cls === c} onClick={() => { setCls(c); setAll(false); }}>
             <span className="big">{count(c)}</span>HS Class of {c}
@@ -85,7 +100,7 @@ export default function ClassesPage() {
             {top.map(({ p, mine }, i) => (
               <li key={p.id}>
                 <span className="rank">{i + 1}</span>
-                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[hs ? p.hsState : school(p.school)?.name, hs && p.kohlsRank != null && `Kohl's #${p.kohlsRank}`, yearShort(p.year), ratingsText(p)].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
+                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[hs ? p.hsState : juco ? p.jucoSchool : school(p.school)?.name, hs && p.kohlsRank != null && `Kohl's #${p.kohlsRank}`, yearShort(p.year), ratingsText(p)].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
                 {canEdit && mine && (
                   <span className="moveacts">
                     <button type="button" className="linkbtn" aria-label={`Move ${p.name} up`} disabled={i === 0} onClick={() => nudge(i, -1)}>▲</button>
@@ -109,14 +124,15 @@ export default function ClassesPage() {
         </div>
       )}
 
-      {hs ? (
+      {hs || juco ? (
         <div className="card sec">
-          <h2>Everyone in the {hsClassText(cls)}</h2>
-          <small className="muted">From <a href={`https://www.kohlskicking.com/national-player-ratings/long-snappers/${cls}`} target="_blank" rel="noreferrer">Kohl&apos;s Kicking&apos;s {cls} long snapper ratings</a> and Rubio Long Snapping&apos;s lists. Kohl&apos;s order is shown until you add ratings. Special Teams University doesn&apos;t publish class lists.</small>
-          {missingHs > 0 && <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={addHsPlayers}>Add {missingHs} from the lists</button>}
+          <h2>{juco ? "Everyone at a junior college (JUCO)" : `Everyone in the ${hsClassText(cls)}`}</h2>
+          {juco ? <small className="muted">Anyone with a JUCO school on their profile. Started with the snappers Kohl&apos;s Kicking lists as committed to a JUCO from the 2025 and 2026 high school classes. Nobody publishes a JUCO long snapper ranking, so add others from their profile (JUCO school box).</small>
+          : <small className="muted">From <a href={`https://www.kohlskicking.com/national-player-ratings/long-snappers/${cls}`} target="_blank" rel="noreferrer">Kohl&apos;s Kicking&apos;s {cls} long snapper ratings</a> and Rubio Long Snapping&apos;s lists. Kohl&apos;s order is shown until you add ratings. Special Teams University doesn&apos;t publish class lists.</small>}
+          {missingHs > 0 && <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={juco ? addJucoPlayers : addHsPlayers}>Add {missingHs} from the lists</button>}
           <div className="tablewrap">
             <table id="hs-class-list">
-              <thead><tr>{canEdit && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>State</th><th>Kohl&apos;s</th><th className="num">Player rating</th><th className="num">Coaches rating</th><th>Recruiting</th></tr></thead>
+              <thead><tr>{canEdit && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>{juco ? "JUCO school" : "State"}</th>{!juco && <th>Kohl&apos;s</th>}<th className="num">Player rating</th><th className="num">Coaches rating</th><th>{juco ? "Notes" : "Recruiting"}</th></tr></thead>
               <tbody>
                 {shown.map((p, i) => (
                   <tr key={p.id}>
@@ -126,8 +142,8 @@ export default function ClassesPage() {
                     <td><Link href={`/players/${p.id}`}><b>{p.name}</b></Link>
                       {(p.client || p.lists?.length) && <small className="muted" style={{ display: "block" }}>
                         {[p.client && "My athlete", p.lists?.length && `On ${p.lists.join(" + ")}`].filter(Boolean).join(" · ")}</small>}</td>
-                    <td>{p.hsState || "—"}</td>
-                    <td>{p.kohlsRank != null ? `#${p.kohlsRank}` : p.lists?.includes("Kohl's") ? "Listed" : "—"}</td>
+                    <td>{juco ? p.jucoSchool : p.hsState || "—"}</td>
+                    {!juco && <td>{p.kohlsRank != null ? `#${p.kohlsRank}` : p.lists?.includes("Kohl's") ? "Listed" : "—"}</td>}
                     <td className="num"><b>{overall(p) ?? "—"}</b></td>
                     <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
                     <td><small>{p.recruiting || "—"}</small></td>
