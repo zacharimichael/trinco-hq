@@ -40,12 +40,12 @@ export default function DepthPage() {
     <section className="view">
       <div>
         <h1>Depth charts</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS, FCS, D2 and D3 school. LS, K and P.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Every FBS, FCS, D2 and D3 school. {POSITIONS.map((x) => POS_SHORT[x]).join(", ")}.</p>
       </div>
 
       {toAdd > 0 && (
         <div className="card sec">
-          <b>{toAdd} long snappers, punters and kickers from 2026 FBS and FCS rosters aren&apos;t on your depth charts yet.</b>
+          <b>{toAdd} {POSITIONS.length === 1 ? `${POS_LABEL[POSITIONS[0]].toLowerCase()}s` : "players"} from 2026 FBS and FCS rosters aren&apos;t on your depth charts yet.</b>
           <small className="muted">Real players only: name, school, year, height and weight from each team&apos;s roster. Each profile says where it came from.</small>
           <div><button type="button" className="btn" onClick={addRosterPlayers}>Add them</button></div>
         </div>
@@ -62,9 +62,9 @@ export default function DepthPage() {
         <div className="seg"><div>
           {(["All", ...DIVISIONS] as const).map((x) => <button key={x} type="button" aria-pressed={div === x} onClick={() => setDiv(x)}>{x}</button>)}
         </div></div>
-        <div className="seg"><div>
+        {POSITIONS.length > 1 && <div className="seg"><div>
           {(["All", ...POSITIONS] as const).map((x) => <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{x === "All" ? "All positions" : POS_SHORT[x]}</button>)}
-        </div></div>
+        </div></div>}
         <select aria-label="Conference" className="search" id="conf-filter" value={conference} onChange={(e) => setConf(e.target.value)}>
           <option value="">All conferences</option>
           {confs.map((c) => <option key={c}>{c}</option>)}

@@ -5,13 +5,13 @@ import Link from "next/link";
 import { shortDay, ymd } from "@/lib/calendar";
 import { WHO_LABEL } from "@/lib/intake";
 import type { CallItem } from "@/lib/model";
-import { newId, schoolById } from "@/lib/players";
+import { newId, schoolById, shownPos } from "@/lib/players";
 import { useStore } from "@/lib/store";
 
 /** People to call: late and today first, then by day, then anytime. */
 export default function CallsPage() {
   const { state, update } = useStore();
-  const players = state.scouting.players.filter((p) => p.name);
+  const players = state.scouting.players.filter((p) => p.name && shownPos(p));
   const today = ymd(new Date());
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -25,7 +25,7 @@ export default function CallsPage() {
   const schoolLink = (id: string) => { const s = schoolOf(id); return s ? `/schools?s=${s.state}&school=${encodeURIComponent(s.id)}` : "/schools"; };
   // Every call logged, on players and on schools, newest first.
   const logged = [
-    ...state.scouting.players.flatMap((p) => p.talks.map((t) => ({ key: `p-${p.id}-${t.date}`, date: t.date, note: t.note, title: p.name || "A player", sub: WHO_LABEL[t.who], href: `/players/${p.id}#call-log` }))),
+    ...state.scouting.players.filter(shownPos).flatMap((p) => p.talks.map((t) => ({ key: `p-${p.id}-${t.date}`, date: t.date, note: t.note, title: p.name || "A player", sub: WHO_LABEL[t.who], href: `/players/${p.id}#call-log` }))),
     ...(state.schoolCalls ?? []).map((c) => ({ key: c.id, date: c.date, note: c.note, title: schoolOf(c.school)?.name ?? "A school", sub: [WHO_LABEL[c.who], c.name].filter(Boolean).join(", "), href: schoolLink(c.school) })),
   ].sort((a, b) => b.date.localeCompare(a.date));
   const [showAll, setShowAll] = useState(false);

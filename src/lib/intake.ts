@@ -1,7 +1,7 @@
 import type { Change } from "./intakeSchema";
 import type { AppState, CalEvent, CallItem, SchoolCall } from "./model";
 import {
-  blankStaff, newId, newPlayer, NIL_YEARS, SCHOOL_YEARS, schoolById, allSchools, staffFor,
+  blankStaff, newId, newPlayer, NIL_YEARS, POSITIONS, SCHOOL_YEARS, schoolById, allSchools, shownPos, staffFor,
   type CoachRole, type Player, type Pos, type Scouting, type Talk,
 } from "./players";
 
@@ -17,7 +17,7 @@ type Kind = "text" | "int" | "num" | "bool" | "pick" | "school" | "list";
 /** Profile boxes the AI can fill: key, what it is, and how to read the value. */
 export const FIELDS: Record<string, { label: string; kind: Kind; options?: readonly string[]; min?: number; max?: number; hint?: string }> = {
   name: { label: "Name", kind: "text" },
-  pos: { label: "Position", kind: "pick", options: ["LS", "K", "P"] },
+  pos: { label: "Position", kind: "pick", options: POSITIONS },
   school: { label: "School now", kind: "school" },
   year: { label: "Year in school", kind: "pick", options: SCHOOL_YEARS },
   priorSchools: { label: "Add a past school", kind: "list" },
@@ -68,11 +68,11 @@ export function buildContext(s: AppState, playerId: string | null, schoolId?: st
     /** Set when the call was logged on a school's page instead of a player's profile. */
     school: sch ? {
       name: sch.name, division: sch.division, conference: sch.conference, state: sch.state,
-      players: sc.players.filter((x) => x.school === sch.id && x.name).map((x) => x.id),
+      players: sc.players.filter((x) => x.school === sch.id && x.name && shownPos(x)).map((x) => x.id),
       recentCalls: (s.schoolCalls ?? []).filter((c) => c.school === sch.id).slice(0, 5).map(({ who, name, date, note }) => ({ who, name, date, note })),
     } : null,
     schoolCoaches: p ? staffFor(sc.staff, p.school) : sch ? staffFor(sc.staff, sch.id) : null,
-    otherPlayers: sc.players.filter((x) => x.id !== playerId && x.name).map(brief),
+    otherPlayers: sc.players.filter((x) => x.id !== playerId && x.name && shownPos(x)).map(brief),
     openCalls: (s.calls ?? []).filter((c) => !c.done).map(({ name, why, due }) => ({ name, why, due })),
     addedSchools: sc.extraSchools.map((x) => x.name),
     upcomingEvents: (s.events ?? []).map(({ date, title }) => ({ date, title })),
@@ -141,6 +141,7 @@ export function applyChanges(d: AppState, opts: { playerId: string | null; schoo
 
   for (const c of opts.changes.filter((x) => x.kind === "new_player")) {
     const pos = (c.pos ?? "LS") as Pos;
+    if (!POSITIONS.includes(pos)) continue; // kickers and punters are hidden for now: don't add new ones
     const p = newPlayer(pos, findSchool(sc, c.school)?.id ?? "");
     p.name = c.name!.trim();
     sc.players.push(p);

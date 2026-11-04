@@ -33,7 +33,7 @@ export default function PlayersPage() {
     <section className="view">
       <div>
         <h1>Players</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers, kickers and punters.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers.</p>
       </div>
 
       <div className="card sec" id="add-player">
@@ -50,11 +50,11 @@ export default function PlayersPage() {
 
       <div className="card sec">
         <div className="filters">
-          <div className="seg"><div>
+          {POSITIONS.length > 1 && <div className="seg"><div>
             {(["all", ...POSITIONS] as const).map((x) => (
               <button key={x} type="button" aria-pressed={pos === x} onClick={() => setPos(x)}>{x === "all" ? "All" : POS_SHORT[x]}</button>
             ))}
-          </div></div>
+          </div></div>}
           <select aria-label="Conference" className="search" value={conf} onChange={(e) => setConf(e.target.value)}>
             <option value="">All conferences</option>
             {confs.map((c) => <option key={c}>{c}</option>)}

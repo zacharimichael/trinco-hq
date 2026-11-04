@@ -21,6 +21,8 @@ export default function PlayerPage() {
   const router = useRouter();
   const { sc, canEdit, school, staffOf, setStaff, setPlayer, removePlayer } = useScouting();
   const p = sc.players.find((x) => x.id === id);
+  const hidden = useStore().state.scouting.players.find((x) => x.id === id);
+  if (!p && hidden) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">Kickers and punters are hidden for now. This profile is still saved.</p></section>;
   if (!p) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">This player isn&apos;t here anymore.</p></section>;
 
   const set = (patch: Partial<Player>) => setPlayer(p.id, patch);
@@ -36,8 +38,8 @@ export default function PlayerPage() {
       <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="card sec">
           <input className="bigname" aria-label="Player name" placeholder="Player name" autoFocus={!p.name} value={p.name} onChange={(e) => set({ name: e.target.value })} />
-          <Choice label="Position" options={POSITIONS.map((x) => POS_SHORT[x])} value={POS_SHORT[p.pos]}
-            onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />
+          {POSITIONS.length > 1 && <Choice label="Position" options={POSITIONS.map((x) => POS_SHORT[x])} value={POS_SHORT[p.pos]}
+            onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />}
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
           {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
           {p.source && <small className="muted">From <a href={p.source.url} target="_blank" rel="noreferrer">{p.source.label}</a> ({new Date(`${p.source.date}T12:00`).toLocaleDateString([], { dateStyle: "medium" })})</small>}
