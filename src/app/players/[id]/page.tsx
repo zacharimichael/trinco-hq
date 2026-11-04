@@ -82,8 +82,9 @@ export default function PlayerPage() {
 
         <div className="card sec">
           <h2>{POS_LABEL[p.pos]} ratings</h2>
+          {p.pos === "LS" && <Rating label="Player rating (self-assessed)" max={99} value={p.lsRating} onChange={(lsRating) => set({ lsRating })} />}
+          <Rating label="Coaches rating" max={99} value={p.coachRating} onChange={(coachRating) => set({ coachRating })} />
           {p.pos === "LS" && (<>
-            <Rating label="Long snapper rating" max={99} value={p.lsRating} onChange={(lsRating) => set({ lsRating })} />
             <Choice label="System" options={["Pro style", "Free release", "Hybrid"] as const} value={p.system} onChange={(system) => set({ system })} />
             <div className="formgrid">
               <Num label="40-yard dash (sec)" step={0.01} placeholder="4.90" value={p.forty} onChange={(forty) => set({ forty })} />
@@ -94,14 +95,14 @@ export default function PlayerPage() {
           </>)}
           {kicks(p.pos) && (<>
             {p.pos === "KP" && <h3>Kicking</h3>}
-            <Rating label="Kicker rating" max={99} value={p.kRating} onChange={(kRating) => set({ kRating })} />
+            <Rating label="Kicker rating (self-assessed)" max={99} value={p.kRating} onChange={(kRating) => set({ kRating })} />
             <Rating label="Kick power" max={20} value={p.kPower} onChange={(kPower) => set({ kPower })} />
             <Rating label="Kick accuracy" max={20} value={p.kAcc} onChange={(kAcc) => set({ kAcc })} />
             <Choice label="Kicking foot" options={["Right", "Left"] as const} value={p.foot} onChange={(foot) => set({ foot })} />
           </>)}
           {punts(p.pos) && (<>
             {p.pos === "KP" && <h3>Punting</h3>}
-            <Rating label="Punter rating" max={99} value={p.pRating} onChange={(pRating) => set({ pRating })} />
+            <Rating label="Punter rating (self-assessed)" max={99} value={p.pRating} onChange={(pRating) => set({ pRating })} />
             <Rating label="Punt power" max={20} value={p.pPower} onChange={(pPower) => set({ pPower })} />
             <Rating label="Punt accuracy" max={20} value={p.pAcc} onChange={(pAcc) => set({ pAcc })} />
             <Rating label="Get-off time" max={20} value={p.getOff} onChange={(getOff) => set({ getOff })} />

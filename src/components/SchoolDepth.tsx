@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Choice, ContactFields } from "@/components/Fields";
 import type { School } from "@/data/schools";
-import { COACH_LABEL, coachSearchUrl, money, nilNow, overall, POS_LABEL, positionsFor, yearShort, type CoachRole, type Player, type Pos } from "@/lib/players";
+import { COACH_LABEL, coachSearchUrl, money, ratingsText, nilNow, overall, POS_LABEL, positionsFor, yearShort, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 const ROLES: CoachRole[] = ["HC", "GM", "ST"];
@@ -33,7 +33,7 @@ export function SchoolDepth({ s, ps, pos }: { s: School; ps: Player[]; pos: Pos 
             {ps.filter((p) => p.pos === x).sort(depthOrder).map((p) => (
               <Link key={p.id} href={`/players/${p.id}`} className="pcard">
                 <b>{p.name || "New player"}</b>
-                <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
+                <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{ratingsText(p) && ` · ${ratingsText(p)}`}</small>
                 {(p.allAmerican || p.allConference || p.client || p.transfer) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}
               </Link>
             ))}
