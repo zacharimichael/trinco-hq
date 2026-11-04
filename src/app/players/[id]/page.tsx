@@ -43,6 +43,7 @@ export default function PlayerPage() {
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
           {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
           {p.hsClass != null && <span className="chip">{[hsClassText(p.hsClass), p.hsState, p.kohlsRank != null && `Kohl's #${p.kohlsRank}`].filter(Boolean).join(" · ")}</span>}
+          {p.jucoSchool && <span className="chip">JUCO · {p.jucoSchool}</span>}
           {p.recruiting && <small className="muted">{p.recruiting}</small>}
           {p.source && <small className="muted">From <a href={p.source.url} target="_blank" rel="noreferrer">{p.source.label}</a> ({new Date(`${p.source.date}T12:00`).toLocaleDateString([], { dateStyle: "medium" })})</small>}
         </div>
@@ -58,6 +59,10 @@ export default function PlayerPage() {
                 <option value="">In college</option>
                 {HS_CLASS_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
               </select>
+            </div>
+            <div className="field">
+              <label htmlFor="juco">JUCO school (junior college)</label>
+              <input id="juco" placeholder="Only if at a JUCO" value={p.jucoSchool ?? ""} onChange={(e) => set({ jucoSchool: e.target.value || null })} />
             </div>
             <div className="field">
               <label htmlFor="year">Year</label>

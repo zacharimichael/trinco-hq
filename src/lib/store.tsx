@@ -7,7 +7,8 @@ import { DAY, startOfToday } from "./rules";
 import { supabase } from "./supabase";
 import { ROSTER_PLAYERS } from "@/data/roster-specialists";
 import { HS_IDS } from "@/data/hs-long-snappers";
-import { emptyScouting, missingHsPlayers, missingRosterPlayers, POSITIONS, withoutDemoPlayers, type Film, type Scouting } from "./players";
+import { JUCO_IDS } from "@/data/juco-long-snappers";
+import { emptyScouting, missingHsPlayers, missingJucoPlayers, missingRosterPlayers, POSITIONS, withoutDemoPlayers, type Film, type Scouting } from "./players";
 
 /**
  * App state, in one of two modes:
@@ -217,6 +218,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     // Same once for the high school classes of 2027 and 2028 (Kohl's Kicking and Rubio lists). After that, Classes offers any new ones.
     if (lead && POSITIONS.includes("LS") && !live.scouting.players.some((p) => HS_IDS.has(p.id)))
       live.scouting = { ...live.scouting, players: [...live.scouting.players, ...missingHsPlayers(live.scouting)] };
+    if (lead && POSITIONS.includes("LS") && !live.scouting.players.some((p) => JUCO_IDS.has(p.id)))
+      live.scouting = { ...live.scouting, players: [...live.scouting.players, ...missingJucoPlayers(live.scouting)] };
     setState(live);
     setMode("live");
   }, []);
