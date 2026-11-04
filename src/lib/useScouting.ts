@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useStore } from "./store";
-import { allSchools, missingRosterPlayers, newPlayer, schoolById, shownPos, staffFor, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
+import { allSchools, missingHsPlayers, missingRosterPlayers, newPlayer, schoolById, shownPos, staffFor, type Player, type Pos, type SchoolStaff, type Scouting } from "./players";
 
 /** Scouting data plus the edits the player and depth chart screens need. */
 export function useScouting() {
@@ -33,6 +33,8 @@ export function useScouting() {
     },
     /** Adds every real player at the shown positions from the 2026 rosters that isn't on the depth charts yet. */
     addRosterPlayers: () => edit((s) => { s.players.push(...missingRosterPlayers(s)); }),
+    /** Adds high school long snappers (classes of 2027 and 2028) from the Kohl's and Rubio lists that aren't saved yet. */
+    addHsPlayers: () => edit((s) => { s.players.push(...missingHsPlayers(s)); }),
     removePlayer: (id: string) => edit((s) => { s.players = s.players.filter((x) => x.id !== id); }),
     edit,
   };

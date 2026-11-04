@@ -6,7 +6,7 @@ import { SchoolSelect } from "@/components/SchoolSelect";
 import {
   commit, committedTo, finishMove, graduating, lookingSchools, markSpot, openSpots, pair, setStage, transferring, undoMove, unpair,
 } from "@/lib/moves";
-import { money, ratingsText, nilNow, POS_LABEL, POSITIONS, POS_SHORT, TRANSFER_PICKS, yearShort, yearsLeft, type Match, type Player, type Pos } from "@/lib/players";
+import { isHs, money, ratingsText, nilNow, POS_LABEL, POSITIONS, POS_SHORT, TRANSFER_PICKS, yearShort, yearsLeft, type Match, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 /**
@@ -189,7 +189,7 @@ function AddMover({ pos }: { pos: Pos }) {
   const { sc, school, edit } = useScouting();
   const [who, setWho] = useState("");
   const [status, setStatus] = useState<string>("In the portal");
-  const options = useMemo(() => sc.players.filter((p: Player) => p.name && p.pos === pos && !p.transfer && !graduating(p))
+  const options = useMemo(() => sc.players.filter((p: Player) => p.name && p.pos === pos && !isHs(p) && !p.transfer && !graduating(p))
     .map((p) => ({ id: p.id, label: `${p.name} · ${school(p.school)?.name ?? "no school"}` }))
     .sort((a, b) => a.label.localeCompare(b.label)), [sc.players, pos, school]);
   const picked = options.find((o) => o.label === who);

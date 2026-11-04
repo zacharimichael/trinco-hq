@@ -8,7 +8,7 @@ import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  COACH_LABEL, coachSearchUrl, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts, yearsLeft, YEARS_LEFT,
+  COACH_LABEL, coachSearchUrl, HS_CLASS_YEARS, hsClassText, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts, yearsLeft, YEARS_LEFT,
   type CoachRole, type Fact, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -42,6 +42,8 @@ export default function PlayerPage() {
             onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />}
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
           {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
+          {p.hsClass != null && <span className="chip">{[hsClassText(p.hsClass), p.hsState, p.kohlsRank != null && `Kohl's #${p.kohlsRank}`].filter(Boolean).join(" · ")}</span>}
+          {p.recruiting && <small className="muted">{p.recruiting}</small>}
           {p.source && <small className="muted">From <a href={p.source.url} target="_blank" rel="noreferrer">{p.source.label}</a> ({new Date(`${p.source.date}T12:00`).toLocaleDateString([], { dateStyle: "medium" })})</small>}
         </div>
 
@@ -50,6 +52,13 @@ export default function PlayerPage() {
         <div className="card sec">
           <div className="formgrid">
             <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
+            <div className="field">
+              <label htmlFor="hs-class">High school class</label>
+              <select id="hs-class" value={p.hsClass ?? ""} onChange={(e) => set({ hsClass: e.target.value === "" ? null : Number(e.target.value) })}>
+                <option value="">In college</option>
+                {HS_CLASS_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
             <div className="field">
               <label htmlFor="year">Year</label>
               <select id="year" value={p.year ?? ""} onChange={(e) => set({ year: (e.target.value || null) as Player["year"] })}>
