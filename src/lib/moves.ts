@@ -19,12 +19,16 @@ export function committedTo(p: Player, schools: School[]): string | null {
 
 /** Why a player won't be at their school next season, or null if they're staying. */
 export function leavingWhy(p: Player, schools: School[]): string | null {
+  if (nflBound(p)) return NFL_BOUND;
   const to = committedTo(p, schools);
   if (to && to !== p.school) return `Going to ${schools.find((s) => s.id === to)?.name ?? "another school"}`;
   if (p.transfer) return p.transfer;
-  if (yearsLeft(p) === 0) return "Done after this season";
   return null;
 }
+
+/** Players with 0 years of eligibility left are NFL bound: they leave their spot open but never go into the transfer portal moves. */
+export const NFL_BOUND = "NFL bound";
+export const nflBound = (p: Player) => yearsLeft(p) === 0;
 
 export type SpotKind = "open" | "starter" | "none";
 export const SPOT_LABEL: Record<SpotKind, string> = { open: "Open spot", starter: "Starter leaving", none: "Nobody on file" };
@@ -54,7 +58,7 @@ export function openSpots(sc: Scouting, pos: Pos): Spot[] {
   for (const p of players) {
     (here.get(p.school) ?? here.set(p.school, []).get(p.school)!).push(p);
     const to = committedTo(p, schools);
-    if (to && to !== p.school) (incoming.get(to) ?? incoming.set(to, []).get(to)!).push(p);
+    if (to && to !== p.school && !nflBound(p)) (incoming.get(to) ?? incoming.set(to, []).get(to)!).push(p);
   }
   const playerById = new Map(sc.players.map((p) => [p.id, p]));
   const moves = (sc.moves ?? []).filter((m) => m.pos === pos);
@@ -94,7 +98,7 @@ export function openSpots(sc: Scouting, pos: Pos): Spot[] {
 export function available(sc: Scouting, pos: Pos): Player[] {
   const schools = allSchools(sc);
   return sc.players
-    .filter((p) => p.name && p.pos === pos && p.transfer && !committedTo(p, schools) && yearsLeft(p) !== 0)
+    .filter((p) => p.name && p.pos === pos && p.transfer && !committedTo(p, schools) && !nflBound(p))
     .sort(byBest);
 }
 
