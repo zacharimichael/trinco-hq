@@ -164,6 +164,8 @@ export interface Scouting {
   matches?: Match[];
   /** Finished moves, newest first: who went from where to where. */
   moves?: Move[];
+  /** Hand-picked top ten per class, best first, keyed "pos|yearsLeft" (e.g. "LS|0"). */
+  top10?: Record<string, string[]>;
   /** Spots marked open or filled by hand, keyed "schoolId|pos". */
   spots?: Record<string, "open" | "filled">;
 }

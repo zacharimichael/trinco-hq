@@ -82,6 +82,21 @@ function memberChanges(prev: MemberData, next: MemberData) {
   return { p_patch: patch, p_merge: merge };
 }
 
+/** Scouting lists the save_firm_changes database function doesn't know about: Moves connections, finished moves, schools looking, top tens. */
+const EXTRA_KEYS = ["matches", "moves", "spots", "top10"] as const;
+const extrasChanged = (prev: FirmData, next: FirmData) => EXTRA_KEYS.filter((k) => !same(prev.scouting?.[k] ?? null, next.scouting?.[k] ?? null));
+/** Saves just those lists into the firm's scouting data, leaving everything else as the database has it. */
+async function saveExtras(keys: readonly (typeof EXTRA_KEYS)[number][], next: FirmData) {
+  const { data: firmId } = await supabase.rpc("my_firm_id");
+  const { data: row, error } = await supabase.from("firms").select("data").eq("id", firmId).single();
+  if (error) return error;
+  const d = (row?.data ?? {}) as FirmData & Record<string, unknown>;
+  const scouting = { ...(d.scouting ?? emptyScouting()) } as Scouting;
+  for (const k of keys) (scouting as unknown as Record<string, unknown>)[k] = next.scouting?.[k] ?? null;
+  const r = await supabase.from("firms").update({ data: { ...d, scouting } }).eq("id", firmId).select("id");
+  return r.error ?? (r.data?.length ? null : { message: "The database didn't accept the change." });
+}
+
 function firmChanges(prev: FirmData, next: FirmData) {
   const a = prev.scouting ?? emptyScouting(), b = next.scouting ?? emptyScouting();
   const before = new Map(a.players.map((p) => [p.id, p]));
@@ -249,6 +264,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           const r = await supabase.from("firms").update({ data: f }).eq("id", (await supabase.rpc("my_firm_id")).data).select("id");
           error = r.error ?? (r.data?.length ? null : { message: "The database didn't accept the change." } as typeof error);
         }
+        const extras = extrasChanged(last.firm, f);
+        if (!error && extras.length) error = (await saveExtras(extras, f)) as typeof error;
         if (!error) last.firm = f; else problems.push(error.message);
       }
       setSave(problems.length ? { status: "error", message: problems[0] } : { status: "saved" });

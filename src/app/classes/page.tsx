@@ -11,11 +11,12 @@ const TOP = 50;
 
 /** Top players grouped by years of eligibility left after this season: 0, 1, 2, 3 or 4. */
 export default function ClassesPage() {
-  const { sc, school, canEdit, setPlayer } = useScouting();
+  const { sc, school, canEdit, setPlayer, edit } = useScouting();
   const [pos, setPos] = useState<Pos>("LS");
   const [div, setDiv] = useState<"All" | "FBS" | "FCS">("All");
   const [cls, setCls] = useState<Cls>(0);
   const [all, setAll] = useState(false);
+  const [adding, setAdding] = useState("");
 
   const players = sc.players.filter((p) => p.name && p.pos === pos && (div === "All" || school(p.school)?.division === div));
   const inCls = (p: Player, c: Cls) => (c === "unset" ? yearsLeft(p) == null : yearsLeft(p) === c);
@@ -23,6 +24,18 @@ export default function ClassesPage() {
   const list = players.filter((p) => inCls(p, cls)).sort((a, b) => byBest(a, b) || nilNow(b) - nilNow(a) || a.name.localeCompare(b.name));
   const shown = all ? list : list.slice(0, TOP);
   const unset = count("unset");
+
+  // Top ten for this class: your picks in your order, then the best rated to fill any open places.
+  const key = `${pos}|${cls}`;
+  const picks = cls === "unset" ? [] : (sc.top10?.[key] ?? []).map((id) => list.find((p) => p.id === id)).filter((p): p is Player => !!p);
+  const auto = list.filter((p) => overall(p) != null && !picks.includes(p)).slice(0, Math.max(0, 10 - picks.length));
+  const top = [...picks.map((p) => ({ p, mine: true })), ...auto.map((p) => ({ p, mine: false }))].slice(0, 10);
+  const setPicks = (ids: string[]) => edit((d) => { (d.top10 ??= {})[key] = ids.slice(0, 10); });
+  const ids = picks.map((p) => p.id);
+  const inTop = (p: Player) => ids.includes(p.id);
+  const togglePick = (p: Player) => setPicks(inTop(p) ? ids.filter((x) => x !== p.id) : [...ids, p.id]);
+  const nudge = (i: number, by: number) => { const n = [...ids]; [n[i], n[i + by]] = [n[i + by], n[i]]; setPicks(n); };
+  const clsName = cls === "unset" ? "No year yet" : cls === 0 ? "0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`;
 
   return (
     <section className="view">
@@ -53,16 +66,50 @@ export default function ClassesPage() {
         )}
       </div>
 
+      {cls !== "unset" && (
+        <div className="card sec" id="top-ten">
+          <h2>🏆 Top 10 · {clsName}</h2>
+          <small className="muted">{canEdit ? "Type a name or tap ☆ on anyone below. Use ▲ ▼ to rank." : "The agency's ranking."}{auto.length > 0 && " Places you haven't filled show the best rated (auto)."}</small>
+          <ol className="topten">
+            {top.map(({ p, mine }, i) => (
+              <li key={p.id}>
+                <span className="rank">{i + 1}</span>
+                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name, yearShort(p.year), overall(p) != null && `Rating ${overall(p)}`].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
+                {canEdit && mine && (
+                  <span className="moveacts">
+                    <button type="button" className="linkbtn" aria-label={`Move ${p.name} up`} disabled={i === 0} onClick={() => nudge(i, -1)}>▲</button>
+                    <button type="button" className="linkbtn" aria-label={`Move ${p.name} down`} disabled={i === picks.length - 1} onClick={() => nudge(i, 1)}>▼</button>
+                    <button type="button" className="linkbtn" aria-label={`Take ${p.name} off the top 10`} onClick={() => togglePick(p)}>✕</button>
+                  </span>
+                )}
+                {canEdit && !mine && <button type="button" className="linkbtn" onClick={() => togglePick(p)}>Keep</button>}
+              </li>
+            ))}
+            {Array.from({ length: 10 - top.length }, (_, i) => <li key={`e${i}`} className="muted"><span className="rank">{top.length + i + 1}</span><span className="grow">—</span></li>)}
+          </ol>
+          {canEdit && ids.length < 10 && (
+            <div className="field" style={{ maxWidth: 420 }}>
+              <label htmlFor="top-add">Add to the top 10</label>
+              <input id="top-add" list="top-names" placeholder="Type a name" autoComplete="off" value={adding}
+                onChange={(e) => { const hit = list.find((p) => `${p.name} · ${school(p.school)?.name ?? ""}` === e.target.value); if (hit) { if (!inTop(hit)) togglePick(hit); setAdding(""); } else setAdding(e.target.value); }} />
+              <datalist id="top-names">{list.filter((p) => !inTop(p)).map((p) => <option key={p.id} value={`${p.name} · ${school(p.school)?.name ?? ""}`} />)}</datalist>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="card sec">
-        <h2>{cls === "unset" ? "No year in school yet" : cls === 0 ? "🎓 Graduating · 0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`}</h2>
+        <h2>{cls === "unset" ? "No year in school yet" : cls === 0 ? "Everyone graduating · 0 years left" : `Everyone with ${cls} year${cls === 1 ? "" : "s"} left`}</h2>
         {cls === 0 && <small className="muted">Out of eligibility after this season, so they&apos;re kept out of transfer moves. Their spots show as holes on <Link href="/transfers">Moves</Link>.</small>}
         <small className="muted">Guessed from year in school (Senior 0, Junior 1, Sophomore 2, Freshman 3). Redshirts and extra years vary, so change it below when you know.</small>
         <div className="tablewrap">
           <table id="class-list">
-            <thead><tr><th className="num">#</th><th>Player</th><th>School</th><th className="num">Rating</th><th className="num">NIL now</th><th>Years left</th></tr></thead>
+            <thead><tr>{canEdit && cls !== "unset" && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>School</th><th className="num">Rating</th><th className="num">NIL now</th><th>Years left</th></tr></thead>
             <tbody>
               {shown.map((p, i) => (
                 <tr key={p.id}>
+                  {canEdit && cls !== "unset" && <td><button type="button" className="starbtn" aria-pressed={inTop(p)} disabled={!inTop(p) && ids.length >= 10}
+                    aria-label={inTop(p) ? `Take ${p.name} off the top 10` : `Add ${p.name} to the top 10`} onClick={() => togglePick(p)}>{inTop(p) ? "★" : "☆"}</button></td>}
                   <td className="num muted">{i + 1}</td>
                   <td><Link href={`/players/${p.id}`}><b>{p.name}</b></Link>
                     {(p.client || p.allAmerican || p.allConference || p.transfer) && <small className="muted" style={{ display: "block" }}>
@@ -79,7 +126,7 @@ export default function ClassesPage() {
                   </td>
                 </tr>
               ))}
-              {!list.length && <tr><td colSpan={6} className="muted">Nobody here yet.</td></tr>}
+              {!list.length && <tr><td colSpan={7} className="muted">Nobody here yet.</td></tr>}
             </tbody>
           </table>
         </div>
