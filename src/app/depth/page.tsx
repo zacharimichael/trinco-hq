@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Choice, Text } from "@/components/Fields";
 import { depthOrder, SchoolDepth } from "@/components/SchoolDepth";
 import { DIVISIONS, type Division, type School } from "@/data/schools";
-import { customSchool, missingRosterPlayers, money, yearShort, nilNow, nilTotal, overall, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type Player, type Pos } from "@/lib/players";
+import { customSchool, missingRosterPlayers, money, ratingsText, yearShort, nilNow, nilTotal, POS_LABEL, POS_SHORT, POSITIONS, positionsFor, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 
@@ -145,7 +145,7 @@ function ByConference({ confs, players, pos, school }: { confs: string[]; player
                   <Link key={p.id} href={`/players/${p.id}`} className="pcard">
                     <b>{p.name || "New player"}</b>
                     <small>{school(p.school)?.name}</small>
-                    <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{overall(p) != null && ` · ${overall(p)}`}</small>
+                    <small>{[yearShort(p.year), p.depth ?? "Unranked"].filter(Boolean).join(" · ")} · {money(nilNow(p))}{ratingsText(p) && ` · ${ratingsText(p)}`}</small>
                     {(p.allAmerican || p.allConference || p.client || p.transfer) && <small>{[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}
                   </Link>
                 ))}

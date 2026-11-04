@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { byBest } from "@/lib/moves";
-import { money, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
+import { money, bestRating, coachRating, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 type Cls = (typeof YEARS_LEFT)[number] | "unset";
@@ -28,7 +28,7 @@ export default function ClassesPage() {
   // Top ten for this class: your picks in your order, then the best rated to fill any open places.
   const key = `${pos}|${cls}`;
   const picks = cls === "unset" ? [] : (sc.top10?.[key] ?? []).map((id) => list.find((p) => p.id === id)).filter((p): p is Player => !!p);
-  const auto = list.filter((p) => overall(p) != null && !picks.includes(p)).slice(0, Math.max(0, 10 - picks.length));
+  const auto = list.filter((p) => bestRating(p) != null && !picks.includes(p)).slice(0, Math.max(0, 10 - picks.length));
   const top = [...picks.map((p) => ({ p, mine: true })), ...auto.map((p) => ({ p, mine: false }))].slice(0, 10);
   const setPicks = (ids: string[]) => edit((d) => { (d.top10 ??= {})[key] = ids.slice(0, 10); });
   const ids = picks.map((p) => p.id);
@@ -74,7 +74,7 @@ export default function ClassesPage() {
             {top.map(({ p, mine }, i) => (
               <li key={p.id}>
                 <span className="rank">{i + 1}</span>
-                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name, yearShort(p.year), overall(p) != null && `Rating ${overall(p)}`].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
+                <span className="grow"><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name, yearShort(p.year), ratingsText(p)].filter(Boolean).join(" · ")}{!mine && " · auto"}</small></span>
                 {canEdit && mine && (
                   <span className="moveacts">
                     <button type="button" className="linkbtn" aria-label={`Move ${p.name} up`} disabled={i === 0} onClick={() => nudge(i, -1)}>▲</button>
@@ -104,7 +104,7 @@ export default function ClassesPage() {
         <small className="muted">Guessed from year in school (Senior 0, Junior 1, Sophomore 2, Freshman 3). Redshirts and extra years vary, so change it below when you know.</small>
         <div className="tablewrap">
           <table id="class-list">
-            <thead><tr>{canEdit && cls !== "unset" && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>School</th><th className="num">Rating</th><th className="num">NIL now</th><th>Years left</th></tr></thead>
+            <thead><tr>{canEdit && cls !== "unset" && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>School</th><th className="num">Player rating</th><th className="num">Coaches rating</th><th className="num">NIL now</th><th>Years left</th></tr></thead>
             <tbody>
               {shown.map((p, i) => (
                 <tr key={p.id}>
@@ -116,6 +116,7 @@ export default function ClassesPage() {
                       {[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}</td>
                   <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.division, yearShort(p.year), p.depth].filter(Boolean).join(" · ")}</small></td>
                   <td className="num"><b>{overall(p) ?? "—"}</b></td>
+                  <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
                   <td className="num">{nilNow(p) ? money(nilNow(p)) : "—"}</td>
                   <td>
                     <select aria-label={`Years left for ${p.name}`} disabled={!canEdit} value={yearsLeft(p) ?? ""}
@@ -126,7 +127,7 @@ export default function ClassesPage() {
                   </td>
                 </tr>
               ))}
-              {!list.length && <tr><td colSpan={7} className="muted">Nobody here yet.</td></tr>}
+              {!list.length && <tr><td colSpan={8} className="muted">Nobody here yet.</td></tr>}
             </tbody>
           </table>
         </div>

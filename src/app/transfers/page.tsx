@@ -6,7 +6,7 @@ import { SchoolSelect } from "@/components/SchoolSelect";
 import {
   commit, committedTo, finishMove, graduating, lookingSchools, markSpot, openSpots, pair, setStage, transferring, undoMove, unpair,
 } from "@/lib/moves";
-import { money, nilNow, overall, POS_LABEL, POSITIONS, POS_SHORT, TRANSFER_PICKS, yearShort, yearsLeft, type Match, type Player, type Pos } from "@/lib/players";
+import { money, ratingsText, nilNow, POS_LABEL, POSITIONS, POS_SHORT, TRANSFER_PICKS, yearShort, yearsLeft, type Match, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 /**
@@ -63,7 +63,7 @@ export default function MovesPage() {
                 <span className="chip move">{p.transfer}</span>
               </div>
               {conns.some((m) => m.player === p.id) && <small>Connected to: {conns.filter((m) => m.player === p.id).map((m) => `${nameOf(m.school)}${m.stage === "Interested" ? " ⭐" : ""}`).join(", ")}</small>}
-              <small className="muted">{[nameOf(p.school), yearShort(p.year), yearsLeft(p) != null && `${yearsLeft(p)} yr left`, overall(p) != null && `Rating ${overall(p)}`, nilNow(p) > 0 && money(nilNow(p))].filter(Boolean).join(" · ")}</small>
+              <small className="muted">{[nameOf(p.school), yearShort(p.year), yearsLeft(p) != null && `${yearsLeft(p)} yr left`, ratingsText(p), nilNow(p) > 0 && money(nilNow(p))].filter(Boolean).join(" · ")}</small>
               {canEdit && (
                 <div className="moveacts">
                   <ConnectPick label={`Connect ${p.name} to a school`} placeholder="+ Connect to a school"

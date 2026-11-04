@@ -103,10 +103,12 @@ export interface Player {
   otherSportsYes?: boolean | null;
   otherSports: string;
 
-  /** Overall ratings, 1-99. */
+  /** The player's own overall ratings, 1-99 (self-assessed). */
   lsRating?: number | null;
   kRating?: number | null;
   pRating?: number | null;
+  /** Coaches rating, 1-99: what a coach (or we) rate them, kept apart from the player's own number. */
+  coachRating?: number | null;
 
   // Long snapper
   system?: "Pro style" | "Free release" | "Hybrid" | null;
@@ -199,7 +201,14 @@ export const nilTotal = (p: Player) => p.nil.reduce<number>((a, n) => a + (n ?? 
 export const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 export const heightText = (h: number | null) => (h ? `${Math.floor(h / 12)}'${h % 12}"` : "—");
 
-/** One headline number for sorting: the position's 1-99 rating (K+P averages both). */
+/** The coaches rating, 1-99, or null. */
+export const coachRating = (p: Player): number | null => p.coachRating ?? null;
+/** Best number we have for ranking: the coaches rating when there is one, otherwise the player's own. */
+export const bestRating = (p: Player): number | null => coachRating(p) ?? overall(p);
+/** Both ratings in a few words, e.g. "Player 82 · Coach 88". Empty when neither is set. */
+export const ratingsText = (p: Player) => [overall(p) != null && `Player ${overall(p)}`, coachRating(p) != null && `Coach ${coachRating(p)}`].filter(Boolean).join(" · ");
+
+/** The player's own (self-assessed) 1-99 rating for their position (K+P averages both). */
 export function overall(p: Player): number | null {
   if (p.pos === "LS") return p.lsRating ?? null;
   if (p.pos === "K") return p.kRating ?? null;

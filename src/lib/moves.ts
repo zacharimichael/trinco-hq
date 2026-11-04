@@ -1,5 +1,5 @@
 import type { School } from "@/data/schools";
-import { allSchools, newId, overall, yearsLeft, type Match, type Player, type Pos, type Scouting } from "./players";
+import { allSchools, bestRating, newId, yearsLeft, type Match, type Player, type Pos, type Scouting } from "./players";
 
 /**
  * The Moves board: who is leaving where, which schools that leaves without a
@@ -104,7 +104,7 @@ export function available(sc: Scouting, pos: Pos): Player[] {
 
 /** Best first: rating, then years left, then All-American, then starter. */
 export function byBest(a: Player, b: Player) {
-  return (overall(b) ?? -1) - (overall(a) ?? -1) || (yearsLeft(b) ?? -1) - (yearsLeft(a) ?? -1)
+  return (bestRating(b) ?? -1) - (bestRating(a) ?? -1) || (yearsLeft(b) ?? -1) - (yearsLeft(a) ?? -1)
     || Number(b.allAmerican) - Number(a.allAmerican) || Number(b.depth === "Starter") - Number(a.depth === "Starter");
 }
 
@@ -113,7 +113,7 @@ export function ideasFor(spot: Spot, pool: Player[], sc: Scouting, n = 3): Playe
   const schools = allSchools(sc);
   const from = (p: Player) => schools.find((s) => s.id === p.school);
   const taken = new Set(spot.matches.map((m) => m.player));
-  const score = (p: Player) => (overall(p) ?? 50) + (yearsLeft(p) ?? 0) * 4
+  const score = (p: Player) => (bestRating(p) ?? 50) + (yearsLeft(p) ?? 0) * 4
     + (from(p)?.state === spot.school.state ? 8 : 0) + (from(p)?.division === spot.school.division ? 5 : 0);
   return pool.filter((p) => !taken.has(p.id) && p.school !== spot.school.id).sort((a, b) => score(b) - score(a)).slice(0, n);
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { heightText, kicks, money, nilNow, nilTotal, overall, POS_SHORT, punts, snapTime, type Player } from "@/lib/players";
+import { heightText, kicks, money, coachRating, nilNow, nilTotal, overall, POS_SHORT, punts, snapTime, type Player } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 type Metric = {
@@ -21,7 +21,8 @@ const topOf = (get: (p: Player) => number) => (ps: Player[]) => Math.max(1, ...p
 
 const GROUPS: { title: string; rows: Metric[] }[] = [
   { title: "Overall", rows: [
-    { label: "Overall rating", get: overall, max: 99 },
+    { label: "Player rating (self)", get: overall, max: 99 },
+    { label: "Coaches rating", get: coachRating, max: 99 },
     { label: "LS rating", get: (p) => p.lsRating, max: 99, when: (p) => p.pos === "LS" },
     { label: "K rating", get: (p) => p.kRating, max: 99, when: (p) => kicks(p.pos) },
     { label: "P rating", get: (p) => p.pRating, max: 99, when: (p) => punts(p.pos) },

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { heightText, money, yearShort, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
+import { heightText, money, coachRating, yearShort, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 
@@ -16,11 +16,12 @@ export default function PlayersPage() {
   const confs = [...new Set(schools.map((s) => s.conference))];
   const [pick, setPick] = useState<string[]>([]);
 
-  const { sort, by, apply } = useSort<"name" | "pos" | "school" | "rating" | "nil", (typeof sc.players)[number]>({ key: "rating", desc: true }, {
+  const { sort, by, apply } = useSort<"name" | "pos" | "school" | "rating" | "coach" | "nil", (typeof sc.players)[number]>({ key: "rating", desc: true }, {
     name: (p) => p.name.toLowerCase(),
     pos: (p) => POS_SHORT[p.pos],
     school: (p) => school(p.school)?.name ?? "",
     rating: overall,
+    coach: coachRating,
     nil: nilNow,
   });
   const list = apply(sc.players
@@ -64,7 +65,7 @@ export default function PlayersPage() {
         <p className="muted" style={{ margin: 0, fontSize: 14 }}>Tick up to 4 players to compare them.</p>
         <div className="tablewrap">
           <table>
-            <thead><tr><th aria-label="Compare" /><SortTh k="name" label="Player" sort={sort} by={by} /><SortTh k="pos" label="Pos" sort={sort} by={by} /><SortTh k="school" label="School" sort={sort} by={by} /><SortTh k="rating" label="Rating" num sort={sort} by={by} /><th>Ht / Wt</th><SortTh k="nil" label="NIL now" num sort={sort} by={by} /></tr></thead>
+            <thead><tr><th aria-label="Compare" /><SortTh k="name" label="Player" sort={sort} by={by} /><SortTh k="pos" label="Pos" sort={sort} by={by} /><SortTh k="school" label="School" sort={sort} by={by} /><SortTh k="rating" label="Player rating" num sort={sort} by={by} /><SortTh k="coach" label="Coaches rating" num sort={sort} by={by} /><th>Ht / Wt</th><SortTh k="nil" label="NIL now" num sort={sort} by={by} /></tr></thead>
             <tbody>
               {list.map((p) => (
                 <tr key={p.id}>
@@ -79,6 +80,7 @@ export default function PlayersPage() {
                   <td>{POS_SHORT[p.pos]}</td>
                   <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.conference, yearShort(p.year), p.depth].filter(Boolean).join(" · ")}</small></td>
                   <td className="num"><b>{overall(p) ?? "—"}</b></td>
+                  <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
                   <td>{heightText(p.height)} / {p.weight ?? "—"}</td>
                   <td className="num">{money(nilNow(p))}</td>
                 </tr>
