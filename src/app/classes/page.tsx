@@ -43,7 +43,7 @@ export default function ClassesPage() {
       <div className="tiles classtiles">
         {YEARS_LEFT.map((c) => (
           <button key={c} type="button" className="tile2" aria-pressed={cls === c} onClick={() => { setCls(c); setAll(false); }}>
-            <span className="big">{count(c)}</span>{c === 0 ? "0 left · NFL bound" : `${c} year${c === 1 ? "" : "s"} left`}
+            <span className="big">{count(c)}</span>{c === 0 ? "0 left · Graduating" : `${c} year${c === 1 ? "" : "s"} left`}
           </button>
         ))}
         {unset > 0 && (
@@ -54,7 +54,7 @@ export default function ClassesPage() {
       </div>
 
       <div className="card sec">
-        <h2>{cls === "unset" ? "No year in school yet" : cls === 0 ? "🏈 NFL bound · 0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`}</h2>
+        <h2>{cls === "unset" ? "No year in school yet" : cls === 0 ? "🎓 Graduating · 0 years left" : `${cls} year${cls === 1 ? "" : "s"} left`}</h2>
         {cls === 0 && <small className="muted">Out of eligibility after this season, so they&apos;re kept out of transfer moves. Their spots show as holes on <Link href="/transfers">Moves</Link>.</small>}
         <small className="muted">Guessed from year in school (Senior 0, Junior 1, Sophomore 2, Freshman 3). Redshirts and extra years vary, so change it below when you know.</small>
         <div className="tablewrap">

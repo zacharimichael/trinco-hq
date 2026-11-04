@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import {
-  available, commit, nflBound, NFL_BOUND, committedTo, finishMove, ideasFor, markSpot, openSpots, pair, setStage, SPOT_LABEL, undoMove, unpair,
+  available, commit, graduating, GRADUATING, committedTo, finishMove, ideasFor, markSpot, openSpots, pair, setStage, SPOT_LABEL, undoMove, unpair,
   type Spot, type SpotKind,
 } from "@/lib/moves";
 import { money, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, TRANSFER_PICKS, yearShort, yearsLeft, type Player, type Pos } from "@/lib/players";
@@ -31,8 +31,8 @@ export default function MovesPage() {
   const spots = allSpots.filter((s) => div === "All" || s.school.division === div);
   const pool = useMemo(() => available(sc, pos), [sc, pos]);
   const inDiv = (p: Player) => div === "All" || school(p.school)?.division === div;
-  const committed = sc.players.filter((p) => p.name && p.pos === pos && !nflBound(p) && committedTo(p, schools) && committedTo(p, schools) !== p.school);
-  const nfl = sc.players.filter((p) => p.name && p.pos === pos && nflBound(p) && inDiv(p)).sort((a, b) => (overall(b) ?? -1) - (overall(a) ?? -1) || a.name.localeCompare(b.name));
+  const committed = sc.players.filter((p) => p.name && p.pos === pos && !graduating(p) && committedTo(p, schools) && committedTo(p, schools) !== p.school);
+  const grads = sc.players.filter((p) => p.name && p.pos === pos && graduating(p) && inDiv(p)).sort((a, b) => (overall(b) ?? -1) - (overall(a) ?? -1) || a.name.localeCompare(b.name));
   const moved = (sc.moves ?? []).filter((m) => m.pos === pos);
   const closed = Object.entries(sc.spots ?? {}).filter(([k, v]) => v === "filled" && k.endsWith(`|${pos}`)).map(([k]) => k.slice(0, -pos.length - 1));
   const pairings = (sc.matches ?? []).filter((m) => sc.players.find((p) => p.id === m.player)?.pos === pos);
@@ -76,7 +76,7 @@ export default function MovesPage() {
               <button key={k} type="button" aria-pressed={kind === k} onClick={() => { setKind(k); setMore(false); }}>{SPOT_LABEL[k]} ({spots.filter((s) => s.kind === k).length})</button>
             ))}
           </div></div>
-          <small className="muted">{kind === "open" ? `Nobody at ${POS_SHORT[pos]} next season: everyone there is leaving or NFL bound.` : kind === "starter" ? "The starter is leaving but a backup stays." : `No ${label} on file. Might be a gap in the roster data.`}</small>
+          <small className="muted">{kind === "open" ? `Nobody at ${POS_SHORT[pos]} next season: everyone there is leaving or graduating.` : kind === "starter" ? "The starter is leaving but a backup stays." : `No ${label} on file. Might be a gap in the roster data.`}</small>
           <input aria-label="Find a school" placeholder="Find a school, conference or state" value={find} onChange={(e) => setFind(e.target.value)} />
           {shown.map((s) => <SpotCard key={s.school.id} s={s} pool={pool} />)}
           {!listed.length && <p className="muted" style={{ margin: 0 }}>None right now.</p>}
@@ -110,11 +110,11 @@ export default function MovesPage() {
         </div>
       )}
 
-      {nfl.length > 0 && (
-        <details className="card sec" id="nfl-bound">
-          <summary><b>🏈 NFL bound ({nfl.length})</b> <span className="muted">· 0 years left, so they&apos;re never in transfer moves</span></summary>
+      {grads.length > 0 && (
+        <details className="card sec" id="graduating">
+          <summary><b>🎓 Graduating ({grads.length})</b> <span className="muted">· 0 years left, so they&apos;re never in transfer moves</span></summary>
           <small className="muted">Their spots still open up at their schools. Wrong about someone? Change their years left on the profile or on Classes.</small>
-          {nfl.map((p) => (
+          {grads.map((p) => (
             <div key={p.id} className="moverow">
               <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <span className="muted">{[school(p.school)?.name, yearShort(p.year), overall(p) != null && `Rating ${overall(p)}`].filter(Boolean).join(" · ")}</span></span>
             </div>
@@ -161,7 +161,7 @@ function SpotCard({ s, pool }: { s: Spot; pool: Player[] }) {
         <Link href={`/schools?s=${s.school.state}&school=${s.school.id}`}><b>{s.school.name}</b></Link>
         <small className="muted">{[s.school.division, s.school.conference, s.school.state].filter(Boolean).join(" · ")}</small>
       </div>
-      {s.leaving.map((l) => <small key={l.p.id}>{l.why === NFL_BOUND ? "🏈" : "🔁"} <Link href={`/players/${l.p.id}`}>{l.p.name}</Link>: {l.why}</small>)}
+      {s.leaving.map((l) => <small key={l.p.id}>{l.why === GRADUATING ? "🎓" : "🔁"} <Link href={`/players/${l.p.id}`}>{l.p.name}</Link>: {l.why}</small>)}
       {s.movedOut.map((m, i) => <small key={i}>➡️ {m.p?.name ?? "A player"} left for {m.to}</small>)}
       {s.kind === "starter" && s.staying.length > 0 && <small className="muted">Stays: {s.staying.map((p) => `${p.name}${p.depth ? ` (${p.depth})` : ""}`).join(", ")}</small>}
       {s.markedOpen && <small className="muted">You marked this open.</small>}
@@ -246,7 +246,7 @@ function LogMove({ pos }: { pos: Pos }) {
   const [status, setStatus] = useState<Status>("In the portal");
   const [to, setTo] = useState("");
   const [done, setDone] = useState("");
-  const options = useMemo(() => sc.players.filter((p) => p.name && p.pos === pos && !nflBound(p))
+  const options = useMemo(() => sc.players.filter((p) => p.name && p.pos === pos && !graduating(p))
     .map((p) => ({ id: p.id, label: `${p.name} · ${school(p.school)?.name ?? "no school"}` }))
     .sort((a, b) => a.label.localeCompare(b.label)), [sc.players, pos, school]);
   const picked = options.find((o) => o.label === who);

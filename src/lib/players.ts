@@ -41,7 +41,7 @@ export const YEARS_LEFT = [0, 1, 2, 3, 4] as const;
 /** Years left after this season: what was typed, or a guess from year in school. Null when neither is known. */
 export const yearsLeft = (p: { yearsLeft?: number | null; year?: SchoolYear | null }): number | null =>
   p.yearsLeft ?? (p.year ? LEFT_BY_YEAR[p.year] : null);
-export const yearsLeftText = (n: number) => (n === 0 ? "NFL bound" : `${n} year${n === 1 ? "" : "s"} left`);
+export const yearsLeftText = (n: number) => (n === 0 ? "Graduating" : `${n} year${n === 1 ? "" : "s"} left`);
 
 export interface Contact { name: string; phone: string; email: string }
 /** Quick picks for a player's transfer status. Anything else can be typed, e.g. "Committed to Auburn". */
