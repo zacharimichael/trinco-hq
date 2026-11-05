@@ -12,7 +12,7 @@ import { POS_SHORT, POSITIONS, money, schoolById, shownPos } from "@/lib/players
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 
-/** The Trin Co Agency dashboard. Every area reports up here: licensing, scouting, agents and deals, and your to-dos. */
+/** The home dashboard. Athletes and recruiting come first, then coaches, agents, calendar and licensing, in the same order as the menu. */
 export default function AgencyHome() {
   const { state, mode } = useStore();
   const router = useRouter();
@@ -47,13 +47,15 @@ export default function AgencyHome() {
   const comingUp = dayItems(state).filter((i) => i.kind === "event" && i.date >= today).slice(0, 2);
 
   const { earned, coming } = dealMoney(state);
+  const coaches = (state.coaches ?? []).length;
+  const coachCalls = (state.schoolCalls ?? []).length;
   const athletes = state.athletes.length + state.team.reduce((n, t) => n + t.athletes.length, 0);
 
   return (
     <section className="view">
       <div>
-        <h1>{state.agency.name} Agency</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Everything in one place. Tap an area to open it.</p>
+        <h1>{state.agency.name}</h1>
+        <p className="muted" style={{ margin: "6px 0 0" }}>Recruiting and NIL for your athletes. Tap an area to open it.</p>
       </div>
 
       <div className="card next" id="up-next">
@@ -63,6 +65,54 @@ export default function AgencyHome() {
       </div>
 
       <div className="grid2">
+        <Link href="/players" className="card sec area" id="area-athletes">
+          <h2>Athletes</h2>
+          <div className="summary">
+            {POSITIONS.map((p) => <span className="pill ath" key={p}><b>{players.filter((x) => x.pos === p).length}</b> {POS_SHORT[p]}</span>)}
+            <span className="pill ath"><b>{players.filter((x) => x.client).length}</b> Signed</span>
+            <span className="pill ath"><b>{players.filter((x) => x.name && x.transfer).length}</b> Transferring</span>
+          </div>
+          <p className="muted" style={{ margin: 0 }}>
+            {lastCall ? <>Last call: {lastCall.name}, {fmt(lastCall.date)}</> : "No calls logged yet."}
+          </p>
+          <span className="go-on">Open athletes →</span>
+        </Link>
+
+        <Link href="/coaches" className="card sec area" id="area-coaching">
+          <h2>Coaching</h2>
+          <div className="summary">
+            <span className="pill ath"><b>{coaches}</b> {coaches === 1 ? "coach" : "coaches"} we work with</span>
+            <span className="pill ath"><b>{coachCalls}</b> coach {coachCalls === 1 ? "call" : "calls"}</span>
+          </div>
+          <p className="muted" style={{ margin: 0 }}>Every school&apos;s coaches are on the School map.</p>
+          <span className="go-on">Open coaching →</span>
+        </Link>
+
+        {owner && (
+          <Link href="/hq" className="card sec area" id="area-agency">
+            <h2>Agents</h2>
+            <div className="tiles two">
+              <div className="tile2"><span className="big">{state.team.length + 1}</span>Agents</div>
+              <div className="tile2"><span className="big">{athletes}</span>Signed athletes</div>
+              <div className="tile2"><span className="big">{money(earned)}</span>Earned</div>
+              <div className="tile2"><span className="big">{money(coming)}</span>Coming in</div>
+            </div>
+            <span className="go-on">Open agents →</span>
+          </Link>
+        )}
+
+        <Link href="/calls" className="card sec area" id="area-calls">
+          <h2>Calls &amp; calendar</h2>
+          <div className="summary">
+            <span className={`pill ${callsDue.some((c) => c.due && c.due <= today) ? "stop" : "ath"}`}><b>{callsDue.length}</b> {callsDue.length === 1 ? "call" : "calls"} to make</span>
+            <span className="pill ath"><b>{toTalk}</b> {toTalk === 1 ? "player" : "players"} to talk to</span>
+          </div>
+          <p className="muted" style={{ margin: 0 }}>
+            {comingUp.length ? comingUp.map((i) => <span key={i.key}>{shortDay(i.date)}{i.time ? ` ${timeText(i.time)}` : ""}: {i.title}<br /></span>) : "Nothing on the calendar."}
+          </p>
+          <span className="go-on">Open call list →</span>
+        </Link>
+
         <Link href="/licensing" className="card sec area" id="area-licensing">
           <h2>Licensing &amp; compliance</h2>
           <div className="summary">
@@ -77,44 +127,6 @@ export default function AgencyHome() {
           </p>
           <span className="go-on">Open licensing →</span>
         </Link>
-
-        <Link href="/players" className="card sec area" id="area-scouting">
-          <h2>Scouting</h2>
-          <div className="summary">
-            {POSITIONS.map((p) => <span className="pill ath" key={p}><b>{players.filter((x) => x.pos === p).length}</b> {POS_SHORT[p]}</span>)}
-            <span className="pill ath"><b>{players.filter((x) => x.client).length}</b> Signed</span>
-            <span className="pill ath"><b>{players.filter((x) => x.name && x.transfer).length}</b> Transferring</span>
-          </div>
-          <p className="muted" style={{ margin: 0 }}>
-            {lastCall ? <>Last call: {lastCall.name}, {fmt(lastCall.date)}</> : "No calls logged yet."}
-          </p>
-          <span className="go-on">Open scouting →</span>
-        </Link>
-
-        <Link href="/calls" className="card sec area" id="area-calls">
-          <h2>Calls &amp; calendar</h2>
-          <div className="summary">
-            <span className={`pill ${callsDue.some((c) => c.due && c.due <= today) ? "stop" : "ath"}`}><b>{callsDue.length}</b> {callsDue.length === 1 ? "call" : "calls"} to make</span>
-            <span className="pill ath"><b>{toTalk}</b> {toTalk === 1 ? "player" : "players"} to talk to</span>
-          </div>
-          <p className="muted" style={{ margin: 0 }}>
-            {comingUp.length ? comingUp.map((i) => <span key={i.key}>{shortDay(i.date)}{i.time ? ` ${timeText(i.time)}` : ""}: {i.title}<br /></span>) : "Nothing on the calendar."}
-          </p>
-          <span className="go-on">Open call list →</span>
-        </Link>
-
-        {owner && (
-          <Link href="/hq" className="card sec area" id="area-agency">
-            <h2>Agents &amp; deals</h2>
-            <div className="tiles two">
-              <div className="tile2"><span className="big">{state.team.length + 1}</span>Agents</div>
-              <div className="tile2"><span className="big">{athletes}</span>Athletes</div>
-              <div className="tile2"><span className="big">{money(earned)}</span>Earned</div>
-              <div className="tile2"><span className="big">{money(coming)}</span>Coming in</div>
-            </div>
-            <span className="go-on">Open agents &amp; deals →</span>
-          </Link>
-        )}
       </div>
     </section>
   );
