@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import type { FormData, Screen, TaskDef } from "@/lib/tasks";
+import type { FormData, Screen, TaskDef, TaskResult } from "@/lib/tasks";
 import type { AppState, SignatureRecord } from "@/lib/model";
 import { useStore } from "@/lib/store";
 import { buildSignedPdf } from "@/lib/signedPdf";
@@ -46,7 +46,7 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
   });
   const [sig, setSig] = useState<{ method: "drawn" | "typed"; value: string } | null>(null);
   const [agree, setAgree] = useState(false);
-  const [result, setResult] = useState<ReturnType<TaskDef["done"]> | null>(null);
+  const [result, setResult] = useState<TaskResult | null>(null);
   const [busy, setBusy] = useState(false);
   const docRef = useRef<HTMLDivElement>(null);
   const docText = useRef("");
@@ -62,11 +62,12 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
   const set = (k: string, v: string | string[]) => setData((d) => ({ ...d, [k]: v }));
 
   async function finish() {
-    const res = def.done(data);
+    setBusy(true);
+    const res = await def.done(data);
+    if (res.failed) { setBusy(false); setResult(res); return; }
     const signedAt = new Date();
     let pdf: string | undefined, hash: string | undefined;
     if (sig && res.doc) {
-      setBusy(true);
       const out = await buildSignedPdf({
         title: res.doc, text: docText.current || res.doc, signer: { name: state.profile.name, email: state.profile.email },
         signature: sig, signedAt, userAgent: navigator.userAgent, agency: state.agency.name,
@@ -94,17 +95,32 @@ function TaskModal({ def, complete, onClose }: { def: TaskDef; complete: Complet
     else setI(i + 1);
   }
 
+  if (result?.failed)
+    return (
+      <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title" onClick={(e) => e.target === e.currentTarget && onClose()}>
+        <div className="modal" style={{ alignItems: "center", textAlign: "center" }}>
+          <div className="bigok" style={{ background: "var(--stop-soft)", color: "var(--stop)" }}>!</div>
+          <h2 id="m-title">{result.title ?? "Not saved"}</h2>
+          <p style={{ margin: 0 }}>{result.msg}</p>
+          <div className="actions" style={{ justifyContent: "center" }}>
+            <button className="btn ghost" type="button" onClick={onClose}>Cancel</button>
+            <button className="btn" id="m-retry" type="button" autoFocus onClick={() => { setResult(null); setI(0); }}>Fix it</button>
+          </div>
+        </div>
+      </div>
+    );
+
   if (result)
     return (
       <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title" onClick={(e) => e.target === e.currentTarget && onClose()}>
         <div className="modal" style={{ alignItems: "center", textAlign: "center" }}>
           <div className="bigok">✓</div>
-          <h2 id="m-title">Marked done</h2>
+          <h2 id="m-title">{result.title ?? "Marked done"}</h2>
           <p style={{ margin: 0 }}>{result.msg}</p>
-          <p className="warnline" style={{ fontWeight: 500 }}>Nothing was filed, paid or sent. This only tracks your progress.
+          <p className="warnline" style={{ fontWeight: 500 }}>{result.note ?? "Nothing was filed, paid or sent. This only tracks your progress."}
             {def.link && <> <a href={def.link} target="_blank" rel="noreferrer">Do it on the official site ↗</a></>}</p>
           {state.docs.at(-1)?.pdf && <p className="muted" style={{ margin: 0, fontSize: 14 }}>Signed copy saved to Documents.</p>}
-          <button className="btn" id="m-close" type="button" autoFocus onClick={onClose}>Back to my list</button>
+          <button className="btn" id="m-close" type="button" autoFocus onClick={onClose}>{result.title ? "Done" : "Back to my list"}</button>
         </div>
       </div>
     );
