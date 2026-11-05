@@ -9,6 +9,7 @@ import { dealMoney } from "@/lib/agency";
 import { dayItems, shortDay, timeText, ymd } from "@/lib/calendar";
 import { fmt, myStates, RULES, status, TRACKED } from "@/lib/rules";
 import { POS_SHORT, POSITIONS, money, schoolById, shownPos } from "@/lib/players";
+import { lookingSchools } from "@/lib/moves";
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
 
@@ -47,6 +48,7 @@ export default function AgencyHome() {
   const comingUp = dayItems(state).filter((i) => i.kind === "event" && i.date >= today).slice(0, 2);
 
   const { earned, coming } = dealMoney(state);
+  const looking = POSITIONS.reduce((n, p) => n + lookingSchools(state.scouting, p).length, 0);
   const coaches = (state.coaches ?? []).length;
   const coachCalls = (state.schoolCalls ?? []).length;
   const athletes = state.athletes.length + state.team.reduce((n, t) => n + t.athletes.length, 0);
@@ -70,12 +72,21 @@ export default function AgencyHome() {
           <div className="summary">
             {POSITIONS.map((p) => <span className="pill ath" key={p}><b>{players.filter((x) => x.pos === p).length}</b> {POS_SHORT[p]}</span>)}
             <span className="pill ath"><b>{players.filter((x) => x.client).length}</b> Signed</span>
-            <span className="pill ath"><b>{players.filter((x) => x.name && x.transfer).length}</b> Transferring</span>
           </div>
           <p className="muted" style={{ margin: 0 }}>
             {lastCall ? <>Last call: {lastCall.name}, {fmt(lastCall.date)}</> : "No calls logged yet."}
           </p>
           <span className="go-on">Open athletes →</span>
+        </Link>
+
+        <Link href="/transfers" className="card sec area" id="area-matchmaker">
+          <h2>Match Maker</h2>
+          <div className="summary">
+            <span className="pill ath"><b>{players.filter((x) => x.name && x.transfer).length}</b> going to transfer</span>
+            <span className="pill ath"><b>{looking}</b> {looking === 1 ? "school" : "schools"} looking</span>
+          </div>
+          <p className="muted" style={{ margin: 0 }}>Match players who are moving with schools that need one.</p>
+          <span className="go-on">Open Match Maker →</span>
         </Link>
 
         <Link href="/coaches" className="card sec area" id="area-coaching">

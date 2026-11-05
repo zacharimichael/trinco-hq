@@ -158,7 +158,7 @@ export default function ClassesPage() {
       ) : (
       <div className="card sec">
         <h2>{cls === "unset" ? "No year in school yet" : cls === 0 ? "Everyone graduating · 0 years left" : `Everyone with ${cls} year${cls === 1 ? "" : "s"} left`}</h2>
-        {cls === 0 && <small className="muted">Out of eligibility after this season, so they&apos;re kept out of transfer moves. Their spots show as holes on <Link href="/transfers">Moves</Link>.</small>}
+        {cls === 0 && <small className="muted">Out of eligibility after this season, so they&apos;re kept out of transfer moves. Their spots show as holes on <Link href="/transfers">Match Maker</Link>.</small>}
         <small className="muted">Guessed from year in school (Senior 0, Junior 1, Sophomore 2, Freshman 3). Redshirts and extra years vary, so change it below when you know.</small>
         <div className="tablewrap">
           <table id="class-list">

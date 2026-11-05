@@ -5,16 +5,16 @@ import { usePathname } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { CreateFirm, SignIn } from "./Gate";
 
-/** The agency's areas, in the order you use them: athletes first, licensing last.
+/** The agency's areas, in the order you use them: athletes and Match Maker first, licensing last.
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, match: (p: string) => p === "/", sub: [] },
-  { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|compare|depth|transfers|classes)/.test(p), sub: [
+  { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|compare|depth|classes)/.test(p), sub: [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => /^\/(players|compare)/.test(p) },
     { href: "/depth", label: "Depth charts", id: "tab-depth", match: (p: string) => p.startsWith("/depth") },
     { href: "/classes", label: "Classes", id: "sub-classes", match: (p: string) => p.startsWith("/classes") },
-    { href: "/transfers", label: "Moves", id: "sub-transfers", match: (p: string) => p.startsWith("/transfers") },
   ] },
+  { href: "/transfers", label: "Match Maker", id: "tab-matchmaker", ownerOnly: false, match: (p: string) => p.startsWith("/transfers"), sub: [] },
   { href: "/coaches", label: "Coaching", id: "tab-coaching", ownerOnly: false, match: (p: string) => /^\/(coaches|schools)/.test(p), sub: [
     { href: "/coaches", label: "Our coaches", id: "sub-coaches", match: (p: string) => p.startsWith("/coaches") },
     { href: "/schools", label: "School map", id: "sub-schools", match: (p: string) => p.startsWith("/schools") },
