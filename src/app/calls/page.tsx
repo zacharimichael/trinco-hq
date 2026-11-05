@@ -5,8 +5,10 @@ import Link from "next/link";
 import { shortDay, ymd } from "@/lib/calendar";
 import { WHO_LABEL } from "@/lib/intake";
 import type { CallItem } from "@/lib/model";
-import { newId, schoolById, shownPos } from "@/lib/players";
+import { hsClassText, newId, schoolById, shownPos, yearShort } from "@/lib/players";
 import { useStore } from "@/lib/store";
+import { lastTalk, talkedTo } from "@/lib/toTalk";
+import { useToTalk } from "@/lib/useToTalk";
 
 /** People to call: late and today first, then by day, then anytime. */
 export default function CallsPage() {
@@ -29,8 +31,9 @@ export default function CallsPage() {
     ...(state.schoolCalls ?? []).map((c) => ({ key: c.id, date: c.date, note: c.note, title: schoolOf(c.school)?.name ?? "A school", sub: [WHO_LABEL[c.who], c.name].filter(Boolean).join(", "), href: schoolLink(c.school) })),
   ].sort((a, b) => b.date.localeCompare(a.date));
   const [showAll, setShowAll] = useState(false);
-  const open = calls.filter((c) => !c.done).sort((a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999"));
-  const done = calls.filter((c) => c.done);
+  // Players to talk to have their own card above; the rest of the list is everyone else.
+  const open = calls.filter((c) => !c.done && !c.first).sort((a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999"));
+  const done = calls.filter((c) => c.done && !c.first);
   const set = (id: string, patch: Partial<CallItem>) => update((d) => { const c = d.calls?.find((x) => x.id === id); if (c) Object.assign(c, patch); });
 
   const add = (e: React.FormEvent) => {
@@ -66,6 +69,8 @@ export default function CallsPage() {
 
   return (
     <section className="view">
+      <ToTalk />
+
       <div className="card next" id="call-list">
         <h2>Calls to make</h2>
         {!open.length && <p className="muted" style={{ margin: 0 }}>Nobody to call. Add someone below, or log a call on a player or school and the AI adds callbacks here.</p>}
@@ -114,5 +119,77 @@ export default function CallsPage() {
         </div>
       )}
     </section>
+  );
+}
+
+/** Players you haven't spoken to yet. Logging a call with the player or a parent ticks them off; so does ✓ Talked. */
+function ToTalk() {
+  const { state } = useStore();
+  const { open, done, onList, add, talked, undo, drop } = useToTalk();
+  const schoolOf = schoolById(state.scouting);
+  const byId = new Map(state.scouting.players.map((p) => [p.id, p]));
+  const [q, setQ] = useState("");
+  const [showDone, setShowDone] = useState(false);
+  const players = state.scouting.players.filter((p) => p.name && shownPos(p));
+  const never = players.filter((p) => !talkedTo(p));
+  const found = q.trim().length < 2 ? [] : players
+    .filter((p) => !onList(p.id) && `${p.name} ${schoolOf(p.school)?.name ?? ""} ${p.jucoSchool ?? ""}`.toLowerCase().includes(q.trim().toLowerCase()))
+    .sort((a, b) => Number(talkedTo(a)) - Number(talkedTo(b)) || a.name.localeCompare(b.name))
+    .slice(0, 8);
+  const where = (id: string | null) => {
+    const p = id ? byId.get(id) : undefined;
+    if (!p) return "";
+    return [p.hsClass != null ? hsClassText(p.hsClass) : p.jucoSchool ? `JUCO · ${p.jucoSchool}` : schoolOf(p.school)?.name, yearShort(p.year)].filter(Boolean).join(" · ");
+  };
+  const fmt = (iso: string) => new Date(iso).toLocaleDateString([], { month: "short", day: "numeric" });
+
+  return (
+    <div className="card next" id="to-talk">
+      <h2>Players to talk to</h2>
+      {!open.length && <p className="muted" style={{ margin: 0 }}>Nobody yet. Find a player below, or tap &ldquo;+ Players to talk to&rdquo; on a profile.</p>}
+      {open.map((c) => {
+        const p = c.player ? byId.get(c.player) : undefined;
+        const last = p ? lastTalk(p) : null;
+        return (
+          <div className="todo wraps" key={c.id}>
+            <span className="dot wip" />
+            <span className="grow">
+              <b>{p ? <Link href={`/players/${p.id}`}>{p.name}</Link> : c.name}</b>
+              <small>{[where(c.player), last ? `Last talked ${fmt(last)}` : "Never talked to"].filter(Boolean).join(" · ")}</small>
+            </span>
+            {p && <Link className="btn ghost" href={`/players/${p.id}#log-call`}>📞 Log call</Link>}
+            <button className="btn" type="button" onClick={() => talked(c.id)}>✓ Talked</button>
+            <button className="linkbtn" type="button" aria-label={`Take ${c.name} off the list`} onClick={() => drop(c.id)}>✕</button>
+          </div>
+        );
+      })}
+
+      <div className="field" style={{ marginTop: 6 }}>
+        <label htmlFor="to-talk-find">Add a player</label>
+        <input id="to-talk-find" placeholder="Type a name or school" value={q} onChange={(e) => setQ(e.target.value)} />
+      </div>
+      {found.map((p) => (
+        <div className="todo wraps" key={p.id}>
+          <span className="grow"><b>{p.name}</b><small>{[where(p.id), talkedTo(p) ? "Talked before" : "Never talked to"].filter(Boolean).join(" · ")}</small></span>
+          <button className="btn" type="button" onClick={() => add([p])}>+ Add</button>
+        </div>
+      ))}
+      {q.trim().length >= 2 && !found.length && <p className="muted" style={{ margin: 0 }}>No one by that name who isn&apos;t on the list already.</p>}
+      <p className="muted" style={{ margin: 0, fontSize: 14 }}>
+        {never.length} {never.length === 1 ? "player has" : "players have"} no call logged yet. <Link href="/players?talk=never">See them on Players</Link>
+      </p>
+
+      {!!done.length && (<>
+        <button className="linkbtn" type="button" onClick={() => setShowDone(!showDone)} style={{ alignSelf: "flex-start" }}>{showDone ? "Hide" : "Show"} talked to ({done.length})</button>
+        {showDone && done.map((c) => (
+          <div className="todo wraps" key={c.id}>
+            <span className="dot go" />
+            <span className="grow"><b>{c.player && byId.get(c.player) ? <Link href={`/players/${c.player}`}>{byId.get(c.player)!.name}</Link> : c.name}</b>
+              <small>{[where(c.player), c.doneOn && `Talked ${fmt(c.doneOn)}`].filter(Boolean).join(" · ")}</small></span>
+            <button className="linkbtn" type="button" onClick={() => undo(c.id)}>Undo</button>
+          </div>
+        ))}
+      </>)}
+    </div>
   );
 }

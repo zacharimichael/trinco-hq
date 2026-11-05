@@ -13,6 +13,8 @@ import {
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
+import { lastTalk } from "@/lib/toTalk";
+import { useToTalk } from "@/lib/useToTalk";
 
 const ROLES: CoachRole[] = ["HC", "GM", "ST"];
 
@@ -47,6 +49,8 @@ export default function PlayerPage() {
           {p.recruiting && <small className="muted">{p.recruiting}</small>}
           {p.source && <small className="muted">From <a href={p.source.url} target="_blank" rel="noreferrer">{p.source.label}</a> ({new Date(`${p.source.date}T12:00`).toLocaleDateString([], { dateStyle: "medium" })})</small>}
         </div>
+
+        <ToTalkBar p={p} />
 
         <LogCall p={p} key={p.id} />
 
@@ -224,6 +228,26 @@ function Facts({ facts, onChange }: { facts: Fact[]; onChange: (f: Fact[]) => vo
         ))}
       </div>
     </details>
+  );
+}
+
+/** Shows whether you've talked to this player and puts them on (or takes them off) "Players to talk to". */
+function ToTalkBar({ p }: { p: Player }) {
+  const { onList, add, remove } = useToTalk();
+  if (!p.name.trim()) return null;
+  const last = lastTalk(p);
+  const on = onList(p.id);
+  return (
+    <div className="card todo wraps" id="to-talk">
+      <span className={`dot ${last ? "go" : "wip"}`} />
+      <span className="grow">
+        <b>{last ? `Last talked ${new Date(last).toLocaleDateString([], { dateStyle: "medium" })}` : "Never talked to"}</b>
+        {on && <small>On your <Link href="/calls#to-talk">Players to talk to</Link> list. Logging a call with them below checks them off.</small>}
+      </span>
+      {on
+        ? <button className="linkbtn" type="button" onClick={() => remove(p.id)}>Take off list</button>
+        : <button className="btn" type="button" onClick={() => add([p])}>+ Players to talk to</button>}
+    </div>
   );
 }
 

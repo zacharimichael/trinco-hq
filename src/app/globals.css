@@ -115,6 +115,9 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 .todo .grow{flex:1;min-width:0}
 .todo small{display:block;color:var(--muted);font-size:14px}
 .todo .btn{white-space:nowrap}
+.todo.wraps{flex-wrap:wrap}
+.card.todo{background:var(--surface)}
+.todo.wraps .grow{flex:1 1 160px}
 .okchip{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--go);white-space:nowrap}
 .waitchip{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--wip);white-space:nowrap}
 .linkbtn{border:0;background:none;color:var(--accent);font-weight:600;padding:0;text-decoration:underline}
