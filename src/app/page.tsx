@@ -42,7 +42,8 @@ export default function AgencyHome() {
   ].sort((a, b) => b.date.localeCompare(a.date))[0];
 
   const today = ymd(new Date());
-  const callsDue = (state.calls ?? []).filter((c) => !c.done && (!c.due || c.due <= today));
+  const callsDue = (state.calls ?? []).filter((c) => !c.done && !c.first && (!c.due || c.due <= today));
+  const toTalk = (state.calls ?? []).filter((c) => !c.done && c.first).length;
   const comingUp = dayItems(state).filter((i) => i.kind === "event" && i.date >= today).slice(0, 2);
 
   const { earned, coming } = dealMoney(state);
@@ -94,7 +95,7 @@ export default function AgencyHome() {
           <h2>Calls &amp; calendar</h2>
           <div className="summary">
             <span className={`pill ${callsDue.some((c) => c.due && c.due <= today) ? "stop" : "ath"}`}><b>{callsDue.length}</b> {callsDue.length === 1 ? "call" : "calls"} to make</span>
-            <span className="pill ath"><b>{(state.calls ?? []).filter((c) => !c.done).length}</b> on the list</span>
+            <span className="pill ath"><b>{toTalk}</b> {toTalk === 1 ? "player" : "players"} to talk to</span>
           </div>
           <p className="muted" style={{ margin: 0 }}>
             {comingUp.length ? comingUp.map((i) => <span key={i.key}>{shortDay(i.date)}{i.time ? ` ${timeText(i.time)}` : ""}: {i.title}<br /></span>) : "Nothing on the calendar."}

@@ -1,5 +1,6 @@
 import type { Change } from "./intakeSchema";
 import type { AppState, CalEvent, CallItem, SchoolCall } from "./model";
+import { checkOff, SPOKE_WHO } from "./toTalk";
 import {
   blankStaff, newId, newPlayer, NIL_YEARS, POSITIONS, SCHOOL_YEARS, schoolById, allSchools, shownPos, staffFor,
   type CoachRole, type Player, type Pos, type Scouting, type Talk,
@@ -196,6 +197,8 @@ export function applyChanges(d: AppState, opts: { playerId: string | null; schoo
       (p.facts ??= []).unshift({ id: newId("f"), label: "Heard on a call", value: opts.changes.filter((c) => idOf(c.player) === id).map((c) => c.text).join(". "), date: opts.when, from });
   }
   if (me) me.talks = [...me.talks, { date: opts.when, who: opts.who, note: opts.note.trim() }].sort((a, b) => b.date.localeCompare(a.date));
+  // Talking to the player or a parent ticks them off "Players to talk to".
+  if (me && SPOKE_WHO.includes(opts.who)) checkOff(d, me.id, opts.when);
   if (sch) {
     const call: SchoolCall = { id: newId("sc"), school: sch.id, who: opts.who === "HC" || opts.who === "GM" || opts.who === "ST" ? opts.who : "Other", name: opts.coach ?? "", date: opts.when, note: opts.note.trim() };
     d.schoolCalls = [...(d.schoolCalls ?? []), call].sort((a, b) => b.date.localeCompare(a.date));
