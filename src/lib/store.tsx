@@ -55,8 +55,8 @@ function seed(): AppState {
 
 
 /** The parts of AppState each member owns, stored in member_state.data. */
-type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events" | "schoolCalls" | "roster">;
-const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [], schoolCalls: s.schoolCalls ?? [], roster: s.roster ?? [] });
+type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events" | "schoolCalls" | "roster" | "coaches">;
+const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [], schoolCalls: s.schoolCalls ?? [], roster: s.roster ?? [], coaches: s.coaches ?? [] });
 
 const ROSTER_POSITIONS = (["LS", "P", "K"] as const).filter((pos) => POSITIONS.includes(pos));
 const ROSTER_IDS = Object.fromEntries(ROSTER_POSITIONS.map((pos) => [pos, new Set(ROSTER_PLAYERS.filter((r) => r.pos === pos).map((r) => r.id))]));
@@ -161,6 +161,7 @@ async function loadLive(session: Session): Promise<AppState | null> {
     events: own.events ?? [],
     schoolCalls: own.schoolCalls ?? [],
     roster: own.roster ?? [],
+    coaches: own.coaches ?? [],
     signatures: [],
     team,
     shared,
