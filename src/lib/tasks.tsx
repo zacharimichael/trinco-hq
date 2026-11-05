@@ -24,8 +24,11 @@ export interface TaskDef {
   screens: () => Screen[];
   /** Where to do this step for real (the state's form or page). The app only tracks it. */
   link?: string;
-  done: (d: FormData) => { msg: string; doc?: string; sendsTo?: string };
+  done: (d: FormData) => TaskResult | Promise<TaskResult>;
 }
+
+/** failed: nothing was saved; the person goes back and fixes it. title replaces "Marked done". */
+export type TaskResult = { msg: string; doc?: string; sendsTo?: string; failed?: boolean; title?: string; note?: string };
 
 const sign = (what: string): Screen => ({ type: "sign", title: "Sign", what });
 const first = (name: string) => name.split(" ")[0];

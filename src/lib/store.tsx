@@ -138,7 +138,7 @@ async function loadLive(session: Session): Promise<AppState | null> {
           .map((m) => {
             const d = stateOf(m.id) ?? {};
             return {
-              id: m.id, name: m.name, email: m.email, stage: m.stage, split: m.split ?? firm?.default_split ?? 70, done: d.done ?? {},
+              id: m.id, name: m.name, email: m.email.endsWith("@none.invalid") ? "" : m.email, stage: m.stage, split: m.split ?? firm?.default_split ?? 70, done: d.done ?? {},
               athletes: (d.athletes ?? []).map((a) => ({ name: a.name, school: a.school, sport: a.sport, state: a.state, contract: a.done?.contract ? "Signed" : "Not sent" })),
             };
           })
@@ -315,8 +315,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     inviteAgent: async (name, email, split) => {
       if (mode !== "live") return null;
       const { data: firmId } = await supabase.rpc("my_firm_id");
-      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name, email: email.toLowerCase(), split, role: "agent", stage: 0 }).select("id").single();
-      if (error) return error.message;
+      if (!firmId) return "Your sign-in timed out. Refresh the page, then add them again.";
+      // An agent you only track has no email. Each still needs its own, so they get one nobody can sign in with.
+      const stored = email || `no-email-${crypto.randomUUID()}@none.invalid`;
+      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name, email: stored, split, role: "agent", stage: 0 }).select("id").single();
+      if (error) return /duplicate|unique/i.test(error.message) ? "Someone with that email is already in your agency."
+        : /row-level security/i.test(error.message) ? "Only the agency owner or someone they shared with can add agents."
+        : `The database said: ${error.message}`;
       update((d) => { d.team.push({ id: data.id, name, email, stage: 0, split, done: {}, athletes: [] }); });
       return null;
     },

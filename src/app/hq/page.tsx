@@ -12,7 +12,6 @@ const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 
 export default function HqPage() {
   const { state, update, mode, inviteAgent, email: myEmail } = useStore();
-  const [inviteError, setInviteError] = useState("");
   const live = mode === "live";
   const owner = !live || state.me?.role === "owner";
   const canOnboard = owner || state.me?.role === "editor";
@@ -51,41 +50,44 @@ export default function HqPage() {
         screens: () => [
           { type: "fields", title: "Who's joining?", fields: [
             { key: "name", label: "Agent's name", value: "" },
-            { key: "email", label: "Agent's email", value: "" },
+            { key: "email", label: "Agent's email (optional)", value: "", type: "email" },
             { key: "split", label: "Agent's share of commissions (%)", value: String(agency.split) },
           ] },
           { type: "doc", title: "Review the agency agreement", body: (d) => (<>
             <h4>Independent Agent Agreement</h4>
-            <p><b>Agency:</b> {agency.name}<br /><b>Agent:</b> {String(d.name)} · {String(d.email)}</p>
+            <p><b>Agency:</b> {agency.name}<br /><b>Agent:</b> {String(d.name)}{d.email ? <> · {String(d.email)}</> : null}</p>
             <p>The agent represents athletes for NIL on behalf of the agency. The agent keeps {String(d.split)}% of commissions on deals they close, and the agency keeps the rest.</p>
             <p>The agent must hold every required state license or registration, use the agency&apos;s contracts and follow every rule in this app. The agency can end this agreement if the agent falls out of compliance.</p>
           </>) },
           { type: "sign", title: "Sign", what: "the agency agreement" },
         ],
-        done: (d) => {
+        done: async (d) => {
+          const name = String(d.name || "").trim();
           const email = String(d.email || "").trim().toLowerCase();
+          if (!name) return { failed: true, title: "Not added", msg: "Type the agent's name, then try again." };
+          if (email && !/^\S+@\S+\.\S+$/.test(email)) return { failed: true, title: "Not added", msg: `"${email}" isn't a full email. Fix it or leave it blank.` };
           // Everyone already in the agency, including you, can't be added again.
-          const taken = [state.profile.email, myEmail ?? "", ...state.team.map((t) => t.email), ...(state.shared ?? []).map((p) => p.email)]
-            .some((e) => e && e.toLowerCase() === email);
-          if (live && !email) return { msg: "Not added: type the agent's email and try again." };
-          if (live && taken)
-            return { msg: [state.profile.email, myEmail].some((e) => e?.toLowerCase() === email)
-              ? "Not added: that's your own email. You already count as an agent here, shown as \"You\" in the Agents list."
-              : "Not added: someone with that email is already in your agency." };
-          setInviteError("");
-          if (live) void inviteAgent(String(d.name || "New agent"), email, Number(d.split) || agency.split)
-            .then((err) => err && setInviteError(`${d.name || "The new agent"} wasn't saved: ${err}`));
+          const mine = [state.profile.email, myEmail].some((e) => e && e.toLowerCase() === email);
+          const taken = [...state.team.map((t) => t.email), ...(state.shared ?? []).map((p) => p.email)].some((e) => e && e.toLowerCase() === email);
+          if (email && mine) return { failed: true, title: "Not added", msg: "That's your own email. You're already in the Agents list as \"You\". Use the agent's email, or leave it blank." };
+          if (email && taken) return { failed: true, title: "Not added", msg: "Someone with that email is already in your agency." };
+          if (live) {
+            const err = await inviteAgent(name, email, Number(d.split) || agency.split);
+            if (err) return { failed: true, title: "Not added", msg: err };
+          }
           return {
-            msg: live
-              ? `${d.name || "Your new agent"} is added. Ask them to sign in at this site with ${d.email || "their email"}, and they'll be taken straight to the agreement.`
-              : `Invite sent to ${d.email || "the new agent"}. They'll sign here, then their licensing checklist starts automatically.`,
-            doc: `Agency agreement: ${d.name}`,
+            title: `${name} is added`,
+            msg: email
+              ? `${name} is in your Agents list. When they sign in here with ${email}, they'll go straight to the agreement.`
+              : `${name} is in your Agents list. Add their email later if you want them to sign in.`,
+            note: "Nothing was sent to them.",
+            doc: `Agency agreement: ${name}`,
           };
         },
       },
       (draft, d) => {
         if (live) return;
-        draft.team.push({ id: `t${Date.now()}`, name: String(d.name || "New agent"), email: String(d.email || ""), stage: 0, split: Number(d.split) || agency.split, done: {}, athletes: [] });
+        draft.team.push({ id: `t${Date.now()}`, name: String(d.name).trim(), email: String(d.email || ""), stage: 0, split: Number(d.split) || agency.split, done: {}, athletes: [] });
       },
     );
 
@@ -112,7 +114,6 @@ export default function HqPage() {
           {canOnboard && <button className="btn" id="onboard" type="button" onClick={onboard}>+ Add a new agent</button>}
         </div>
         <p className="muted" style={{ margin: 0 }}>New agents sign your agency agreement here, then get licensed state by state. They go live when their map is all green.</p>
-        {inviteError && <p role="alert" style={{ margin: 0, color: "var(--stop)" }}>{inviteError}</p>}
         <div className="pipe">
           {STAGES.map((stage, i) => {
             const here = team.filter((t) => t.stage === i);
