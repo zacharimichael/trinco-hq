@@ -10,7 +10,7 @@ import { isHs, money, ratingsText, nilNow, POS_LABEL, POSITIONS, POS_SHORT, TRAN
 import { useScouting } from "@/lib/useScouting";
 
 /**
- * Moves: three lists. Snappers going to transfer, schools looking for a snapper,
+ * Match Maker (was Moves): three lists. Snappers going to transfer, schools looking for a snapper,
  * and the connections between them. Committing fills the school's spot and puts
  * the player's old school on the looking list.
  */
@@ -34,7 +34,7 @@ export default function MovesPage() {
   return (
     <section className="view">
       <div>
-        <h1>Moves</h1>
+        <h1>Match Maker</h1>
         <p className="muted" style={{ margin: "6px 0 0" }}>{POS_LABEL[pos]}s going to transfer, schools looking for one, and who you&apos;ve connected.</p>
       </div>
 
