@@ -120,6 +120,11 @@ export interface AppState {
   schoolCalls?: SchoolCall[];
   /** Agents you work with: just contact info and the agreed split or pay. They don't sign in. */
   roster?: AgentContact[];
+  /** Coaches you work with: contact info, their school and role, and a note. */
+  coaches?: CoachContact[];
 }
 
 export interface AgentContact { id: string; name: string; email: string; phone: string; pay: string }
+
+/** A coach you work with. schoolId links to the School map when the school is on our list. */
+export interface CoachContact { id: string; name: string; school: string; schoolId?: string; role: "HC" | "GM" | "ST" | "Other"; email: string; phone: string; notes: string }
