@@ -9,8 +9,8 @@ const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600", "800"]
 const body = Figtree({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-body" });
 
 export const metadata: Metadata = {
-  title: "Trin Co Agency",
-  description: "Trin Co Agency: licensing and compliance, scouting, agents and deals.",
+  title: "Trin Co",
+  description: "Trin Co: athlete recruiting and NIL. Athletes, coaches, agents, calendar and licensing.",
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 

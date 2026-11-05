@@ -5,27 +5,30 @@ import { usePathname } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { CreateFirm, SignIn } from "./Gate";
 
-/** The agency's areas. Home is the Trin Co Agency dashboard everything reports up to.
- *  Each area keeps to its own screens, listed in its sub-tabs. */
+/** The agency's areas, in the order you use them: athletes first, licensing last.
+ *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, match: (p: string) => p === "/", sub: [] },
+  { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|compare|depth|transfers|classes)/.test(p), sub: [
+    { href: "/players", label: "Players", id: "sub-players", match: (p: string) => /^\/(players|compare)/.test(p) },
+    { href: "/depth", label: "Depth charts", id: "tab-depth", match: (p: string) => p.startsWith("/depth") },
+    { href: "/classes", label: "Classes", id: "sub-classes", match: (p: string) => p.startsWith("/classes") },
+    { href: "/transfers", label: "Moves", id: "sub-transfers", match: (p: string) => p.startsWith("/transfers") },
+  ] },
+  { href: "/coaches", label: "Coaching", id: "tab-coaching", ownerOnly: false, match: (p: string) => /^\/(coaches|schools)/.test(p), sub: [
+    { href: "/coaches", label: "Our coaches", id: "sub-coaches", match: (p: string) => p.startsWith("/coaches") },
+    { href: "/schools", label: "School map", id: "sub-schools", match: (p: string) => p.startsWith("/schools") },
+  ] },
+  { href: "/hq", label: "Agents", id: "tab-firm", ownerOnly: true, match: (p: string) => p.startsWith("/hq"), sub: [] },
+  { href: "/calendar", label: "Calendar", id: "tab-calendar", ownerOnly: false, match: (p: string) => /^\/(calendar|calls)/.test(p), sub: [
+    { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },
+    { href: "/calls", label: "Call list", id: "sub-calls", match: (p: string) => p.startsWith("/calls") },
+  ] },
   { href: "/licensing", label: "Licensing", id: "tab-map", ownerOnly: false, match: (p: string) => p.startsWith("/licensing"), sub: [
     { href: "/licensing", label: "Map", id: "sub-map", match: (p: string) => p === "/licensing" },
     { href: "/licensing/todo", label: "To-do", id: "tab-hub", match: (p: string) => p.startsWith("/licensing/todo") },
     { href: "/licensing/states", label: "All states", id: "sub-states", match: (p: string) => p.startsWith("/licensing/states") },
   ] },
-  { href: "/players", label: "Scouting", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|compare|depth|transfers|schools|classes)/.test(p), sub: [
-    { href: "/players", label: "Players", id: "sub-players", match: (p: string) => /^\/(players|compare)/.test(p) },
-    { href: "/depth", label: "Depth charts", id: "tab-depth", match: (p: string) => p.startsWith("/depth") },
-    { href: "/classes", label: "Classes", id: "sub-classes", match: (p: string) => p.startsWith("/classes") },
-    { href: "/transfers", label: "Moves", id: "sub-transfers", match: (p: string) => p.startsWith("/transfers") },
-    { href: "/schools", label: "School map", id: "sub-schools", match: (p: string) => p.startsWith("/schools") },
-  ] },
-  { href: "/calendar", label: "Calendar", id: "tab-calendar", ownerOnly: false, match: (p: string) => /^\/(calendar|calls)/.test(p), sub: [
-    { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },
-    { href: "/calls", label: "Call list", id: "sub-calls", match: (p: string) => p.startsWith("/calls") },
-  ] },
-  { href: "/hq", label: "Agents & deals", id: "tab-firm", ownerOnly: true, match: (p: string) => p.startsWith("/hq"), sub: [] },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -43,7 +46,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <div className="wrap">
       {mode === "demo" && <div className="demo">Demo mode with example data. Nothing is sent, paid or filed. <button className="linkbtn" onClick={signOut}>Sign in instead</button></div>}
       <header className="top">
-        <Link href="/" className="brand"><i></i>{state.agency.name} Agency</Link>
+        <Link href="/" className="brand"><i></i>{state.agency.name}</Link>
         <nav className="tabs" aria-label="Main">
           {AREAS.filter((t) => isOwner || !t.ownerOnly).map((t) => (
             <Link key={t.href} id={t.id} href={t.href} aria-current={t.match(path) ? "page" : undefined} className="tablink">{t.label}</Link>
