@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTaskRunner } from "@/components/TaskRunner";
 import { dealMoney } from "@/lib/agency";
-import { STAGES, type TeamMember } from "@/lib/model";
+import { STAGES, type AgentContact, type TeamMember } from "@/lib/model";
 import { DAY, dueText, myStates, RULES, startOfToday, status } from "@/lib/rules";
 import { todos } from "@/lib/tasks";
 import { useStore } from "@/lib/store";
@@ -93,8 +93,13 @@ export default function HqPage() {
 
   return (
     <section className="view">
-      <div><h1>Agents &amp; deals</h1><p className="muted" style={{ margin: "6px 0 0" }}>Onboard agents, see their licenses, athletes and commissions.</p></div>
+      <div><h1>Agents &amp; deals</h1><p className="muted" style={{ margin: "6px 0 0" }}>Keep track of the agents you work with.</p></div>
 
+      <AgentList />
+
+      <details className="card fold" id="licensing-onboarding">
+        <summary><h2>Agent licensing and onboarding</h2><span className="muted">For agents who sign in and get licensed here</span></summary>
+        <div className="sec">
       <div className="tiles">
         <div className="tile2"><span className="big">{active}</span>Active agents</div>
         <div className="tile2"><span className="big">{team.length - active}</span>Onboarding</div>
@@ -150,6 +155,8 @@ export default function HqPage() {
           ))}</tbody>
         </table></div>
       </div>
+        </div>
+      </details>
 
       <div className="grid2">
         <div className="card sec">
@@ -192,6 +199,70 @@ export default function HqPage() {
   );
 }
 
+
+const blank = { name: "", email: "", phone: "", pay: "" };
+
+/** The agents you work with: name, email, cell and the agreed split or pay. Nothing to sign. */
+function AgentList() {
+  const { state, update } = useStore();
+  const list = state.roster ?? [];
+  const [form, setForm] = useState(blank);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [msg, setMsg] = useState("");
+  const set = (k: keyof typeof blank) => (e: React.ChangeEvent<HTMLInputElement>) => { setForm({ ...form, [k]: e.target.value }); setMsg(""); };
+  const save = () => {
+    const a = { name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim(), pay: form.pay.trim() };
+    if (!a.name) return setMsg("Type their name first.");
+    update((d) => {
+      d.roster ??= [];
+      const i = d.roster.findIndex((x) => x.id === editing);
+      if (i >= 0) d.roster[i] = { ...d.roster[i], ...a };
+      else d.roster.push({ id: `ag${Date.now()}`, ...a });
+    });
+    setMsg(editing ? `${a.name} is updated.` : `${a.name} is added.`);
+    setForm(blank);
+    setEditing(null);
+  };
+  const edit = (a: AgentContact) => { setForm({ name: a.name, email: a.email, phone: a.phone, pay: a.pay }); setEditing(a.id); setMsg(""); };
+  const remove = (a: AgentContact) => {
+    if (!confirm(`Remove ${a.name}?`)) return;
+    update((d) => { d.roster = (d.roster ?? []).filter((x) => x.id !== a.id); });
+    if (editing === a.id) { setForm(blank); setEditing(null); }
+  };
+  return (
+    <div className="card sec" id="agent-list">
+      <h2>Agents we work with <span className="muted">{list.length}</span></h2>
+      <form className="grid2" style={{ gap: 12 }} onSubmit={(e) => { e.preventDefault(); save(); }}>
+        <div className="field"><label htmlFor="ag-name">Name</label><input id="ag-name" value={form.name} onChange={set("name")} /></div>
+        <div className="field"><label htmlFor="ag-email">Email</label><input id="ag-email" type="email" value={form.email} onChange={set("email")} /></div>
+        <div className="field"><label htmlFor="ag-phone">Cell phone</label><input id="ag-phone" type="tel" value={form.phone} onChange={set("phone")} /></div>
+        <div className="field"><label htmlFor="ag-pay">Split or payment</label><input id="ag-pay" placeholder="70/30, or $500 a deal" value={form.pay} onChange={set("pay")} /></div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button className="btn" id="ag-save" type="submit">{editing ? "Save changes" : "+ Add agent"}</button>
+          {editing && <button className="btn ghost" type="button" onClick={() => { setForm(blank); setEditing(null); }}>Cancel</button>}
+        </div>
+      </form>
+      {msg && <p role="status" style={{ margin: 0 }}>{msg}</p>}
+      {list.length > 0 ? (
+        <div className="tablewrap"><table>
+          <thead><tr><th>Name</th><th>Email</th><th>Cell</th><th>Split or pay</th><th /></tr></thead>
+          <tbody>{list.map((a) => (
+            <tr key={a.id}>
+              <td><b>{a.name}</b></td>
+              <td>{a.email ? <a href={`mailto:${a.email}`}>{a.email}</a> : <span className="muted">None</span>}</td>
+              <td>{a.phone ? <a href={`tel:${a.phone.replace(/[^\d+]/g, "")}`}>{a.phone}</a> : <span className="muted">None</span>}</td>
+              <td>{a.pay || <span className="muted">None</span>}</td>
+              <td style={{ whiteSpace: "nowrap" }}>
+                <button type="button" className="linkbtn" onClick={() => edit(a)}>Edit</button>{" "}
+                <button type="button" className="linkbtn" onClick={() => remove(a)}>Remove</button>
+              </td>
+            </tr>
+          ))}</tbody>
+        </table></div>
+      ) : <p className="muted" style={{ margin: 0 }}>No agents yet. Add one above.</p>}
+    </div>
+  );
+}
 
 /** Let one more person sign in. They see everything and can add film, but can't change anything. */
 function SharedAccess() {

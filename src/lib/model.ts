@@ -118,4 +118,8 @@ export interface AppState {
   events?: CalEvent[];
   /** Calls logged on school pages (School map), newest first. */
   schoolCalls?: SchoolCall[];
+  /** Agents you work with: just contact info and the agreed split or pay. They don't sign in. */
+  roster?: AgentContact[];
 }
+
+export interface AgentContact { id: string; name: string; email: string; phone: string; pay: string }
