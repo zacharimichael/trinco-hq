@@ -143,7 +143,7 @@ async function loadLive(session: Session): Promise<AppState | null> {
             };
           })
       : [];
-  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer" || m.role === "editor").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id })) : [];
+  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer" || m.role === "editor").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id, viewOnly: m.role === "viewer" })) : [];
   const sharedFilm: SharedFilm[] = (films ?? []).map((r) => ({ id: r.id, player: r.player_id, film: r.film as Film, by: r.added_by }));
 
   const me: Me = { memberId: base.id, role: mine.role, stage: base === mine ? mine.stage : 3 };
@@ -186,7 +186,7 @@ type Ctx = {
   createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
   inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
   /** Owner only: lets one more person sign in and do everything the owner can, except manage who has access. */
-  share: (email: string) => Promise<string | null>;
+  share: (email: string, viewOnly?: boolean) => Promise<string | null>;
   unshare: (id: string) => Promise<string | null>;
   /** Someone the owner shared with adds a clip to a player. */
   addSharedFilm: (playerId: string, film: Film) => Promise<string | null>;
@@ -327,15 +327,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       update((d) => { d.team.push({ id: data.id, name, email, stage: 0, split, done: {}, athletes: [] }); });
       return null;
     },
-    share: async (raw) => {
+    share: async (raw, viewOnly = false) => {
       const email = raw.trim().toLowerCase();
       if (!/^\S+@\S+\.\S+$/.test(email)) return "Type their full email.";
       const { data: firmId } = await supabase.rpc("my_firm_id");
-      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: "editor", stage: 3 }).select("id").single();
+      const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: viewOnly ? "viewer" : "editor", stage: 3 }).select("id").single();
       if (error) return /duplicate|unique/i.test(error.message) ? "That email already has access."
         : /row-level security|check constraint/i.test(error.message) ? "The database isn't set up for sharing yet. Run 0004_share.sql in Supabase (SQL Editor), then try again."
         : error.message;
-      update((d) => { (d.shared ??= []).push({ id: data.id, email, joined: false }); });
+      update((d) => { (d.shared ??= []).push({ id: data.id, email, joined: false, viewOnly }); });
       return null;
     },
     unshare: async (id) => {
