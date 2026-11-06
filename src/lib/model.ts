@@ -86,7 +86,7 @@ export interface Me {
 }
 
 /** Someone the owner shared the agency with. */
-export interface SharedPerson { id: string; email: string; joined: boolean }
+export interface SharedPerson { id: string; email: string; joined: boolean; viewOnly?: boolean }
 
 /** A film clip someone the owner shared with added to a player. */
 export interface SharedFilm { id: string; player: string; film: Film; by: string }

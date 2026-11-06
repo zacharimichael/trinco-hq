@@ -266,29 +266,30 @@ function AgentList() {
   );
 }
 
-/** Let one more person sign in. They see everything and can add film, but can't change anything. */
+/** Let one more person sign in, with full access or view only. */
 function SharedAccess() {
   const { state, share, unshare } = useStore();
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
-  const add = async () => {
-    const err = await share(email);
+  const add = async (viewOnly: boolean) => {
+    const err = await share(email, viewOnly);
     setMsg(err ?? `Added. Send them ${typeof window !== "undefined" ? window.location.origin : "this site"} and have them sign in with ${email.trim().toLowerCase()}.`);
     if (!err) setEmail("");
   };
   return (
     <div className="card sec" id="shared-access">
       <h2>Shared access</h2>
-      <p className="muted" style={{ margin: 0 }}>They can do everything you can: your map, players, call logs, film, depth charts, deals and agents. Only you can add or remove people here.</p>
+      <p className="muted" style={{ margin: 0 }}>Full access: they can do everything you can. View only: they can look at everything but can&apos;t change anything. Only you can add or remove people here.</p>
       <div className="pair">
         <input aria-label="Their email" type="email" placeholder="Their email" value={email} onChange={(e) => { setEmail(e.target.value); setMsg(""); }}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void add(); } }} />
-        <button type="button" className="btn" onClick={() => void add()}>Share</button>
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void add(true); } }} />
+        <button type="button" className="btn" onClick={() => void add(true)}>View only</button>
+        <button type="button" className="btn" onClick={() => void add(false)}>Full access</button>
       </div>
       {msg && <p style={{ margin: 0 }} role="status">{msg}</p>}
       {(state.shared ?? []).map((p) => (
         <div className="todo" key={p.id}>
-          <span className="grow"><b>{p.email}</b> <small className="muted">{p.joined ? "Signed in" : "Hasn't signed in yet"}</small></span>
+          <span className="grow"><b>{p.email}</b> <small className="muted">{p.viewOnly ? "View only" : "Full access"} · {p.joined ? "Signed in" : "Hasn't signed in yet"}</small></span>
           <button type="button" className="linkbtn" onClick={() => { if (confirm(`Remove ${p.email}?`)) void unshare(p.id).then((e) => e && setMsg(e)); }}>Remove</button>
         </div>
       ))}
