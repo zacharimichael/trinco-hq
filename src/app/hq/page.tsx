@@ -270,11 +270,16 @@ function AgentList() {
 function SharedAccess() {
   const { state, share, unshare } = useStore();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const add = async (viewOnly: boolean) => {
-    const err = await share(email, viewOnly);
-    setMsg(err ?? `Added. Send them ${typeof window !== "undefined" ? window.location.origin : "this site"} and have them sign in with ${email.trim().toLowerCase()}.`);
-    if (!err) setEmail("");
+    const err = await share(email, viewOnly, password);
+    const site = typeof window !== "undefined" ? window.location.origin : "this site";
+    const who = email.trim().toLowerCase();
+    setMsg(err ?? (password
+      ? `Added. Send them ${site}, their email ${who} and the password. They tap "Use a password instead" to sign in.`
+      : `Added. Send them ${site} and have them sign in with ${who}.`));
+    if (!err) { setEmail(""); setPassword(""); }
   };
   return (
     <div className="card sec" id="shared-access">
@@ -283,6 +288,9 @@ function SharedAccess() {
       <div className="pair">
         <input aria-label="Their email" type="email" placeholder="Their email" value={email} onChange={(e) => { setEmail(e.target.value); setMsg(""); }}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void add(true); } }} />
+        <input aria-label="A password for them" type="text" autoComplete="off" placeholder="A password for them (8+ characters)" value={password} onChange={(e) => { setPassword(e.target.value); setMsg(""); }} />
+      </div>
+      <div className="pair">
         <button type="button" className="btn" onClick={() => void add(true)}>View only</button>
         <button type="button" className="btn" onClick={() => void add(false)}>Full access</button>
       </div>
