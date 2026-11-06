@@ -186,7 +186,7 @@ type Ctx = {
   createFirm: (firmName: string, ownerName: string) => Promise<string | null>;
   inviteAgent: (name: string, email: string, split: number) => Promise<string | null>;
   /** Owner only: lets one more person sign in and do everything the owner can, except manage who has access. */
-  share: (email: string, viewOnly?: boolean) => Promise<string | null>;
+  share: (email: string, viewOnly?: boolean, password?: string) => Promise<string | null>;
   unshare: (id: string) => Promise<string | null>;
   /** Someone the owner shared with adds a clip to a player. */
   addSharedFilm: (playerId: string, film: Film) => Promise<string | null>;
@@ -327,9 +327,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       update((d) => { d.team.push({ id: data.id, name, email, stage: 0, split, done: {}, athletes: [] }); });
       return null;
     },
-    share: async (raw, viewOnly = false) => {
+    share: async (raw, viewOnly = false, password = "") => {
       const email = raw.trim().toLowerCase();
       if (!/^\S+@\S+\.\S+$/.test(email)) return "Type their full email.";
+      if (password) {
+        if (password.length < 8) return "Use a password of 8 or more characters.";
+        const { data, error } = await supabase.rpc("share_with_password", { p_email: email, p_password: password, p_view_only: viewOnly });
+        if (error) return /could not find|does not exist|schema cache/i.test(error.message)
+          ? "Not added. Passwords need a one-time setup: run 0007_share_password.sql in Supabase (SQL Editor)."
+          : `Not added. ${error.message}`;
+        update((d) => { d.shared = [...(d.shared ?? []).filter((p) => p.email !== email), { id: String(data), email, joined: false, viewOnly }]; });
+        return null;
+      }
       const { data: firmId } = await supabase.rpc("my_firm_id");
       const { data, error } = await supabase.from("members").insert({ firm_id: firmId, name: email, email, role: viewOnly ? "viewer" : "editor", stage: 3 }).select("id").single();
       if (error) return /duplicate|unique/i.test(error.message) ? "That email already has access."
