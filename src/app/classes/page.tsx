@@ -5,7 +5,7 @@ import { HS_IDS } from "@/data/hs-long-snappers";
 import { JUCO_IDS } from "@/data/juco-long-snappers";
 import Link from "next/link";
 import { byBest } from "@/lib/moves";
-import { money, bestRating, coachRating, HS_CLASS_YEARS, hsClassText, isHs, isJuco, missingJucoPlayers, ratingsText, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, missingHsPlayers, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
+import { money, bestRating, HS_CLASS_YEARS, hsClassText, isHs, isJuco, missingJucoPlayers, ratingsText, nilNow, POS_LABEL, POS_SHORT, POSITIONS, missingHsPlayers, yearShort, yearsLeft, YEARS_LEFT, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 type Cls = (typeof YEARS_LEFT)[number] | "unset" | (typeof HS_CLASS_YEARS)[number] | "juco";
@@ -95,7 +95,7 @@ export default function ClassesPage() {
       {cls !== "unset" && (
         <div className="card sec" id="top-ten">
           <h2>🏆 Top 10 · {clsName}</h2>
-          <small className="muted">{canEdit ? "Type a name or tap ☆ on anyone below. Use ▲ ▼ to rank." : "The agency's ranking."}{auto.length > 0 && (hs ? " Places you haven't filled show the best rated, then Kohl's order (auto)." : " Places you haven't filled show the best rated (auto).")}</small>
+          <small className="muted">{canEdit ? "Type a name or tap ☆ on anyone below. Use ▲ ▼ to rank." : "The agency's ranking."}{auto.length > 0 && (hs ? " Places you haven't filled show Kohl's order (auto)." : "")}</small>
           <ol className="topten">
             {top.map(({ p, mine }, i) => (
               <li key={p.id}>
@@ -128,11 +128,11 @@ export default function ClassesPage() {
         <div className="card sec">
           <h2>{juco ? "Everyone at a junior college (JUCO)" : `Everyone in the ${hsClassText(cls)}`}</h2>
           {juco ? <small className="muted">Anyone with a JUCO school on their profile. Started with the snappers Kohl&apos;s Kicking lists as committed to a JUCO from the 2025 and 2026 high school classes. Nobody publishes a JUCO long snapper ranking, so add others from their profile (JUCO school box).</small>
-          : <small className="muted">From <a href={`https://www.kohlskicking.com/national-player-ratings/long-snappers/${cls}`} target="_blank" rel="noreferrer">Kohl&apos;s Kicking&apos;s {cls} long snapper ratings</a> and Rubio Long Snapping&apos;s lists. Kohl&apos;s order is shown until you add ratings. Special Teams University doesn&apos;t publish class lists.</small>}
+          : <small className="muted">From <a href={`https://www.kohlskicking.com/national-player-ratings/long-snappers/${cls}`} target="_blank" rel="noreferrer">Kohl&apos;s Kicking&apos;s {cls} long snapper ratings</a> and Rubio Long Snapping&apos;s lists. Special Teams University doesn&apos;t publish class lists.</small>}
           {missingHs > 0 && <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={juco ? addJucoPlayers : addHsPlayers}>Add {missingHs} from the lists</button>}
           <div className="tablewrap">
             <table id="hs-class-list">
-              <thead><tr>{canEdit && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>{juco ? "JUCO school" : "State"}</th>{!juco && <th>Kohl&apos;s</th>}<th className="num">Player rating</th><th className="num">Coaches rating</th><th>{juco ? "Notes" : "Recruiting"}</th></tr></thead>
+              <thead><tr>{canEdit && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>{juco ? "JUCO school" : "State"}</th>{!juco && <th>Kohl&apos;s</th>}<th>{juco ? "Notes" : "Recruiting"}</th></tr></thead>
               <tbody>
                 {shown.map((p, i) => (
                   <tr key={p.id}>
@@ -144,12 +144,10 @@ export default function ClassesPage() {
                         {[p.client && "My athlete", p.lists?.length && `On ${p.lists.join(" + ")}`].filter(Boolean).join(" · ")}</small>}</td>
                     <td>{juco ? p.jucoSchool : p.hsState || "—"}</td>
                     {!juco && <td>{p.kohlsRank != null ? `#${p.kohlsRank}` : p.lists?.includes("Kohl's") ? "Listed" : "—"}</td>}
-                    <td className="num"><b>{overall(p) ?? "—"}</b></td>
-                    <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
                     <td><small>{p.recruiting || "—"}</small></td>
                   </tr>
                 ))}
-                {!list.length && <tr><td colSpan={8} className="muted">Nobody here yet.</td></tr>}
+                {!list.length && <tr><td colSpan={6} className="muted">Nobody here yet.</td></tr>}
               </tbody>
             </table>
           </div>
@@ -162,7 +160,7 @@ export default function ClassesPage() {
         <small className="muted">Guessed from year in school (Senior 0, Junior 1, Sophomore 2, Freshman 3). Redshirts and extra years vary, so change it below when you know.</small>
         <div className="tablewrap">
           <table id="class-list">
-            <thead><tr>{canEdit && cls !== "unset" && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>School</th><th className="num">Player rating</th><th className="num">Coaches rating</th><th className="num">NIL now</th><th>Years left</th></tr></thead>
+            <thead><tr>{canEdit && cls !== "unset" && <th aria-label="Top 10" />}<th className="num">#</th><th>Player</th><th>School</th><th className="num">NIL now</th><th>Years left</th></tr></thead>
             <tbody>
               {shown.map((p, i) => (
                 <tr key={p.id}>
@@ -173,8 +171,6 @@ export default function ClassesPage() {
                     {(p.client || p.allAmerican || p.allConference || p.transfer) && <small className="muted" style={{ display: "block" }}>
                       {[p.client && "My athlete", p.allAmerican && "All-American", p.allConference && "All-Conf", p.transfer && `🔁 ${p.transfer}`].filter(Boolean).join(" · ")}</small>}</td>
                   <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.division, yearShort(p.year), p.depth].filter(Boolean).join(" · ")}</small></td>
-                  <td className="num"><b>{overall(p) ?? "—"}</b></td>
-                  <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
                   <td className="num">{nilNow(p) ? money(nilNow(p)) : "—"}</td>
                   <td>
                     <select aria-label={`Years left for ${p.name}`} disabled={!canEdit} value={yearsLeft(p) ?? ""}
@@ -185,7 +181,7 @@ export default function ClassesPage() {
                   </td>
                 </tr>
               ))}
-              {!list.length && <tr><td colSpan={8} className="muted">Nobody here yet.</td></tr>}
+              {!list.length && <tr><td colSpan={6} className="muted">Nobody here yet.</td></tr>}
             </tbody>
           </table>
         </div>
