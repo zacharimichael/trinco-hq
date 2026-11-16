@@ -51,7 +51,7 @@ export default function MovesPage() {
         <div className="tile2"><span className="big">{committed.length}</span>Committed</div>
       </div>
 
-      <div className="grid2 movesboard">
+      <div className="movesboard movesboard3">
         {/* 1. Snappers going to transfer */}
         <div className="card sec" id="transferring">
           <h2>1. Going to transfer</h2>
@@ -112,10 +112,10 @@ export default function MovesPage() {
             </details>
           )}
         </div>
-      </div>
 
-      {/* 3. Connections, sorted by school: each school a player said they'd like to go to, with those players under it */}
-      <BySchool pos={pos} conns={conns} committed={committed} />
+        {/* 3. Connections, sorted by school: each school a player said they'd like to go to, with those players under it */}
+        <BySchool pos={pos} conns={conns} committed={committed} />
+      </div>
 
       {moved.length > 0 && (
         <details className="card sec" id="moved">
@@ -167,9 +167,9 @@ function BySchool({ pos, conns, committed }: { pos: Pos; conns: Match[]; committ
   const shown = q.trim() ? groups.filter((g) => norm(g.name).includes(norm(q))) : groups;
 
   return (
-    <div className="card sec" id="connections">
+    <div className="card sec compact" id="connections">
       <h2>3. Connections by school</h2>
-      <small className="muted">Each school a {POS_LABEL[pos].toLowerCase()} is interested in, with their names under it. Add schools on a player&apos;s page under &ldquo;Schools they&apos;d like to go to&rdquo;.</small>
+      <small className="muted">Schools {POS_LABEL[pos].toLowerCase()}s are interested in. Add them on a player&apos;s page.</small>
       {groups.length > 0 && <>
         <input className="search" type="search" aria-label="Type a school" placeholder="Type a school, e.g. Syracuse" list="want-school-names"
           autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
@@ -184,29 +184,31 @@ function BySchool({ pos, conns, committed }: { pos: Pos; conns: Match[]; committ
           {g.players.map((p) => {
             const m = g.id ? conns.find((x) => x.player === p.id && x.school === g.id) : undefined;
             const here = !!g.id && committed.includes(p) && committedTo(p, schools) === g.id;
-            const stage = m?.stage === "Interested" ? "Interested" : "Connected";
+            const stage = here ? "Committed" : m?.stage === "Interested" ? "Interested" : m ? "Connected" : null;
             return (
               <div key={p.id} className="moverow">
-                <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name ?? (isHs(p) ? "High school" : null), yearShort(p.year), p.transfer].filter(Boolean).join(" · ")}</small>
-                  {here ? <> <span className="chip mine">Committed ✓</span></> : m && !canEdit ? <> <span className="chip">{stage}</span></> : null}</span>
-                {canEdit && g.id && (
+                <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{school(p.school)?.name ?? (isHs(p) ? "HS" : "")}</small></span>
+                {canEdit && g.id ? (
                   <span className="moveacts">
                     {here ? <>
-                      <button type="button" className="btn" onClick={() => edit((d) => finishMove(d, p.id, g.id!))}>He&apos;s moved</button>
-                      <button type="button" className="linkbtn" onClick={() => edit((d) => { const x = d.players.find((y) => y.id === p.id); if (x) { x.transferTo = null; x.transfer = "In the portal"; } })}>Undo</button>
+                      <span className="chip mine">Committed ✓</span>
+                      <button type="button" className="btn" onClick={() => edit((d) => finishMove(d, p.id, g.id!))}>Moved</button>
+                      <button type="button" className="linkbtn" aria-label={`Undo ${p.name}'s commit`} onClick={() => edit((d) => { const x = d.players.find((y) => y.id === p.id); if (x) { x.transferTo = null; x.transfer = "In the portal"; } })}>Undo</button>
                     </> : m ? <>
-                      <span className="seg"><span style={{ display: "inline-flex", gap: 6 }}>
-                        {(["Connected", "Interested"] as const).map((x) => (
-                          <button key={x} type="button" aria-pressed={stage === x} onClick={() => edit((d) => setStage(d, m.id, x))}>{x === "Interested" ? "⭐ Interested" : x}</button>
-                        ))}
-                      </span></span>
-                      <button type="button" className="btn" onClick={() => edit((d) => commit(d, p.id, g.id!, g.name))}>Committed ✓</button>
+                      <select aria-label={`How it's going with ${p.name} and ${g.name}`} value={stage!} onChange={(e) => {
+                        const v = e.target.value;
+                        edit((d) => v === "Committed" ? commit(d, p.id, g.id!, g.name) : setStage(d, m.id, v as Match["stage"]));
+                      }}>
+                        <option value="Connected">Connected</option>
+                        <option value="Interested">⭐ Interested</option>
+                        <option value="Committed">Committed ✓</option>
+                      </select>
                       <button type="button" className="linkbtn" aria-label={`Disconnect ${p.name} from ${g.name}`} onClick={() => edit((d) => unpair(d, m.id))}>✕</button>
                     </> : p.school !== g.id && !graduating(p) && (
                       <button type="button" className="btn ghost" onClick={() => edit((d) => pair(d, p.id, g.id!))}>+ Connect</button>
                     )}
                   </span>
-                )}
+                ) : stage && <span className="chip">{stage}</span>}
               </div>
             );
           })}
