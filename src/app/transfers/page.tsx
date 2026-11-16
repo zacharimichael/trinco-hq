@@ -133,6 +133,9 @@ export default function MovesPage() {
         {!conns.length && !committed.length && <p className="muted" style={{ margin: 0 }}>Connect a {word} from list 1 to a school in list 2.</p>}
       </div>
 
+      {/* 4. By school: every player who said they'd like to go there */}
+      <BySchool pos={pos} />
+
       {moved.length > 0 && (
         <details className="card sec" id="moved">
           <summary><b>Moved ({moved.length})</b></summary>
@@ -145,6 +148,60 @@ export default function MovesPage() {
         </details>
       )}
     </section>
+  );
+}
+
+/** Lower-case, single-spaced, so "Syracuse " and "syracuse" land in the same group. */
+const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+
+/**
+ * Schools players said they'd like to go to (Player.wantSchools, set on the player page or from a call),
+ * grouped by school. Type a school to pull up everyone interested in it.
+ */
+function BySchool({ pos }: { pos: Pos }) {
+  const { sc, schools, school } = useScouting();
+  const [q, setQ] = useState("");
+  const groups = useMemo(() => {
+    const known = new Map(schools.map((s) => [norm(s.name), s]));
+    const by = new Map<string, { name: string; id?: string; state?: string; players: Player[] }>();
+    for (const p of sc.players) {
+      if (!p.name || p.pos !== pos) continue;
+      for (const raw of p.wantSchools ?? []) {
+        const k = norm(raw);
+        if (!k) continue;
+        const s = known.get(k);
+        const g = by.get(k) ?? { name: s?.name ?? raw.trim(), id: s?.id, state: s?.state, players: [] };
+        if (!g.players.includes(p)) g.players.push(p);
+        by.set(k, g);
+      }
+    }
+    return [...by.values()].sort((a, b) => b.players.length - a.players.length || a.name.localeCompare(b.name));
+  }, [sc.players, schools, pos]);
+  const shown = q.trim() ? groups.filter((g) => norm(g.name).includes(norm(q))) : groups;
+
+  return (
+    <div className="card sec" id="by-school">
+      <h2>4. By school</h2>
+      <small className="muted">Every {POS_LABEL[pos].toLowerCase()} who said they&apos;d like to go to a school. Add schools on a player&apos;s page.</small>
+      <input className="search" type="search" aria-label="Type a school" placeholder="Type a school, e.g. Syracuse" list="want-school-names"
+        autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
+      <datalist id="want-school-names">{groups.map((g) => <option key={g.name} value={g.name} />)}</datalist>
+      {shown.map((g) => (
+        <div key={g.name} className="spot avail">
+          <div className="spothead">
+            {g.id ? <Link href={`/schools?s=${g.state}&school=${g.id}`}><b>{g.name}</b></Link> : <b>{g.name}</b>}
+            <span className="chip">{g.players.length} interested</span>
+          </div>
+          {g.players.map((p) => (
+            <div key={p.id} className="moverow">
+              <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name ?? (isHs(p) ? "High school" : null), yearShort(p.year), p.transfer].filter(Boolean).join(" · ")}</small></span>
+            </div>
+          ))}
+        </div>
+      ))}
+      {!groups.length && <p className="muted" style={{ margin: 0 }}>No player has named a school yet.</p>}
+      {groups.length > 0 && !shown.length && <p className="muted" style={{ margin: 0 }}>Nobody has said they want to go to &ldquo;{q.trim()}&rdquo;.</p>}
+    </div>
   );
 }
 
