@@ -36,6 +36,11 @@ The site is private: everything needs sign-in, and only emails listed in Supabas
 - **Film uploads:** run `supabase/migrations/0002_film.sql` once so phone videos save to private storage. In demo mode they last until refresh.
 
 - **Sign-in and database:** Supabase (schema is ready in `supabase/migrations`).
+- **Athlete payments (Stripe):** a signed athlete's profile has a Payments card. Pick what it's for, type the amount, tap "Make pay link", then copy the link and text or email it. When the profile opens, it asks Stripe which links were paid. Code: `src/components/Payments.tsx`, `src/app/api/pay/route.ts`. Setup:
+  1. In Stripe (dashboard.stripe.com), finish account activation (business details and bank account) so payouts can reach you.
+  2. Developers → API keys → Create restricted key. Give it **Write** on Payment Links, Products and Prices, and **Read** on Checkout Sessions. Everything else: None.
+  3. In Vercel → trinco-hq → Settings → Environment Variables, add `STRIPE_SECRET_KEY` with that key (Production and Preview), then redeploy.
+  4. Test first with a test-mode key (`rk_test_...`) and card 4242 4242 4242 4242, then swap in the live key.
 - **Billing:** Stripe monthly subscription per firm.
 - **Real sending:** state filing, payments to the state, athletic director emails, and athlete contract signing (built-in e-sign or DocuSign).
 - **Legal review:** state rule files have `attorney_reviewed: false` until a lawyer signs off.

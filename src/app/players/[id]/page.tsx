@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Num } from "@/components/Fields";
 import { LogCall } from "@/components/LogCall";
+import { Payments } from "@/components/Payments";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
@@ -69,6 +70,7 @@ export default function PlayerPage() {
           <SchoolList id="want" label="Schools they'd like to go to" value={p.wantSchools ?? []} onChange={(wantSchools) => set({ wantSchools })} />
         </div>
 
+        {(p.client || (p.payments?.length ?? 0) > 0) && <Payments p={p} />}
         <ToTalkBar p={p} />
         <LogCall p={p} key={p.id} />
         <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
