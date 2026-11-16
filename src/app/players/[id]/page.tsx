@@ -1,34 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Choice, ContactFields, Num } from "@/components/Fields";
+import { Num } from "@/components/Fields";
 import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  COACH_LABEL, coachSearchUrl, HS_CLASS_YEARS, hsClassText, SCHOOL_YEARS, money, nilTotal, NIL_YEARS, POS_SHORT, POSITIONS, yearsLeft, YEARS_LEFT,
-  type CoachRole, type Fact, type Film, type Player, type Talk,
+  money, nilTotal, NIL_YEARS, yearsLeft, YEARS_LEFT,
+  type CoachRole, type Fact, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
 import { lastTalk } from "@/lib/toTalk";
 import { useToTalk } from "@/lib/useToTalk";
 
-const ROLES: CoachRole[] = ["HC", "GM", "ST"];
-
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { sc, canEdit, school, staffOf, setStaff, setPlayer, removePlayer } = useScouting();
+  const { sc, canEdit, staffOf, setPlayer, removePlayer } = useScouting();
   const p = sc.players.find((x) => x.id === id);
   const hidden = useStore().state.scouting.players.find((x) => x.id === id);
   if (!p && hidden) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">Kickers and punters are hidden for now. This profile is still saved.</p></section>;
   if (!p) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">This player isn&apos;t here anymore.</p></section>;
 
   const set = (patch: Partial<Player>) => setPlayer(p.id, patch);
-  const sch = school(p.school);
   const staff = staffOf(p.school);
 
   // Leaving a brand-new profile without a name throws it away, so a mis-tap doesn't leave a blank player behind.
@@ -40,76 +37,23 @@ export default function PlayerPage() {
       <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="card sec">
           <input className="bigname" aria-label="Player name" placeholder="Player name" autoFocus={!p.name} value={p.name} onChange={(e) => set({ name: e.target.value })} />
-          {POSITIONS.length > 1 && <Choice label="Position" options={POSITIONS.map((x) => POS_SHORT[x])} value={POS_SHORT[p.pos]}
-            onChange={(v) => v && set({ pos: POSITIONS.find((x) => POS_SHORT[x] === v)! })} />}
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
-          {p.transfer && <span className="chip move">🔁 {p.transfer}</span>}
-          {p.hsClass != null && <span className="chip">{[hsClassText(p.hsClass), p.hsState, p.kohlsRank != null && `Kohl's #${p.kohlsRank}`].filter(Boolean).join(" · ")}</span>}
-          {p.jucoSchool && <span className="chip">JUCO · {p.jucoSchool}</span>}
-          {p.recruiting && <small className="muted">{p.recruiting}</small>}
-          {p.source && <small className="muted">From <a href={p.source.url} target="_blank" rel="noreferrer">{p.source.label}</a> ({new Date(`${p.source.date}T12:00`).toLocaleDateString([], { dateStyle: "medium" })})</small>}
         </div>
 
-        <ToTalkBar p={p} />
-
-        <LogCall p={p} key={p.id} />
-
         <div className="card sec">
-          <div className="formgrid">
-            <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
-            <div className="field">
-              <label htmlFor="hs-class">High school class</label>
-              <select id="hs-class" value={p.hsClass ?? ""} onChange={(e) => set({ hsClass: e.target.value === "" ? null : Number(e.target.value) })}>
-                <option value="">In college</option>
-                {HS_CLASS_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="juco">JUCO school (junior college)</label>
-              <input id="juco" placeholder="Only if at a JUCO" value={p.jucoSchool ?? ""} onChange={(e) => set({ jucoSchool: e.target.value || null })} />
-            </div>
-            <div className="field">
-              <label htmlFor="year">Year</label>
-              <select id="year" value={p.year ?? ""} onChange={(e) => set({ year: (e.target.value || null) as Player["year"] })}>
-                <option value="">Pick a year</option>
-                {SCHOOL_YEARS.map((y) => <option key={y}>{y}</option>)}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="years-left">Years left after this season</label>
-              <select id="years-left" value={yearsLeft(p) ?? ""} onChange={(e) => set({ yearsLeft: e.target.value === "" ? null : Number(e.target.value) })}>
-                <option value="">Not sure</option>
-                {YEARS_LEFT.map((n) => <option key={n} value={n}>{n}{p.yearsLeft == null && yearsLeft(p) === n ? " (from year)" : ""}</option>)}
-              </select>
-            </div>
-          </div>
-          <PriorSchools value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
-          <div className="formgrid">
-            <div className="field">
-              <label>Height</label>
-              <div className="pair">
-                <div className="prefixed"><input aria-label="Feet" type="number" min={4} max={7} value={p.height ? Math.floor(p.height / 12) : ""}
-                  onChange={(e) => set({ height: e.target.value === "" ? null : Number(e.target.value) * 12 + ((p.height ?? 0) % 12) })} /><span>ft</span></div>
-                <div className="prefixed"><input aria-label="Inches" type="number" min={0} max={11} value={p.height ? p.height % 12 : ""}
-                  onChange={(e) => set({ height: Math.floor((p.height ?? 72) / 12) * 12 + Math.min(11, Number(e.target.value) || 0) })} /><span>in</span></div>
-              </div>
-            </div>
-            <Num label="Weight (lbs)" value={p.weight} onChange={(weight) => set({ weight })} />
+          <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
+          <SchoolList id="prior" label="Schools before this one" value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
+          <div className="field">
+            <label htmlFor="years-left">Years of eligibility left after this season</label>
+            <select id="years-left" value={yearsLeft(p) ?? ""} onChange={(e) => set({ yearsLeft: e.target.value === "" ? null : Number(e.target.value) })}>
+              <option value="">Not sure</option>
+              {YEARS_LEFT.map((n) => <option key={n} value={n}>{n}{p.yearsLeft == null && yearsLeft(p) === n ? " (from year)" : ""}</option>)}
+            </select>
           </div>
         </div>
 
         <div className="card sec">
-          <h2>Depth chart</h2>
-          <Choice label="Role" options={["Starter", "Backup"] as const} value={p.depth} onChange={(depth) => set({ depth })} />
-          <div className="checks">
-            <label className="agree"><input type="checkbox" checked={p.allAmerican} onChange={(e) => set({ allAmerican: e.target.checked })} /> All-American</label>
-            <label className="agree"><input type="checkbox" checked={p.allConference} onChange={(e) => set({ allConference: e.target.checked })} /> All-Conference</label>
-          </div>
-          <TransferField value={p.transfer ?? null} onChange={(transfer) => set(transfer ? { transfer } : { transfer, transferTo: null })} />
-        </div>
-
-        <div className="card sec">
-          <h2>NIL earnings</h2>
+          <h2>NIL money</h2>
           <div className="nilyears">
             {Array.from({ length: NIL_YEARS }, (_, i) => (
               <Num key={i} label={`Year ${i + 1}`} prefix="$" value={p.nil[i]}
@@ -119,33 +63,16 @@ export default function PlayerPage() {
           <div className="lines"><div className="total"><span>Earned so far</span><span>{money(nilTotal(p))}</span></div></div>
         </div>
 
-        <Facts facts={p.facts ?? []} onChange={(facts) => set({ facts })} />
-        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
-      </fieldset>
-      {/* Outside the locked fields: people the owner shared with can add film too. */}
-      <FilmBox p={p} canEdit={canEdit} onChange={(film) => set({ film })} />
-      <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
-        <details className="card fold">
-          <summary><h2>{sch ? `${sch.name} coaches` : "School coaches"}</h2>{staff.decider && <span className="chip">Decision maker: {COACH_LABEL[staff.decider]}</span>}</summary>
-          <div className="sec">
-          {!sch ? <p className="muted" style={{ margin: 0 }}>Pick a school above first.</p> : (<>
-            <p className="muted" style={{ margin: 0 }}>Shared with every player at {sch.name}.</p>
-            {ROLES.map((r) => (
-              <div key={r} className={`coach ${staff.decider === r ? "decider" : ""}`}>
-                <div className="coachhead">
-                  <h3>{COACH_LABEL[r]}</h3>
-                  {staff.decider === r && <span className="badge go">Decision maker</span>}
-                  {!staff[r].name.trim() && <a className="linkbtn" href={coachSearchUrl(sch.name, r)} target="_blank" rel="noreferrer">Search for them</a>}
-                </div>
-                <ContactFields value={staff[r]} onChange={(c) => setStaff(p.school, { ...staff, [r]: c })} />
-              </div>
-            ))}
-            <Choice label="Who makes the decision?" options={ROLES.map((r) => COACH_LABEL[r])} value={staff.decider ? COACH_LABEL[staff.decider] : null}
-              onChange={(v) => setStaff(p.school, { ...staff, decider: ROLES.find((r) => COACH_LABEL[r] === v) ?? null })} />
-          </>)}
-          </div>
-        </details>
+        <div className="card sec" id="transfer">
+          <h2>Schools interested in transferring to</h2>
+          <TransferField value={p.transfer ?? null} onChange={(transfer) => set(transfer ? { transfer } : { transfer, transferTo: null })} />
+          <SchoolList id="want" label="Schools they'd like to go to" value={p.wantSchools ?? []} onChange={(wantSchools) => set({ wantSchools })} />
+        </div>
 
+        <ToTalkBar p={p} />
+        <LogCall p={p} key={p.id} />
+        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
+        <Facts facts={p.facts ?? []} onChange={(facts) => set({ facts })} />
       </fieldset>
 
       <div className="donebar">
@@ -156,17 +83,18 @@ export default function PlayerPage() {
   );
 }
 
-function PriorSchools({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+/** A list of school names: type one, tap Add. Used for past schools and schools a player wants to transfer to. */
+function SchoolList({ id, label, value, onChange }: { id: string; label: string; value: string[]; onChange: (v: string[]) => void }) {
   const [next, setNext] = useState("");
-  const add = () => { if (next.trim()) { onChange([...value, next.trim()]); setNext(""); } };
+  const add = () => { const v = next.trim(); if (v && !value.includes(v)) onChange([...value, v]); setNext(""); };
   return (
     <div className="field">
-      <label htmlFor="prior">Schools before this one</label>
+      <label htmlFor={id}>{label}</label>
       {value.length > 0 && <div className="dots">{value.map((s, i) => (
         <span key={i} className="chip">{s} <button type="button" className="linkbtn" aria-label={`Remove ${s}`} onClick={() => onChange(value.filter((_, j) => j !== i))}>✕</button></span>
       ))}</div>}
       <div className="pair">
-        <input id="prior" list="school-names" value={next} placeholder="Type a school" onChange={(e) => setNext(e.target.value)}
+        <input id={id} list="school-names" value={next} placeholder="Type a school" onChange={(e) => setNext(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }} />
         <button type="button" className="btn ghost" onClick={add}>Add</button>
       </div>
@@ -235,76 +163,5 @@ function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => v
       ))}
       </div>
     </details>
-  );
-}
-
-function FilmBox({ p, canEdit, onChange }: { p: Player; canEdit: boolean; onChange: (f: Film[]) => void }) {
-  const { state, uploadFilm, mode, addSharedFilm, removeSharedFilm } = useStore();
-  const viewer = state.me?.role === "viewer";
-  const shared = (state.sharedFilm ?? []).filter((f) => f.player === p.id);
-  const count = p.film.length + shared.length;
-  // The owner edits the player's own film list; someone they shared with adds to a separate list.
-  const add = async (f: Film) => {
-    if (!viewer) return onChange([...p.film, f]);
-    const err = await addSharedFilm(p.id, f);
-    if (err) setError(err);
-  };
-  const [link, setLink] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const addLink = () => {
-    const url = link.trim();
-    if (!/^https?:\/\//i.test(url)) return setError("Paste a full link that starts with https://");
-    const kind: Film["kind"] = /hudl\.com/i.test(url) ? "Hudl" : /onform/i.test(url) ? "OnForm" : "Link";
-    setLink(""); setError("");
-    void add({ kind, url });
-  };
-  const upload = async (file: File | undefined) => {
-    if (!file) return;
-    setBusy(true); setError("");
-    const r = await uploadFilm(p.id, file);
-    setBusy(false);
-    if (typeof r === "string") setError(r); else await add(r);
-  };
-  return (
-    <details className="card fold">
-      <summary><h2>Film</h2><span className="chip">{count} {count === 1 ? "clip" : "clips"}</span></summary>
-      <div className="sec">
-      {(canEdit || viewer) && (<>
-      <div className="pair">
-        <input aria-label="Hudl or OnForm link" value={link} placeholder="Paste a Hudl or OnForm link" onChange={(e) => setLink(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLink(); } }} />
-        <button type="button" className="btn ghost" onClick={addLink}>Add link</button>
-      </div>
-      <label className="btn ghost filepick">
-        {busy ? "Uploading…" : "Upload video from phone"}
-        <input type="file" accept="video/*" hidden disabled={busy} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} />
-      </label>
-      </>)}
-      {mode === "demo" && <small className="muted">Demo: uploaded videos only last until you refresh.</small>}
-      {error && <p style={{ margin: 0, color: "var(--stop)" }}>{error}</p>}
-      {p.film.map((f, i) => <FilmItem key={i} f={f} onRemove={canEdit ? () => onChange(p.film.filter((_, j) => j !== i)) : undefined} />)}
-      {shared.map((x) => <FilmItem key={x.id} f={x.film} by={x.by} onRemove={canEdit ? () => void removeSharedFilm(x.id).then((e) => e && setError(e)) : undefined} />)}
-      </div>
-    </details>
-  );
-}
-
-function FilmItem({ f, by, onRemove }: { f: Film; by?: string; onRemove?: () => void }) {
-  const { filmUrl } = useStore();
-  const [src, setSrc] = useState(f.path ? "" : f.url);
-  // Signed links expire, so fetch one when the clip is shown.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { if (f.path) void filmUrl(f).then(setSrc); }, [f.path]);
-  return (
-    <div className="film">
-      <div className="coachhead">
-        <b>{f.kind === "Video" ? f.name ?? "Video" : f.kind}{by && <small className="muted"> · added by {by}</small>}</b>
-        {onRemove && <button type="button" className="linkbtn" onClick={onRemove}>Remove</button>}
-      </div>
-      {f.kind === "Video"
-        ? (src ? <video src={src} controls playsInline preload="metadata" /> : <span className="muted">Loading…</span>)
-        : <a href={f.url} target="_blank" rel="noreferrer" className="filmlink">{f.url}</a>}
-    </div>
   );
 }

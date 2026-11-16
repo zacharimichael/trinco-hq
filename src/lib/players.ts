@@ -154,6 +154,8 @@ export interface Player {
   transfer?: string | null;
   /** School id they've committed to. Set from the Moves board; cleared once they've moved. */
   transferTo?: string | null;
+  /** Schools the player is interested in transferring to, as typed (school names). */
+  wantSchools?: string[];
   /** Years of eligibility left after this season (0-4), when typed. Otherwise guessed from year in school; see yearsLeft(). */
   yearsLeft?: number | null;
 
