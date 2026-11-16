@@ -340,6 +340,17 @@ textarea{font:inherit;color:var(--ink)}
 .addrow2{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px}
 .addrow2>input,.addrow2>.field{flex:1 1 200px;min-width:0}
 .movesboard .moveacts select{max-width:100%}
+/* Match Maker: lists 1, 2 and 3 side by side on wide screens */
+.movesboard3{display:grid;gap:20px;align-items:start}
+@media (min-width:1000px){
+  .movesboard3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .wrap:has(.movesboard3){max-width:1400px}
+}
+.compact .spot{padding:8px 10px;gap:2px}
+.compact .moverow{padding:4px 0;gap:4px 8px;font-size:15px}
+.compact .moveacts{gap:6px}
+.compact .moveacts .btn{padding:4px 10px;font-size:13px}
+.compact .moveacts select{font:inherit;font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 6px}
 .topten{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .topten li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
 .topten li:first-child{border-top:0}
