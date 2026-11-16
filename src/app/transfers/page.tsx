@@ -114,27 +114,8 @@ export default function MovesPage() {
         </div>
       </div>
 
-      {/* 3. Connections */}
-      <div className="card sec" id="connections">
-        <h2>3. Connections</h2>
-        {conns.map((m) => <ConnRow key={m.id} m={m} />)}
-        {committed.map((p) => {
-          const to = committedTo(p, schools)!;
-          return (
-            <div key={p.id} className="moverow">
-              <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <span className="muted">{nameOf(p.school)} →</span> <b>{nameOf(to)}</b> <span className="chip mine">Committed ✓</span></span>
-              {canEdit && <span className="moveacts">
-                <button type="button" className="btn" onClick={() => edit((d) => finishMove(d, p.id, to))}>He&apos;s moved</button>
-                <button type="button" className="linkbtn" onClick={() => edit((d) => { const x = d.players.find((y) => y.id === p.id); if (x) { x.transferTo = null; x.transfer = "In the portal"; } })}>Undo</button>
-              </span>}
-            </div>
-          );
-        })}
-        {!conns.length && !committed.length && <p className="muted" style={{ margin: 0 }}>Connect a {word} from list 1 to a school in list 2.</p>}
-      </div>
-
-      {/* 4. By school: every player who said they'd like to go there */}
-      <BySchool pos={pos} />
+      {/* 3. Connections, sorted by school: each school a player said they'd like to go to, with those players under it */}
+      <BySchool pos={pos} conns={conns} committed={committed} />
 
       {moved.length > 0 && (
         <details className="card sec" id="moved">
@@ -155,77 +136,84 @@ export default function MovesPage() {
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
 
 /**
- * Schools players said they'd like to go to (Player.wantSchools, set on the player page or from a call),
- * grouped by school. Type a school to pull up everyone interested in it.
+ * Section 3, sorted by school. A school is listed only when a player is interested in it:
+ * named it in "Schools they'd like to go to" (Player.wantSchools), was connected to it, or committed there.
+ * Each player row carries the connection controls (Connect, Interested, Committed, He's moved).
+ * Type a school to pull up just that school.
  */
-function BySchool({ pos }: { pos: Pos }) {
-  const { sc, schools, school } = useScouting();
+function BySchool({ pos, conns, committed }: { pos: Pos; conns: Match[]; committed: Player[] }) {
+  const { sc, schools, school, canEdit, edit } = useScouting();
   const [q, setQ] = useState("");
   const groups = useMemo(() => {
     const known = new Map(schools.map((s) => [norm(s.name), s]));
     const by = new Map<string, { name: string; id?: string; state?: string; players: Player[] }>();
+    const add = (p: Player | undefined, raw: string) => {
+      const k = norm(raw);
+      if (!p || !k) return;
+      const s = known.get(k);
+      const g = by.get(k) ?? { name: s?.name ?? raw.trim(), id: s?.id, state: s?.state, players: [] };
+      if (!g.players.includes(p)) g.players.push(p);
+      by.set(k, g);
+    };
     for (const p of sc.players) {
       if (!p.name || p.pos !== pos) continue;
-      for (const raw of p.wantSchools ?? []) {
-        const k = norm(raw);
-        if (!k) continue;
-        const s = known.get(k);
-        const g = by.get(k) ?? { name: s?.name ?? raw.trim(), id: s?.id, state: s?.state, players: [] };
-        if (!g.players.includes(p)) g.players.push(p);
-        by.set(k, g);
-      }
+      for (const raw of p.wantSchools ?? []) add(p, raw);
     }
+    for (const m of conns) add(sc.players.find((x) => x.id === m.player), school(m.school)?.name ?? "");
+    for (const p of committed) add(p, school(committedTo(p, schools) ?? "")?.name ?? "");
+    for (const g of by.values()) g.players.sort((a, b) => a.name.localeCompare(b.name));
     return [...by.values()].sort((a, b) => b.players.length - a.players.length || a.name.localeCompare(b.name));
-  }, [sc.players, schools, pos]);
+  }, [sc.players, schools, school, pos, conns, committed]);
   const shown = q.trim() ? groups.filter((g) => norm(g.name).includes(norm(q))) : groups;
 
   return (
-    <div className="card sec" id="by-school">
-      <h2>4. By school</h2>
-      <small className="muted">Every {POS_LABEL[pos].toLowerCase()} who said they&apos;d like to go to a school. Add schools on a player&apos;s page.</small>
-      <input className="search" type="search" aria-label="Type a school" placeholder="Type a school, e.g. Syracuse" list="want-school-names"
-        autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
-      <datalist id="want-school-names">{groups.map((g) => <option key={g.name} value={g.name} />)}</datalist>
+    <div className="card sec" id="connections">
+      <h2>3. Connections by school</h2>
+      <small className="muted">Each school a {POS_LABEL[pos].toLowerCase()} is interested in, with their names under it. Add schools on a player&apos;s page under &ldquo;Schools they&apos;d like to go to&rdquo;.</small>
+      {groups.length > 0 && <>
+        <input className="search" type="search" aria-label="Type a school" placeholder="Type a school, e.g. Syracuse" list="want-school-names"
+          autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
+        <datalist id="want-school-names">{groups.map((g) => <option key={g.name} value={g.name} />)}</datalist>
+      </>}
       {shown.map((g) => (
         <div key={g.name} className="spot avail">
           <div className="spothead">
             {g.id ? <Link href={`/schools?s=${g.state}&school=${g.id}`}><b>{g.name}</b></Link> : <b>{g.name}</b>}
             <span className="chip">{g.players.length} interested</span>
           </div>
-          {g.players.map((p) => (
-            <div key={p.id} className="moverow">
-              <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name ?? (isHs(p) ? "High school" : null), yearShort(p.year), p.transfer].filter(Boolean).join(" · ")}</small></span>
-            </div>
-          ))}
+          {g.players.map((p) => {
+            const m = g.id ? conns.find((x) => x.player === p.id && x.school === g.id) : undefined;
+            const here = !!g.id && committed.includes(p) && committedTo(p, schools) === g.id;
+            const stage = m?.stage === "Interested" ? "Interested" : "Connected";
+            return (
+              <div key={p.id} className="moverow">
+                <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{[school(p.school)?.name ?? (isHs(p) ? "High school" : null), yearShort(p.year), p.transfer].filter(Boolean).join(" · ")}</small>
+                  {here ? <> <span className="chip mine">Committed ✓</span></> : m && !canEdit ? <> <span className="chip">{stage}</span></> : null}</span>
+                {canEdit && g.id && (
+                  <span className="moveacts">
+                    {here ? <>
+                      <button type="button" className="btn" onClick={() => edit((d) => finishMove(d, p.id, g.id!))}>He&apos;s moved</button>
+                      <button type="button" className="linkbtn" onClick={() => edit((d) => { const x = d.players.find((y) => y.id === p.id); if (x) { x.transferTo = null; x.transfer = "In the portal"; } })}>Undo</button>
+                    </> : m ? <>
+                      <span className="seg"><span style={{ display: "inline-flex", gap: 6 }}>
+                        {(["Connected", "Interested"] as const).map((x) => (
+                          <button key={x} type="button" aria-pressed={stage === x} onClick={() => edit((d) => setStage(d, m.id, x))}>{x === "Interested" ? "⭐ Interested" : x}</button>
+                        ))}
+                      </span></span>
+                      <button type="button" className="btn" onClick={() => edit((d) => commit(d, p.id, g.id!, g.name))}>Committed ✓</button>
+                      <button type="button" className="linkbtn" aria-label={`Disconnect ${p.name} from ${g.name}`} onClick={() => edit((d) => unpair(d, m.id))}>✕</button>
+                    </> : p.school !== g.id && !graduating(p) && (
+                      <button type="button" className="btn ghost" onClick={() => edit((d) => pair(d, p.id, g.id!))}>+ Connect</button>
+                    )}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
       ))}
-      {!groups.length && <p className="muted" style={{ margin: 0 }}>No player has named a school yet.</p>}
-      {groups.length > 0 && !shown.length && <p className="muted" style={{ margin: 0 }}>Nobody has said they want to go to &ldquo;{q.trim()}&rdquo;.</p>}
-    </div>
-  );
-}
-
-/** One connection: player → school, how it's going, and Committed. */
-function ConnRow({ m }: { m: Match }) {
-  const { sc, school, canEdit, edit } = useScouting();
-  const p = sc.players.find((x) => x.id === m.player);
-  const s = school(m.school);
-  if (!p || !s) return null;
-  const stage = m.stage === "Interested" ? "Interested" : "Connected";
-  return (
-    <div className="moverow">
-      <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <span className="muted">{school(p.school)?.name ?? "—"} →</span> <b>{s.name}</b></span>
-      {canEdit ? (
-        <span className="moveacts">
-          <span className="seg"><span style={{ display: "inline-flex", gap: 6 }}>
-            {(["Connected", "Interested"] as const).map((x) => (
-              <button key={x} type="button" aria-pressed={stage === x} onClick={() => edit((d) => setStage(d, m.id, x))}>{x === "Interested" ? "⭐ Interested" : x}</button>
-            ))}
-          </span></span>
-          <button type="button" className="btn" onClick={() => edit((d) => commit(d, p.id, s.id, s.name))}>Committed ✓</button>
-          <button type="button" className="linkbtn" aria-label={`Disconnect ${p.name} from ${s.name}`} onClick={() => edit((d) => unpair(d, m.id))}>✕</button>
-        </span>
-      ) : <span className="chip">{stage}</span>}
+      {!groups.length && <p className="muted" style={{ margin: 0 }}>No {POS_LABEL[pos].toLowerCase()} has named a school yet.</p>}
+      {groups.length > 0 && !shown.length && <p className="muted" style={{ margin: 0 }}>Nobody is interested in &ldquo;{q.trim()}&rdquo; yet.</p>}
     </div>
   );
 }
