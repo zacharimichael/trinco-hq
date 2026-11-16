@@ -10,9 +10,11 @@ import { useStore } from "@/lib/store";
 
 const ROLES = ["HC", "ST", "GM", "Other"] as const;
 const roleName = (r: CoachContact["role"]) => (r === "Other" ? "Other" : COACH_LABEL[r]);
-const blankCoach = { name: "", school: "", role: "HC" as CoachContact["role"], email: "", phone: "", notes: "" };
+const blankCoach = { name: "", school: "", role: "HC" as CoachContact["role"], email: "", phone: "", x: "", notes: "" };
+/** Turns "@coach", "coach" or an x.com / twitter.com link into just "coach". */
+const xHandle = (v: string) => v.trim().replace(/^(https?:\/\/)?(www\.)?(x|twitter)\.com\//i, "").replace(/^@/, "").split(/[/?#\s]/)[0];
 
-/** The coaches you work with: name, school, role, email, cell and a note. Picking a school fills in the coach we already know. */
+/** The coaches you work with: name, school, role, email, cell, X and a note. Picking a school fills in the coach we already know. */
 export function CoachList() {
   const { state, update } = useStore();
   const { schools, staffOf } = useScouting();
@@ -39,7 +41,7 @@ export function CoachList() {
   };
   const save = () => {
     const sch = findSchool(form.school);
-    const c = { name: form.name.trim(), school: sch?.name ?? form.school.trim(), schoolId: sch?.id, role: form.role, email: form.email.trim(), phone: form.phone.trim(), notes: form.notes.trim() };
+    const c = { name: form.name.trim(), school: sch?.name ?? form.school.trim(), schoolId: sch?.id, role: form.role, email: form.email.trim(), phone: form.phone.trim(), x: xHandle(form.x), notes: form.notes.trim() };
     if (!c.name) return setMsg("Type their name first.");
     update((d) => {
       d.coaches ??= [];
@@ -51,7 +53,7 @@ export function CoachList() {
     setForm(blankCoach);
     setEditing(null);
   };
-  const edit = (c: CoachContact) => { setForm({ name: c.name, school: c.school, role: c.role, email: c.email, phone: c.phone, notes: c.notes }); setEditing(c.id); setMsg(""); note.clear(); };
+  const edit = (c: CoachContact) => { setForm({ name: c.name, school: c.school, role: c.role, email: c.email, phone: c.phone, x: c.x ? `@${c.x}` : "", notes: c.notes }); setEditing(c.id); setMsg(""); note.clear(); };
   const remove = (c: CoachContact) => {
     if (!confirm(`Remove ${c.name}?`)) return;
     update((d) => { d.coaches = (d.coaches ?? []).filter((x) => x.id !== c.id); });
@@ -69,6 +71,7 @@ export function CoachList() {
         <div className="field"><label htmlFor="co-name">Name</label><input id="co-name" value={form.name} onChange={change("name")} /></div>
         <div className="field"><label htmlFor="co-email">Email</label><input id="co-email" type="email" value={form.email} onChange={change("email")} /></div>
         <div className="field"><label htmlFor="co-phone">Cell phone</label><input id="co-phone" type="tel" value={form.phone} onChange={change("phone")} /></div>
+        <div className="field"><label htmlFor="co-x">X (Twitter)</label><input id="co-x" placeholder="@handle or x.com link" value={form.x} onChange={change("x")} /></div>
         <div className="field"><label htmlFor="co-notes">Notes</label><input id="co-notes" placeholder="How we know them, what they need" value={form.notes} onChange={change("notes")} /></div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <button className="btn" id="co-save" type="submit">{editing ? "Save changes" : "+ Add coach"}</button>
@@ -79,7 +82,7 @@ export function CoachList() {
       {msg ? <p role="status" style={{ margin: 0 }}>{msg}</p> : note.view}
       {list.length > 0 ? (
         <div className="tablewrap"><table>
-          <thead><tr><th>Name</th><th>School</th><th>Role</th><th>Email</th><th>Cell</th><th>Notes</th><th /></tr></thead>
+          <thead><tr><th>Name</th><th>School</th><th>Role</th><th>Email</th><th>Cell</th><th>X</th><th>Notes</th><th /></tr></thead>
           <tbody>{list.map((c) => {
             const sch = schoolOf(c);
             return (
@@ -89,6 +92,7 @@ export function CoachList() {
                 <td>{roleName(c.role)}</td>
                 <td>{c.email ? <a href={`mailto:${c.email}`}>{c.email}</a> : <span className="muted">None</span>}</td>
                 <td>{c.phone ? <a href={`tel:${c.phone.replace(/[^\d+]/g, "")}`}>{c.phone}</a> : <span className="muted">None</span>}</td>
+                <td>{c.x ? <a href={`https://x.com/${c.x}`} target="_blank" rel="noopener noreferrer">@{c.x}</a> : <span className="muted">None</span>}</td>
                 <td>{c.notes || <span className="muted">None</span>}</td>
                 <td style={{ whiteSpace: "nowrap" }}>
                   <button type="button" className="linkbtn" onClick={() => edit(c)}>Edit</button>{" "}

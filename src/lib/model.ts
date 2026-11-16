@@ -127,4 +127,4 @@ export interface AppState {
 export interface AgentContact { id: string; name: string; email: string; phone: string; pay: string }
 
 /** A coach you work with. schoolId links to the School map when the school is on our list. */
-export interface CoachContact { id: string; name: string; school: string; schoolId?: string; role: "HC" | "GM" | "ST" | "Other"; email: string; phone: string; notes: string }
+export interface CoachContact { id: string; name: string; school: string; schoolId?: string; role: "HC" | "GM" | "ST" | "Other"; email: string; phone: string; notes: string; /** X (Twitter) handle, saved without the @. */ x?: string }
