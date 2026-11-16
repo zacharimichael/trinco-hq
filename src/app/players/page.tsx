@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { heightText, money, coachRating, yearShort, nilNow, overall, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
+import { heightText, money, yearShort, nilNow, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 import { talkedTo } from "@/lib/toTalk";
@@ -25,12 +25,10 @@ export default function PlayersPage() {
   }, []);
   const toTalk = useToTalk();
 
-  const { sort, by, apply } = useSort<"name" | "pos" | "school" | "rating" | "coach" | "nil", (typeof sc.players)[number]>({ key: "rating", desc: true }, {
+  const { sort, by, apply } = useSort<"name" | "pos" | "school" | "nil", (typeof sc.players)[number]>({ key: "name", desc: false }, {
     name: (p) => p.name.toLowerCase(),
     pos: (p) => POS_SHORT[p.pos],
     school: (p) => school(p.school)?.name ?? "",
-    rating: overall,
-    coach: coachRating,
     nil: nilNow,
   });
   const list = apply(sc.players
@@ -38,7 +36,7 @@ export default function PlayersPage() {
     .filter((p) => !conf || school(p.school)?.conference === conf)
     .filter((p) => !talk || (talk === "never" ? p.name && !talkedTo(p) : toTalk.onList(p.id)))
     .filter((p) => !q || `${p.name} ${school(p.school)?.name ?? ""}`.toLowerCase().includes(q.toLowerCase())));
-  const toggle = (id: string) => setPick((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id].slice(-4)));
+  const toggle = (id: string) => setPick((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
 
   return (
     <section className="view">
@@ -77,7 +75,7 @@ export default function PlayersPage() {
           </select>
           <input className="search" aria-label="Search players" placeholder="Search name or school" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
-        <p className="muted" style={{ margin: 0, fontSize: 14 }}>Tick up to 4 players to compare them.</p>
+        <p className="muted" style={{ margin: 0, fontSize: 14 }}>Tick players to add them to your to-talk list.</p>
         {talk === "never" && list.some((p) => !toTalk.onList(p.id)) && (
           <button className="btn" type="button" id="add-all-to-talk" style={{ alignSelf: "flex-start" }} onClick={() => {
             const add = list.filter((p) => !toTalk.onList(p.id));
@@ -87,11 +85,11 @@ export default function PlayersPage() {
         )}
         <div className="tablewrap">
           <table>
-            <thead><tr><th aria-label="Compare" /><SortTh k="name" label="Player" sort={sort} by={by} /><SortTh k="pos" label="Pos" sort={sort} by={by} /><SortTh k="school" label="School" sort={sort} by={by} /><SortTh k="rating" label="Player rating" num sort={sort} by={by} /><SortTh k="coach" label="Coaches rating" num sort={sort} by={by} /><th>Ht / Wt</th><SortTh k="nil" label="NIL now" num sort={sort} by={by} /></tr></thead>
+            <thead><tr><th aria-label="Pick" /><SortTh k="name" label="Player" sort={sort} by={by} /><SortTh k="pos" label="Pos" sort={sort} by={by} /><SortTh k="school" label="School" sort={sort} by={by} /><th>Ht / Wt</th><SortTh k="nil" label="NIL now" num sort={sort} by={by} /></tr></thead>
             <tbody>
               {list.map((p) => (
                 <tr key={p.id}>
-                  <td><input type="checkbox" className="tick" aria-label={`Compare ${p.name}`} checked={pick.includes(p.id)} onChange={() => toggle(p.id)} /></td>
+                  <td><input type="checkbox" className="tick" aria-label={`Pick ${p.name}`} checked={pick.includes(p.id)} onChange={() => toggle(p.id)} /></td>
                   <td><Link href={`/players/${p.id}`}><b>{p.name || "New player"}</b></Link>
                     <div className="dots" style={{ marginTop: 4 }}>
                       {p.client && <span className="chip mine">My athlete</span>}
@@ -102,13 +100,11 @@ export default function PlayersPage() {
                     </div></td>
                   <td>{POS_SHORT[p.pos]}</td>
                   <td>{school(p.school)?.name ?? "—"}<br /><small className="muted">{[school(p.school)?.conference, yearShort(p.year), p.depth].filter(Boolean).join(" · ")}</small></td>
-                  <td className="num"><b>{overall(p) ?? "—"}</b></td>
-                  <td className="num"><b>{coachRating(p) ?? "—"}</b></td>
                   <td>{heightText(p.height)} / {p.weight ?? "—"}</td>
                   <td className="num">{money(nilNow(p))}</td>
                 </tr>
               ))}
-              {!list.length && <tr><td colSpan={7} className="muted">No players yet. Add one above.</td></tr>}
+              {!list.length && <tr><td colSpan={6} className="muted">No players yet. Add one above.</td></tr>}
             </tbody>
           </table>
         </div>
@@ -118,8 +114,7 @@ export default function PlayersPage() {
         <div className="stickybar">
           <span><b>{pick.length}</b> picked</span>
           <button className="linkbtn" type="button" onClick={() => setPick([])}>Clear</button>
-          <button className="btn ghost" type="button" onClick={() => { toTalk.add(sc.players.filter((p) => pick.includes(p.id))); setPick([]); }}>+ To talk to</button>
-          <Link className="btn" id="compare-go" href={`/compare?ids=${pick.join(",")}`}>Compare</Link>
+          <button className="btn" type="button" onClick={() => { toTalk.add(sc.players.filter((p) => pick.includes(p.id))); setPick([]); }}>+ To talk to</button>
         </div>
       )}
     </section>

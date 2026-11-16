@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Choice, ContactFields } from "@/components/Fields";
 import type { School } from "@/data/schools";
-import { COACH_LABEL, coachSearchUrl, money, ratingsText, nilNow, overall, POS_LABEL, positionsFor, yearShort, type CoachRole, type Player, type Pos } from "@/lib/players";
+import { COACH_LABEL, coachSearchUrl, money, ratingsText, nilNow, POS_LABEL, positionsFor, yearShort, type CoachRole, type Player, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 
 const ROLES: CoachRole[] = ["HC", "GM", "ST"];
 
-/** Starters first, then backups, then everyone else; best rating first inside each. */
+/** Starters first, then backups, then everyone else; highest NIL first inside each. */
 export const depthOrder = (a: Player, b: Player) => {
   const r = (p: Player) => (p.depth === "Starter" ? 0 : p.depth === "Backup" ? 1 : 2);
-  return r(a) - r(b) || (overall(b) ?? 0) - (overall(a) ?? 0);
+  return r(a) - r(b) || nilNow(b) - nilNow(a);
 };
 
 /** One school's LS, K and P depth chart plus its head coach, GM and special teams coach. */

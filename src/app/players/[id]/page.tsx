@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Choice, ContactFields, Num, Rating, SnapTime, YesNo } from "@/components/Fields";
+import { Choice, ContactFields, Num } from "@/components/Fields";
 import { LogCall } from "@/components/LogCall";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  COACH_LABEL, coachSearchUrl, HS_CLASS_YEARS, hsClassText, SCHOOL_YEARS, kicks, money, nilTotal, NIL_YEARS, POS_LABEL, POS_SHORT, POSITIONS, punts, yearsLeft, YEARS_LEFT,
+  COACH_LABEL, coachSearchUrl, HS_CLASS_YEARS, hsClassText, SCHOOL_YEARS, money, nilTotal, NIL_YEARS, POS_SHORT, POSITIONS, yearsLeft, YEARS_LEFT,
   type CoachRole, type Fact, type Film, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -99,39 +99,6 @@ export default function PlayerPage() {
         </div>
 
         <div className="card sec">
-          <h2>{POS_LABEL[p.pos]} ratings</h2>
-          {p.pos === "LS" && <Rating label="Player rating (self-assessed)" max={99} value={p.lsRating} onChange={(lsRating) => set({ lsRating })} />}
-          <Rating label="Coaches rating" max={99} value={p.coachRating} onChange={(coachRating) => set({ coachRating })} />
-          {p.pos === "LS" && (<>
-            <Choice label="System" options={["Pro style", "Free release", "Hybrid"] as const} value={p.system} onChange={(system) => set({ system })} />
-            <div className="formgrid">
-              <Num label="40-yard dash (sec)" step={0.01} placeholder="4.90" value={p.forty} onChange={(forty) => set({ forty })} />
-              <Num label="225 lb bench (reps)" value={p.bench} onChange={(bench) => set({ bench })} />
-            </div>
-            <Rating label="Snap accuracy" max={20} value={p.snapAcc} onChange={(snapAcc) => set({ snapAcc })} />
-            <SnapTime value={p.snapSpeed} onChange={(snapSpeed) => set({ snapSpeed })} />
-          </>)}
-          {kicks(p.pos) && (<>
-            {p.pos === "KP" && <h3>Kicking</h3>}
-            <Rating label="Kicker rating (self-assessed)" max={99} value={p.kRating} onChange={(kRating) => set({ kRating })} />
-            <Rating label="Kick power" max={20} value={p.kPower} onChange={(kPower) => set({ kPower })} />
-            <Rating label="Kick accuracy" max={20} value={p.kAcc} onChange={(kAcc) => set({ kAcc })} />
-            <Choice label="Kicking foot" options={["Right", "Left"] as const} value={p.foot} onChange={(foot) => set({ foot })} />
-          </>)}
-          {punts(p.pos) && (<>
-            {p.pos === "KP" && <h3>Punting</h3>}
-            <Rating label="Punter rating (self-assessed)" max={99} value={p.pRating} onChange={(pRating) => set({ pRating })} />
-            <Rating label="Punt power" max={20} value={p.pPower} onChange={(pPower) => set({ pPower })} />
-            <Rating label="Punt accuracy" max={20} value={p.pAcc} onChange={(pAcc) => set({ pAcc })} />
-            <Rating label="Get-off time" max={20} value={p.getOff} onChange={(getOff) => set({ getOff })} />
-            <Choice label="Punt type" options={["Wobbly", "Spiral", "End over end"] as const} value={p.puntType} onChange={(puntType) => set({ puntType })} />
-            <YesNo label="Holds?" value={p.holds} onChange={(holds) => set({ holds })} />
-            <Choice label="Kicks from" options={["Sideline", "Middle of field", "Numbers"] as const} value={p.spot} onChange={(spot) => set({ spot })} />
-          </>)}
-          {p.pos !== "LS" && <YesNo label="Kicks off?" value={p.kicksOff} onChange={(kicksOff) => set({ kicksOff })} />}
-        </div>
-
-        <div className="card sec">
           <h2>Depth chart</h2>
           <Choice label="Role" options={["Starter", "Backup"] as const} value={p.depth} onChange={(depth) => set({ depth })} />
           <div className="checks">
@@ -183,7 +150,6 @@ export default function PlayerPage() {
 
       <div className="donebar">
         {canEdit && <button className="btn" type="button" id="done" onClick={leave}>Done</button>}
-        <Link className="btn ghost" href={`/compare?ids=${p.id}`}>Compare</Link>
         {canEdit && <button className="linkbtn" type="button" onClick={() => { if (confirm(`Delete ${p.name || "this player"}?`)) { router.push("/players"); removePlayer(p.id); } }}>Delete player</button>}
       </div>
     </section>

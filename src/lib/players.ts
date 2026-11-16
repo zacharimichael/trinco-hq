@@ -224,10 +224,12 @@ export const heightText = (h: number | null) => (h ? `${Math.floor(h / 12)}'${h 
 
 /** The coaches rating, 1-99, or null. */
 export const coachRating = (p: Player): number | null => p.coachRating ?? null;
-/** Best number we have for ranking: the coaches rating when there is one, otherwise the player's own. */
-export const bestRating = (p: Player): number | null => coachRating(p) ?? overall(p);
-/** Both ratings in a few words, e.g. "Player 82 · Coach 88". Empty when neither is set. */
-export const ratingsText = (p: Player) => [overall(p) != null && `Player ${overall(p)}`, coachRating(p) != null && `Coach ${coachRating(p)}`].filter(Boolean).join(" · ");
+/** Ratings are off (z, 2026-11-15): the app doesn't show, ask for or rank by them. Saved ratings stay in the data. Set true to bring them back. */
+export const SHOW_RATINGS = false;
+/** Best number we have for ranking: the coaches rating when there is one, otherwise the player's own. Null while ratings are off. */
+export const bestRating = (p: Player): number | null => (SHOW_RATINGS ? coachRating(p) ?? overall(p) : null);
+/** Both ratings in a few words, e.g. "Player 82 · Coach 88". Empty when neither is set or ratings are off. */
+export const ratingsText = (p: Player) => (SHOW_RATINGS ? [overall(p) != null && `Player ${overall(p)}`, coachRating(p) != null && `Coach ${coachRating(p)}`].filter(Boolean).join(" · ") : "");
 
 /** The player's own (self-assessed) 1-99 rating for their position (K+P averages both). */
 export function overall(p: Player): number | null {

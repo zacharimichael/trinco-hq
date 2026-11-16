@@ -57,7 +57,7 @@ export default function AgencyHome() {
     <section className="view">
       <div>
         <h1>{state.agency.name}</h1>
-        <p className="muted" style={{ margin: "6px 0 0" }}>Recruiting and NIL for your athletes. Tap an area to open it.</p>
+        <p className="muted" style={{ margin: "6px 0 0" }}>We represent long snappers for a fee and track the schools that need one. Tap an area to open it.</p>
       </div>
 
       <div className="card next" id="up-next">

@@ -102,7 +102,7 @@ export function available(sc: Scouting, pos: Pos): Player[] {
     .sort(byBest);
 }
 
-/** Best first: rating, then years left, then All-American, then starter. */
+/** Best first: rating (off for now), then years left, then All-American, then starter. */
 export function byBest(a: Player, b: Player) {
   return (bestRating(b) ?? -1) - (bestRating(a) ?? -1) || (yearsLeft(b) ?? -1) - (yearsLeft(a) ?? -1)
     || Number(b.allAmerican) - Number(a.allAmerican) || Number(b.depth === "Starter") - Number(a.depth === "Starter");
