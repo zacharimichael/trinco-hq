@@ -213,7 +213,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (!live) return setMode("needs-firm");
     saved.current = { member: memberData(live), firm: firmData(live), stage: live.me?.stage ?? 0 };
     // The first time an owner or editor opens the app, fill the depth charts with the real 2026 players at each shown position
-    // (long snappers only while kickers and punters are hidden), each position once. Left out of the saved copy so they save like any other change. After that, the Depth charts button adds new ones.
+    // (long snappers only while kickers and punters are hidden), each position once. Left out of the saved copy so they save like any other change. After that, the "Add them" card on Players adds new ones.
     const lead = live.me?.role === "owner" || live.me?.role === "editor";
     if (lead) for (const pos of ROSTER_POSITIONS)
       if (!live.scouting.players.some((p) => ROSTER_IDS[pos].has(p.id))) live.scouting = { ...live.scouting, players: [...live.scouting.players, ...missingRosterPlayers(live.scouting, pos)] };

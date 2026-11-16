@@ -22,19 +22,13 @@ export const FIELDS: Record<string, { label: string; kind: Kind; options?: reado
   school: { label: "School now", kind: "school" },
   year: { label: "Year in school", kind: "pick", options: SCHOOL_YEARS },
   priorSchools: { label: "Add a past school", kind: "list" },
-  height: { label: "Height", kind: "int", min: 48, max: 90, hint: "total inches" },
-  weight: { label: "Weight", kind: "int", min: 100, max: 400, hint: "lbs" },
+  yearsLeft: { label: "Years of eligibility left after this season", kind: "int", min: 0, max: 4 },
+  wantSchools: { label: "Add a school they're interested in transferring to", kind: "list" },
   depth: { label: "Depth chart role", kind: "pick", options: ["Starter", "Backup", "None"] },
   allAmerican: { label: "All-American", kind: "bool" },
   allConference: { label: "All-Conference", kind: "bool" },
   client: { label: "Signed with us", kind: "bool" },
   transfer: { label: "Transferring", kind: "text", hint: "\"Open to transferring\" if willing to move, \"In the portal\" once entered, or e.g. \"Committed to Auburn\"; \"\" if staying" },
-  system: { label: "Snapping system", kind: "pick", options: ["Pro style", "Free release", "Hybrid"] },
-  foot: { label: "Kicking foot", kind: "pick", options: ["Right", "Left"] },
-  kicksOff: { label: "Kicks off", kind: "bool" },
-  puntType: { label: "Punt type", kind: "pick", options: ["Wobbly", "Spiral", "End over end"] },
-  holds: { label: "Holds", kind: "bool" },
-  spot: { label: "Punts from", kind: "pick", options: ["Sideline", "Middle of field", "Numbers"] },
 };
 
 export const WHO_LABEL: Record<Talk["who"], string> = {
@@ -144,6 +138,7 @@ export function applyChanges(d: AppState, opts: { playerId: string | null; schoo
         const v = readValue(c.field, c.value, sc);
         if (v === undefined) break;
         if (c.field === "priorSchools") { if (!p.priorSchools.includes(v as string)) p.priorSchools.push(v as string); }
+        else if (c.field === "wantSchools") { const w = p.wantSchools ?? []; if (!w.includes(v as string)) p.wantSchools = [...w, v as string]; }
         else (p as unknown as Record<string, unknown>)[c.field] = v;
         break;
       }

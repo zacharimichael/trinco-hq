@@ -9,9 +9,8 @@ import { CreateFirm, SignIn } from "./Gate";
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, match: (p: string) => p === "/", sub: [] },
-  { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|depth|classes)/.test(p), sub: [
+  { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|classes)/.test(p), sub: [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => p.startsWith("/players") },
-    { href: "/depth", label: "Depth charts", id: "tab-depth", match: (p: string) => p.startsWith("/depth") },
     { href: "/classes", label: "Classes", id: "sub-classes", match: (p: string) => p.startsWith("/classes") },
   ] },
   { href: "/transfers", label: "Match Maker", id: "tab-matchmaker", ownerOnly: false, match: (p: string) => p.startsWith("/transfers"), sub: [] },

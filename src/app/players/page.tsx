@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { heightText, money, yearShort, nilNow, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
+import { heightText, missingRosterPlayers, money, yearShort, nilNow, POS_LABEL, POS_SHORT, POSITIONS, type Pos } from "@/lib/players";
 import { useScouting } from "@/lib/useScouting";
 import { SortTh, useSort } from "@/components/SortTh";
 import { talkedTo } from "@/lib/toTalk";
@@ -11,7 +11,8 @@ import { useToTalk } from "@/lib/useToTalk";
 
 export default function PlayersPage() {
   const router = useRouter();
-  const { sc, school, schools, canEdit, addPlayer } = useScouting();
+  const { sc, school, schools, canEdit, addPlayer, addRosterPlayers } = useScouting();
+  const toAdd = canEdit ? missingRosterPlayers(sc).length : 0;
   const [pos, setPos] = useState<Pos | "all">("all");
   const [q, setQ] = useState("");
   const [conf, setConf] = useState("");
@@ -44,6 +45,14 @@ export default function PlayersPage() {
         <h1>Players</h1>
         <p className="muted" style={{ margin: "6px 0 0" }}>Long snappers.</p>
       </div>
+
+      {toAdd > 0 && (
+        <div className="card sec">
+          <b>{toAdd} {POSITIONS.length === 1 ? `${POS_LABEL[POSITIONS[0]].toLowerCase()}s` : "players"} from 2026 FBS and FCS rosters aren&apos;t in your players yet.</b>
+          <small className="muted">Real players only: name, school, year, height and weight from each team&apos;s roster. Each profile says where it came from.</small>
+          <div><button type="button" className="btn" onClick={addRosterPlayers}>Add them</button></div>
+        </div>
+      )}
 
       <div className="card sec" id="add-player">
         <h2>Add a player</h2>
