@@ -5,6 +5,7 @@ import { GENERAL_MANAGERS } from "@/data/general-managers";
 import { ROSTER_CHECKED_DATE, ROSTER_PLAYERS, ROSTER_SOURCE } from "@/data/roster-specialists";
 import { HS_LONG_SNAPPERS } from "@/data/hs-long-snappers";
 import { JUCO_LONG_SNAPPERS } from "@/data/juco-long-snappers";
+import type { Payment } from "./payments";
 
 /** Specialist positions. K+P is no longer offered, but players saved as K+P keep both kicker and punter ratings. */
 export type Pos = "LS" | "K" | "P" | "KP";
@@ -164,6 +165,8 @@ export interface Player {
   allConference: boolean;
   /** Signed with the agency. Clients count toward "my athletes" on the map. */
   client: boolean;
+  /** Fees billed to this athlete through Stripe payment links, newest first. */
+  payments?: Payment[];
   /** Where a player added from a public roster came from. Players added by hand have none. */
   source?: { label: string; url: string; date: string } | null;
 
