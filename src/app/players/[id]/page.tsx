@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Num } from "@/components/Fields";
@@ -9,18 +9,20 @@ import { Payments } from "@/components/Payments";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  money, nilTotal, NIL_YEARS, yearsLeft, YEARS_LEFT,
+  heightText, hsClassText, isHs, money, nilTotal, NIL_YEARS, SCHOOL_YEARS, yearsLeft, YEARS_LEFT, yearShort,
   type CoachRole, type Fact, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
+import { findSchoolsIn, schoolHref, schoolsMentioned } from "@/lib/schoolTags";
+import type { School } from "@/data/schools";
 import { lastTalk } from "@/lib/toTalk";
 import { useToTalk } from "@/lib/useToTalk";
 
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { sc, canEdit, staffOf, setPlayer, removePlayer } = useScouting();
+  const { sc, canEdit, school, schools, staffOf, setPlayer, removePlayer } = useScouting();
   const p = sc.players.find((x) => x.id === id);
   const hidden = useStore().state.scouting.players.find((x) => x.id === id);
   if (!p && hidden) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">Kickers and punters are hidden for now. This profile is still saved.</p></section>;
@@ -28,6 +30,10 @@ export default function PlayerPage() {
 
   const set = (patch: Partial<Player>) => setPlayer(p.id, patch);
   const staff = staffOf(p.school);
+  // One line under the name: where they are, what year, how big. Blanks are left out.
+  const at = school(p.school)?.name || p.jucoSchool?.trim() || (isHs(p) ? [p.hs?.trim(), p.hsState].filter(Boolean).join(", ") || "High school" : "");
+  const yr = isHs(p) ? hsClassText(p.hsClass!) : yearShort(p.year);
+  const glance = [at, yr, p.height ? heightText(p.height) : "", p.weight ? `${p.weight} lbs` : ""].filter(Boolean).join(" · ");
 
   // Leaving a brand-new profile without a name throws it away, so a mis-tap doesn't leave a blank player behind.
   const leave = () => { if (canEdit && !p.name.trim()) removePlayer(p.id); router.push("/players"); };
@@ -38,11 +44,33 @@ export default function PlayerPage() {
       <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="card sec">
           <input className="bigname" aria-label="Player name" placeholder="Player name" autoFocus={!p.name} value={p.name} onChange={(e) => set({ name: e.target.value })} />
+          {glance && <p className="glance">{glance}</p>}
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
         </div>
 
         <div className="card sec">
           <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
+          <div className="formgrid">
+            {isHs(p)
+              ? <div className="field"><label>Year</label><input disabled value={hsClassText(p.hsClass!)} /></div>
+              : <div className="field">
+                  <label htmlFor="year">Year</label>
+                  <select id="year" value={p.year ?? ""} onChange={(e) => set({ year: (e.target.value || null) as Player["year"] })}>
+                    <option value="">Pick a year</option>
+                    {SCHOOL_YEARS.map((y) => <option key={y}>{y}</option>)}
+                  </select>
+                </div>}
+            <div className="field">
+              <label>Height</label>
+              <div className="pair">
+                <div className="prefixed"><input aria-label="Feet" type="number" min={4} max={7} value={p.height ? Math.floor(p.height / 12) : ""}
+                  onChange={(e) => set({ height: e.target.value === "" ? null : Number(e.target.value) * 12 + ((p.height ?? 0) % 12) })} /><span>ft</span></div>
+                <div className="prefixed"><input aria-label="Inches" type="number" min={0} max={11} value={p.height ? p.height % 12 : ""}
+                  onChange={(e) => set({ height: Math.floor((p.height ?? 72) / 12) * 12 + Math.min(11, Number(e.target.value) || 0) })} /><span>in</span></div>
+              </div>
+            </div>
+            <Num label="Weight (lbs)" value={p.weight} onChange={(weight) => set({ weight })} />
+          </div>
           <SchoolList id="prior" label="Schools before this one" value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
           <div className="field">
             <label htmlFor="years-left">Years of eligibility left after this season</label>
@@ -73,7 +101,7 @@ export default function PlayerPage() {
         {(p.client || (p.payments?.length ?? 0) > 0) && <Payments p={p} />}
         <ToTalkBar p={p} />
         <LogCall p={p} key={p.id} />
-        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
+        <Talks p={p} schools={schools} onChange={(talks) => set({ talks })} decider={staff.decider} />
         <Facts facts={p.facts ?? []} onChange={(facts) => set({ facts })} />
       </fieldset>
 
@@ -149,23 +177,45 @@ function ToTalkBar({ p }: { p: Player }) {
   );
 }
 
-/** Call log: every call with the player, family and coaches, newest first. Calls are logged in the box at the top. */
-function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
+/** Call log: every call with the player, family and coaches, newest first. Calls are logged in the box above.
+ *  Any school named in a note is tagged to the player: linked in the note and listed at the top. */
+function Talks({ p, schools, onChange, decider }: { p: Player; schools: School[]; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
+  const [all, setAll] = useState(false);
   const calls = [...p.talks].sort((a, b) => b.date.localeCompare(a.date));
+  const shown = all ? calls : calls.slice(0, 5);
+  const tagged = schoolsMentioned(calls.map((t) => t.note), schools);
   return (
-    <details className="card fold" id="call-log">
-      <summary><h2>Call log</h2><span className="chip">{calls.length} {calls.length === 1 ? "call" : "calls"}</span></summary>
-      <div className="sec">
-      {!calls.length && <p className="muted" style={{ margin: 0 }}>No calls yet. Log one in the box at the top.</p>}
-      {calls.map((t) => (
-        <div className="step" key={`${t.date}-${t.note}`}>
+    <div className="card sec tight" id="call-log">
+      <div className="pair" style={{ alignItems: "center" }}><h2>Call log</h2><span className="chip" style={{ flex: "none" }}>{calls.length} {calls.length === 1 ? "call" : "calls"}</span></div>
+      {tagged.length > 0 && <div className="dots" aria-label="Schools mentioned">
+        <small className="muted">Schools mentioned:</small>
+        {tagged.map((s) => <Link key={s.id} className="chip tag" href={schoolHref(s)}>{s.name}</Link>)}
+      </div>}
+      {!calls.length && <p className="muted" style={{ margin: 0 }}>No calls yet. Log one in the box above. Type a school&apos;s name and it gets tagged here.</p>}
+      {shown.map((t) => (
+        <div className="callrow" key={`${t.date}-${t.note}`}>
           <span className="mark list">{SHORT[t.who] ?? "•"}</span>
-          <div className="grow"><div className="t" style={{ whiteSpace: "pre-wrap" }}>{t.note}</div>
+          <div className="grow"><div className="t" style={{ whiteSpace: "pre-wrap" }}><Tagged text={t.note} schools={schools} /></div>
             <div className="d">{WHO_LABEL[t.who]}{decider === t.who && " (decision maker)"} · {when(t.date)}</div></div>
           <button type="button" className="linkbtn" aria-label="Delete this call" onClick={() => { if (confirm("Delete this call?")) onChange(p.talks.filter((x) => x !== t)); }}>✕</button>
         </div>
       ))}
-      </div>
-    </details>
+      {calls.length > 5 && <button type="button" className="linkbtn" style={{ alignSelf: "start" }} onClick={() => setAll(!all)}>{all ? "Show fewer" : `Show all ${calls.length} calls`}</button>}
+    </div>
   );
+}
+
+/** A note with each school name turned into a link to that school. */
+function Tagged({ text, schools }: { text: string; schools: School[] }) {
+  const hits = findSchoolsIn(text, schools);
+  if (!hits.length) return <>{text}</>;
+  const out: ReactNode[] = [];
+  let at = 0;
+  hits.forEach((h, i) => {
+    out.push(text.slice(at, h.start));
+    out.push(<Link key={i} className="schooltag" href={schoolHref(h.school)}>{text.slice(h.start, h.end)}</Link>);
+    at = h.end;
+  });
+  out.push(text.slice(at));
+  return <>{out}</>;
 }

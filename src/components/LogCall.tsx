@@ -114,7 +114,7 @@ export function LogCall({ p, school }: { p?: Player; school?: School }) {
       </div>
       <div className="field">
         <label htmlFor="call-note">What was said</label>
-        <textarea id="call-note" rows={5} value={note} disabled={step.s === "sorting"}
+        <textarea id="call-note" rows={3} value={note} disabled={step.s === "sorting"}
           placeholder={school
             ? "Type or paste anything. e.g. Starter LS graduates in May, they want a free-release snapper for 2027. Call him back after signing day."
             : "Type or paste anything. e.g. Their backup snapper is transferring and getting $8k a year. Call the ST coach back Friday."}
