@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AddTodo } from "@/components/AddTodo";
@@ -17,6 +17,7 @@ import { useStore } from "@/lib/store";
 export default function AgencyHome() {
   const { state, mode } = useStore();
   const router = useRouter();
+  const [allTodos, setAllTodos] = useState(false);
   // Old map links were /?s=FL. The map lives in Licensing now.
   useEffect(() => {
     const s = new URLSearchParams(window.location.search).get("s");
@@ -25,7 +26,8 @@ export default function AgencyHome() {
 
   const owner = mode === "demo" || ["owner", "editor", "viewer"].includes(state.me?.role ?? "");
   const all = todos(state);
-  const next = all.filter((t) => !t.later).slice(0, 6);
+  const open = all.filter((t) => !t.later);
+  const next = allTodos ? open : open.slice(0, 3);
 
   const mine = myStates(state.done, state.athletes.map((a) => a.state));
   const keyOf = (c: string) => status(c, state.done).key;
@@ -60,13 +62,16 @@ export default function AgencyHome() {
         <p className="muted" style={{ margin: "6px 0 0" }}>We represent long snappers for a fee and track the schools that need one. Tap an area to open it.</p>
       </div>
 
-      <div className="card next" id="up-next">
-        <h2>Up next</h2>
+      <div className="card next compact" id="up-next">
+        <div className="headrow">
+          <h2>To-do</h2>
+          {open.length > 3 && <button className="linkbtn" onClick={() => setAllTodos(!allTodos)}>{allTodos ? "Show less" : `Show all ${open.length}`}</button>}
+        </div>
         {next.length ? next.map((t) => <TodoRow key={t.key} t={t} />) : <p className="muted" style={{ margin: 0 }}>Nothing to do. You&apos;re all caught up.</p>}
         <AddTodo />
       </div>
 
-      <div className="grid2">
+      <div className="grid2 homeareas">
         <Link href="/players" className="card sec area" id="area-athletes">
           <h2>Athletes</h2>
           <div className="summary">
@@ -139,6 +144,31 @@ export default function AgencyHome() {
           <span className="go-on">Open licensing →</span>
         </Link>
       </div>
+
+      <BusinessModel />
     </section>
+  );
+}
+
+/** How the money works: player retainer, pod of 10, then the 70/30 split. */
+function BusinessModel() {
+  return (
+    <div className="card sec bizmodel" id="business-model">
+      <h2>Our business model</h2>
+      <div className="flow">
+        <div className="fbox"><span className="big">$1,500</span>Each player, per year<small>Retainer for advising, recruiting and NIL help</small></div>
+        <div className="farrow"><span className="hide-sm">× 10 players →</span><span className="show-sm">× 10 players</span></div>
+        <div className="fbox"><span className="big">$15,000</span>One pod, per year<small>A pod leader runs a pod of 10 players</small></div>
+        <div className="farrow" aria-hidden="true"><span className="hide-sm">split →</span><span className="show-sm">split</span></div>
+        <div className="fsplit">
+          <div className="fbox go"><span className="big">$10,500</span>70% to the pod leader</div>
+          <div className="fbox wip"><span className="big">$4,500</span>30% to Trinco</div>
+        </div>
+      </div>
+      <div className="splitbar" role="img" aria-label="Pod cash split: 70% pod leader, 30% Trinco">
+        <i className="go" style={{ width: "70%" }}>Pod leader 70%</i>
+        <i className="wip" style={{ width: "30%" }}>Trinco 30%</i>
+      </div>
+    </div>
   );
 }
