@@ -404,3 +404,29 @@ textarea{font:inherit;color:var(--ink)}
 .card.compact .todo .btn{padding:6px 12px}
 .show-sm{display:none}
 @media (max-width:640px){.farrow::after{content:" ↓"}.hide-sm{display:none}.show-sm{display:inline}}
+
+/* Athlete profile: tighter, smaller sections (z, 2026-11-20). Scoped to .profile so other pages keep their size. */
+.profile.view,.profile .view{gap:10px}
+.profile .card{padding:12px 14px;border-radius:12px}
+.profile .sec{gap:8px}
+.profile .sec h2,.profile h2{font-size:16px}
+.profile .bigname{font-size:clamp(20px,4vw,26px);padding:2px 0}
+.profile .glance{margin:2px 0 0;font-size:14px}
+.profile .field{gap:3px}
+.profile .field label,.profile .seg legend{font-size:13px}
+.profile .field input,.profile .field select,.profile .pair input,.profile textarea{padding:7px 9px;border-radius:8px;font-size:15px}
+.profile .field .prefixed input{padding:7px 0}
+.profile .prefixed{border-radius:8px}
+.profile .formgrid{gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))}
+.profile .nilyears{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:6px 10px}
+.profile .nilyears .field label{width:auto}
+.profile .lines .total{padding-top:6px}
+.profile .seg button{padding:4px 12px;min-height:34px;font-size:14px}
+.profile .btn{padding:7px 12px;font-size:14px}
+.profile .todo{padding:8px 12px}
+.profile .agree{font-size:13px}
+.profile .callrow{padding:6px 0}
+.profile details.fold{padding:0}
+.profile details.fold>summary{padding:10px 14px}
+.profile details.fold>summary h2{font-size:16px}
+.profile details.fold>.sec{padding:0 14px 12px}
