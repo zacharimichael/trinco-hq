@@ -130,6 +130,8 @@ function Facts({ facts, onChange }: { facts: Fact[]; onChange: (f: Fact[]) => vo
 /** Shows whether you've talked to this player and puts them on (or takes them off) "Players to talk to". */
 function ToTalkBar({ p }: { p: Player }) {
   const { onList, add, remove } = useToTalk();
+  // The call list (under Calendar) is owner only, so others see the list name without a link.
+  const owner = useStore().state.me?.role === "owner";
   if (!p.name.trim()) return null;
   const last = lastTalk(p);
   const on = onList(p.id);
@@ -138,7 +140,7 @@ function ToTalkBar({ p }: { p: Player }) {
       <span className={`dot ${last ? "go" : "wip"}`} />
       <span className="grow">
         <b>{last ? `Last talked ${new Date(last).toLocaleDateString([], { dateStyle: "medium" })}` : "Never talked to"}</b>
-        {on && <small>On your <Link href="/calls#to-talk">Players to talk to</Link> list. Logging a call with them below checks them off.</small>}
+        {on && <small>On your {owner ? <Link href="/calls#to-talk">Players to talk to</Link> : "Players to talk to"} list. Logging a call with them below checks them off.</small>}
       </span>
       {on
         ? <button className="linkbtn" type="button" onClick={() => remove(p.id)}>Take off list</button>
