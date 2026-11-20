@@ -1,14 +1,16 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { CreateFirm, SignIn } from "./Gate";
 
 /** The agency's areas, in the order you use them: athletes and Match Maker first, licensing last.
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
-  { href: "/", label: "Home", id: "tab-home", ownerOnly: false, match: (p: string) => p === "/", sub: [] },
+  // Home is for the agency owner (z) only. Editors, viewers and agents start on School map instead.
+  { href: "/", label: "Home", id: "tab-home", ownerOnly: false, homeOnly: true, match: (p: string) => p === "/", sub: [] },
   { href: "/schools", label: "School map", id: "tab-schools", ownerOnly: false, match: (p: string) => p.startsWith("/schools"), sub: [] },
   { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|classes)/.test(p), sub: [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => p.startsWith("/players") },
@@ -34,6 +36,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const isOwner = mode === "demo" || state.me?.role === "owner" || state.me?.role === "viewer" || state.me?.role === "editor";
   const viewOnly = state.me?.role === "viewer";
   const area = AREAS.find((a) => a.match(path));
+  const router = useRouter();
+  // Only the real owner sees Home. Everyone else (editor, viewer, agent) is sent to School map, even from a direct link to /.
+  const homeAllowed = mode === "demo" || state.me?.role === "owner";
+  const blockedHome = mode === "live" && !homeAllowed && path === "/";
+  const startHref = homeAllowed ? "/" : "/schools";
+  useEffect(() => {
+    if (blockedHome) router.replace("/schools");
+  }, [blockedHome, router]);
 
   if (mode === "loading") return <div className="wrap"><p className="muted">Loading…</p></div>;
   if (mode === "signed-out") return <div className="wrap"><SignIn /></div>;
@@ -43,9 +53,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <div className="wrap">
       {mode === "demo" && <div className="demo">Demo mode with example data. Nothing is sent, paid or filed. <button className="linkbtn" onClick={signOut}>Sign in instead</button></div>}
       <header className="top">
-        <Link href="/" className="brand"><i></i>{state.agency.name}</Link>
+        <Link href={startHref} className="brand"><i></i>{state.agency.name}</Link>
         <nav className="tabs" aria-label="Main">
-          {AREAS.filter((t) => isOwner || !t.ownerOnly).map((t) => (
+          {AREAS.filter((t) => (isOwner || !t.ownerOnly) && (homeAllowed || !("homeOnly" in t))).map((t) => (
             <Link key={t.href} id={t.id} href={t.href} aria-current={t.match(path) ? "page" : undefined} className="tablink">{t.label}</Link>
           ))}
         </nav>
@@ -63,7 +73,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           {save.status === "saving" ? "Saving…" : save.status === "saved" ? "✓ All changes saved" : <>Not saved: {save.message} <button className="linkbtn" type="button" onClick={retrySave}>Try again</button></>}
         </div>
       )}
-      <main>{children}</main>
+      <main>{blockedHome ? <p className="muted">Opening School map…</p> : children}</main>
       {mode === "live" && (
         <footer className="muted" style={{ marginTop: 32, fontSize: 14, display: "flex", gap: 12, flexWrap: "wrap" }}>
           <span>Signed in as {email}</span>
