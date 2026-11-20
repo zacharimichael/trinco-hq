@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Num } from "@/components/Fields";
@@ -14,13 +14,15 @@ import {
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
+import { findSchoolsIn, schoolHref, schoolsMentioned } from "@/lib/schoolTags";
+import type { School } from "@/data/schools";
 import { lastTalk } from "@/lib/toTalk";
 import { useToTalk } from "@/lib/useToTalk";
 
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { sc, canEdit, school, staffOf, setPlayer, removePlayer } = useScouting();
+  const { sc, canEdit, school, schools, staffOf, setPlayer, removePlayer } = useScouting();
   const p = sc.players.find((x) => x.id === id);
   const hidden = useStore().state.scouting.players.find((x) => x.id === id);
   if (!p && hidden) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">Kickers and punters are hidden for now. This profile is still saved.</p></section>;
@@ -99,7 +101,7 @@ export default function PlayerPage() {
         {(p.client || (p.payments?.length ?? 0) > 0) && <Payments p={p} />}
         <ToTalkBar p={p} />
         <LogCall p={p} key={p.id} />
-        <Talks p={p} onChange={(talks) => set({ talks })} decider={staff.decider} />
+        <Talks p={p} schools={schools} onChange={(talks) => set({ talks })} decider={staff.decider} />
         <Facts facts={p.facts ?? []} onChange={(facts) => set({ facts })} />
       </fieldset>
 
@@ -175,23 +177,45 @@ function ToTalkBar({ p }: { p: Player }) {
   );
 }
 
-/** Call log: every call with the player, family and coaches, newest first. Calls are logged in the box at the top. */
-function Talks({ p, onChange, decider }: { p: Player; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
+/** Call log: every call with the player, family and coaches, newest first. Calls are logged in the box above.
+ *  Any school named in a note is tagged to the player: linked in the note and listed at the top. */
+function Talks({ p, schools, onChange, decider }: { p: Player; schools: School[]; onChange: (t: Talk[]) => void; decider: CoachRole | null }) {
+  const [all, setAll] = useState(false);
   const calls = [...p.talks].sort((a, b) => b.date.localeCompare(a.date));
+  const shown = all ? calls : calls.slice(0, 5);
+  const tagged = schoolsMentioned(calls.map((t) => t.note), schools);
   return (
-    <details className="card fold" id="call-log">
-      <summary><h2>Call log</h2><span className="chip">{calls.length} {calls.length === 1 ? "call" : "calls"}</span></summary>
-      <div className="sec">
-      {!calls.length && <p className="muted" style={{ margin: 0 }}>No calls yet. Log one in the box at the top.</p>}
-      {calls.map((t) => (
-        <div className="step" key={`${t.date}-${t.note}`}>
+    <div className="card sec tight" id="call-log">
+      <div className="pair" style={{ alignItems: "center" }}><h2>Call log</h2><span className="chip" style={{ flex: "none" }}>{calls.length} {calls.length === 1 ? "call" : "calls"}</span></div>
+      {tagged.length > 0 && <div className="dots" aria-label="Schools mentioned">
+        <small className="muted">Schools mentioned:</small>
+        {tagged.map((s) => <Link key={s.id} className="chip tag" href={schoolHref(s)}>{s.name}</Link>)}
+      </div>}
+      {!calls.length && <p className="muted" style={{ margin: 0 }}>No calls yet. Log one in the box above. Type a school&apos;s name and it gets tagged here.</p>}
+      {shown.map((t) => (
+        <div className="callrow" key={`${t.date}-${t.note}`}>
           <span className="mark list">{SHORT[t.who] ?? "•"}</span>
-          <div className="grow"><div className="t" style={{ whiteSpace: "pre-wrap" }}>{t.note}</div>
+          <div className="grow"><div className="t" style={{ whiteSpace: "pre-wrap" }}><Tagged text={t.note} schools={schools} /></div>
             <div className="d">{WHO_LABEL[t.who]}{decider === t.who && " (decision maker)"} · {when(t.date)}</div></div>
           <button type="button" className="linkbtn" aria-label="Delete this call" onClick={() => { if (confirm("Delete this call?")) onChange(p.talks.filter((x) => x !== t)); }}>✕</button>
         </div>
       ))}
-      </div>
-    </details>
+      {calls.length > 5 && <button type="button" className="linkbtn" style={{ alignSelf: "start" }} onClick={() => setAll(!all)}>{all ? "Show fewer" : `Show all ${calls.length} calls`}</button>}
+    </div>
   );
+}
+
+/** A note with each school name turned into a link to that school. */
+function Tagged({ text, schools }: { text: string; schools: School[] }) {
+  const hits = findSchoolsIn(text, schools);
+  if (!hits.length) return <>{text}</>;
+  const out: ReactNode[] = [];
+  let at = 0;
+  hits.forEach((h, i) => {
+    out.push(text.slice(at, h.start));
+    out.push(<Link key={i} className="schooltag" href={schoolHref(h.school)}>{text.slice(h.start, h.end)}</Link>);
+    at = h.end;
+  });
+  out.push(text.slice(at));
+  return <>{out}</>;
 }
