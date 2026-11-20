@@ -9,7 +9,7 @@ import { Payments } from "@/components/Payments";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  heightText, hsClassText, isHs, money, nilTotal, NIL_YEARS, SCHOOL_YEARS, yearsLeft, YEARS_LEFT, yearShort,
+  heightText, hsClassText, isHs, money, nilTotal, NIL_YEARS_SHOWN, SCHOOL_YEARS, yearsLeft, YEARS_LEFT, yearShort,
   type CoachRole, type Fact, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -84,7 +84,7 @@ export default function PlayerPage() {
         <div className="card sec">
           <h2>NIL money</h2>
           <div className="nilyears">
-            {Array.from({ length: NIL_YEARS }, (_, i) => (
+            {Array.from({ length: p.nil[5] != null ? 6 : NIL_YEARS_SHOWN }, (_, i) => (
               <Num key={i} label={`Year ${i + 1}`} prefix="$" value={p.nil[i]}
                 onChange={(v) => set({ nil: p.nil.map((n, j) => (j === i ? v : n)) })} />
             ))}

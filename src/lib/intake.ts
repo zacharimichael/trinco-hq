@@ -2,7 +2,7 @@ import type { Change } from "./intakeSchema";
 import type { AppState, CalEvent, CallItem, SchoolCall } from "./model";
 import { checkOff, SPOKE_WHO } from "./toTalk";
 import {
-  blankStaff, newId, newPlayer, NIL_YEARS, POSITIONS, SCHOOL_YEARS, schoolById, allSchools, shownPos, staffFor,
+  blankStaff, newId, newPlayer, NIL_YEARS_SHOWN, POSITIONS, SCHOOL_YEARS, schoolById, allSchools, shownPos, staffFor,
   type CoachRole, type Player, type Pos, type Scouting, type Talk,
 } from "./players";
 
@@ -98,7 +98,7 @@ export function usable(c: Change, sc: Scouting, newRefs: Set<string>): boolean {
   const known = (id: string) => sc.players.some((p) => p.id === id) || newRefs.has(id);
   switch (c.kind) {
     case "set": return known(c.player) && !!c.field && readValue(c.field, c.value, sc) !== undefined;
-    case "nil": return known(c.player) && c.amount != null && c.amount >= 0 && c.year != null && c.year >= 1 && c.year <= NIL_YEARS;
+    case "nil": return known(c.player) && c.amount != null && c.amount >= 0 && c.year != null && c.year >= 1 && c.year <= NIL_YEARS_SHOWN;
     case "fact": return known(c.player) && !!(c.label || c.value);
     case "new_player": return !!c.player && !!c.name?.trim();
     case "call": return !!(c.name || c.label);

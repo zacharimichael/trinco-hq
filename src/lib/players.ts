@@ -26,6 +26,8 @@ export const punts = (p: Pos) => p === "P" || p === "KP";
 
 export const HS_POSITIONS = ["QB", "RB", "WR", "TE", "OL", "S", "CB", "LB", "DL"] as const;
 export const NIL_YEARS = 6;
+/** NIL years shown on the profile (z took out Year 6). Saved Year 6 amounts are kept and still show if filled. */
+export const NIL_YEARS_SHOWN = 5;
 
 export const SCHOOL_YEARS = ["Freshman", "Sophomore", "Junior", "Senior", "Redshirt Freshman", "Redshirt Sophomore", "Redshirt Junior", "Redshirt Senior"] as const;
 export type SchoolYear = (typeof SCHOOL_YEARS)[number];
