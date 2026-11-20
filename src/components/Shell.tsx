@@ -9,15 +9,13 @@ import { CreateFirm, SignIn } from "./Gate";
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, match: (p: string) => p === "/", sub: [] },
+  { href: "/schools", label: "School map", id: "tab-schools", ownerOnly: false, match: (p: string) => p.startsWith("/schools"), sub: [] },
   { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|classes)/.test(p), sub: [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => p.startsWith("/players") },
     { href: "/classes", label: "Classes", id: "sub-classes", match: (p: string) => p.startsWith("/classes") },
   ] },
   { href: "/transfers", label: "Match Maker", id: "tab-matchmaker", ownerOnly: false, match: (p: string) => p.startsWith("/transfers"), sub: [] },
-  { href: "/coaches", label: "Coaching", id: "tab-coaching", ownerOnly: false, match: (p: string) => /^\/(coaches|schools)/.test(p), sub: [
-    { href: "/coaches", label: "Our coaches", id: "sub-coaches", match: (p: string) => p.startsWith("/coaches") },
-    { href: "/schools", label: "School map", id: "sub-schools", match: (p: string) => p.startsWith("/schools") },
-  ] },
+  { href: "/coaches", label: "Coaching", id: "tab-coaching", ownerOnly: false, match: (p: string) => p.startsWith("/coaches"), sub: [] },
   { href: "/hq", label: "Agents", id: "tab-firm", ownerOnly: true, match: (p: string) => p.startsWith("/hq"), sub: [] },
   { href: "/calendar", label: "Calendar", id: "tab-calendar", ownerOnly: false, match: (p: string) => /^\/(calendar|calls)/.test(p), sub: [
     { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },
