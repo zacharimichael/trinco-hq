@@ -9,7 +9,7 @@ import { Payments } from "@/components/Payments";
 import { SchoolSelect } from "@/components/SchoolSelect";
 import { TransferField } from "@/components/TransferField";
 import {
-  money, nilTotal, NIL_YEARS, yearsLeft, YEARS_LEFT,
+  heightText, hsClassText, isHs, money, nilTotal, NIL_YEARS, SCHOOL_YEARS, yearsLeft, YEARS_LEFT, yearShort,
   type CoachRole, type Fact, type Player, type Talk,
 } from "@/lib/players";
 import { useStore } from "@/lib/store";
@@ -20,7 +20,7 @@ import { useToTalk } from "@/lib/useToTalk";
 export default function PlayerPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { sc, canEdit, staffOf, setPlayer, removePlayer } = useScouting();
+  const { sc, canEdit, school, staffOf, setPlayer, removePlayer } = useScouting();
   const p = sc.players.find((x) => x.id === id);
   const hidden = useStore().state.scouting.players.find((x) => x.id === id);
   if (!p && hidden) return <section className="view"><Link className="back" href="/players">← All players</Link><p className="muted">Kickers and punters are hidden for now. This profile is still saved.</p></section>;
@@ -28,6 +28,10 @@ export default function PlayerPage() {
 
   const set = (patch: Partial<Player>) => setPlayer(p.id, patch);
   const staff = staffOf(p.school);
+  // One line under the name: where they are, what year, how big. Blanks are left out.
+  const at = school(p.school)?.name || p.jucoSchool?.trim() || (isHs(p) ? [p.hs?.trim(), p.hsState].filter(Boolean).join(", ") || "High school" : "");
+  const yr = isHs(p) ? hsClassText(p.hsClass!) : yearShort(p.year);
+  const glance = [at, yr, p.height ? heightText(p.height) : "", p.weight ? `${p.weight} lbs` : ""].filter(Boolean).join(" · ");
 
   // Leaving a brand-new profile without a name throws it away, so a mis-tap doesn't leave a blank player behind.
   const leave = () => { if (canEdit && !p.name.trim()) removePlayer(p.id); router.push("/players"); };
@@ -38,11 +42,33 @@ export default function PlayerPage() {
       <fieldset disabled={!canEdit} className="view" style={{ border: 0, padding: 0, margin: 0 }}>
         <div className="card sec">
           <input className="bigname" aria-label="Player name" placeholder="Player name" autoFocus={!p.name} value={p.name} onChange={(e) => set({ name: e.target.value })} />
+          {glance && <p className="glance">{glance}</p>}
           <label className="agree"><input type="checkbox" checked={p.client} onChange={(e) => set({ client: e.target.checked })} /> Signed with us (my athlete)</label>
         </div>
 
         <div className="card sec">
           <SchoolSelect label="School now" value={p.school} onChange={(school) => set({ school })} />
+          <div className="formgrid">
+            {isHs(p)
+              ? <div className="field"><label>Year</label><input disabled value={hsClassText(p.hsClass!)} /></div>
+              : <div className="field">
+                  <label htmlFor="year">Year</label>
+                  <select id="year" value={p.year ?? ""} onChange={(e) => set({ year: (e.target.value || null) as Player["year"] })}>
+                    <option value="">Pick a year</option>
+                    {SCHOOL_YEARS.map((y) => <option key={y}>{y}</option>)}
+                  </select>
+                </div>}
+            <div className="field">
+              <label>Height</label>
+              <div className="pair">
+                <div className="prefixed"><input aria-label="Feet" type="number" min={4} max={7} value={p.height ? Math.floor(p.height / 12) : ""}
+                  onChange={(e) => set({ height: e.target.value === "" ? null : Number(e.target.value) * 12 + ((p.height ?? 0) % 12) })} /><span>ft</span></div>
+                <div className="prefixed"><input aria-label="Inches" type="number" min={0} max={11} value={p.height ? p.height % 12 : ""}
+                  onChange={(e) => set({ height: Math.floor((p.height ?? 72) / 12) * 12 + Math.min(11, Number(e.target.value) || 0) })} /><span>in</span></div>
+              </div>
+            </div>
+            <Num label="Weight (lbs)" value={p.weight} onChange={(weight) => set({ weight })} />
+          </div>
           <SchoolList id="prior" label="Schools before this one" value={p.priorSchools} onChange={(priorSchools) => set({ priorSchools })} />
           <div className="field">
             <label htmlFor="years-left">Years of eligibility left after this season</label>
