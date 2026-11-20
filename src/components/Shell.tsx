@@ -6,11 +6,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { CreateFirm, SignIn } from "./Gate";
 
-/** The agency's areas, in the order you use them: athletes and Match Maker first, licensing last.
+/** The agency's areas, in the order you use them: Home and Licensing (owner only) first, then athletes and Match Maker.
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
-  // Home is for the agency owner (z) only. Editors, viewers and agents start on School map instead.
+  // Home and Licensing are for the agency owner (z) only (homeOnly). Editors, viewers and agents start on School map instead.
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, homeOnly: true, match: (p: string) => p === "/", sub: [] },
+  { href: "/licensing", label: "Licensing", id: "tab-map", ownerOnly: false, homeOnly: true, match: (p: string) => p.startsWith("/licensing"), sub: [
+    { href: "/licensing", label: "Map", id: "sub-map", match: (p: string) => p === "/licensing" },
+    { href: "/licensing/todo", label: "To-do", id: "tab-hub", match: (p: string) => p.startsWith("/licensing/todo") },
+    { href: "/licensing/states", label: "All states", id: "sub-states", match: (p: string) => p.startsWith("/licensing/states") },
+  ] },
   { href: "/schools", label: "School map", id: "tab-schools", ownerOnly: false, match: (p: string) => p.startsWith("/schools"), sub: [] },
   { href: "/players", label: "Athletes", id: "tab-players", ownerOnly: false, match: (p: string) => /^\/(players|classes)/.test(p), sub: [
     { href: "/players", label: "Players", id: "sub-players", match: (p: string) => p.startsWith("/players") },
@@ -23,11 +28,6 @@ const AREAS = [
     { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },
     { href: "/calls", label: "Call list", id: "sub-calls", match: (p: string) => p.startsWith("/calls") },
   ] },
-  { href: "/licensing", label: "Licensing", id: "tab-map", ownerOnly: false, match: (p: string) => p.startsWith("/licensing"), sub: [
-    { href: "/licensing", label: "Map", id: "sub-map", match: (p: string) => p === "/licensing" },
-    { href: "/licensing/todo", label: "To-do", id: "tab-hub", match: (p: string) => p.startsWith("/licensing/todo") },
-    { href: "/licensing/states", label: "All states", id: "sub-states", match: (p: string) => p.startsWith("/licensing/states") },
-  ] },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -37,9 +37,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const viewOnly = state.me?.role === "viewer";
   const area = AREAS.find((a) => a.match(path));
   const router = useRouter();
-  // Only the real owner sees Home. Everyone else (editor, viewer, agent) is sent to School map, even from a direct link to /.
+  // Only the real owner sees Home and Licensing (map, to-do, all states, state pages).
+  // Everyone else (editor, viewer, agent) is sent to School map, even from a direct link.
   const homeAllowed = mode === "demo" || state.me?.role === "owner";
-  const blockedHome = mode === "live" && !homeAllowed && path === "/";
+  const ownerOnlyPath = path === "/" || /^\/(licensing|state|todo)(\/|$)/.test(path);
+  const blockedHome = mode === "live" && !homeAllowed && ownerOnlyPath;
   const startHref = homeAllowed ? "/" : "/schools";
   useEffect(() => {
     if (blockedHome) router.replace("/schools");
