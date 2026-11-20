@@ -362,3 +362,37 @@ textarea{font:inherit;color:var(--ink)}
 .topten .grow{flex:1;min-width:0}
 .starbtn{border:0;background:none;font-size:22px;line-height:1;color:var(--wip);cursor:pointer;min-width:36px;min-height:36px}
 .starbtn:disabled{opacity:.3;cursor:default}
+
+/* Home: smaller to-do and area cards, then the business model flow. */
+.headrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.headrow .go-on{color:var(--accent);font-weight:700;font-size:14px;text-decoration:none}
+.card.compact{padding:14px 16px;gap:6px}
+.card.compact h2{font-size:17px}
+.card.compact .todo{padding:8px 12px}
+.card.compact .addtodo input{padding:8px 10px}
+.card.compact .addtodo .btn{padding:8px 14px}
+.homeareas{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.homeareas .card{padding:14px 16px;gap:8px}
+.homeareas h2{font-size:16px}
+.homeareas .pill{padding:4px 10px;font-size:13px}
+.homeareas .summary{gap:6px}
+.homeareas .muted,.homeareas .go-on,.homeareas .warnline{font-size:13px}
+.homeareas .tile2{padding:8px 10px;font-size:12px}
+.homeareas .tiles.two .big{font-size:18px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.fbox{flex:1 1 150px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:14px;color:var(--muted)}
+.fbox .big{font-family:var(--display);font-size:24px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.fbox small{font-weight:500;font-size:12px}
+.fbox.go{background:var(--go-soft);border-color:transparent;color:var(--ink)}
+.fbox.wip{background:var(--wip-soft);border-color:transparent;color:var(--ink)}
+.farrow{font-weight:700;color:var(--accent);font-size:14px;white-space:nowrap}
+.fsplit{flex:1 1 180px;display:flex;flex-direction:column;gap:8px}
+.splitbar{display:flex;height:30px;border-radius:999px;overflow:hidden;font-size:13px;font-weight:700}
+.splitbar i{font-style:normal;display:grid;place-items:center;white-space:nowrap}
+.splitbar i.go{background:var(--go);color:#fff}
+.splitbar i.wip{background:var(--wip);color:#2a1d00}
+@media (max-width:640px){.farrow{flex-basis:100%;text-align:center}}
+.fsplit .fbox{flex:none}
+.card.compact .todo .btn{padding:6px 12px}
+.show-sm{display:none}
+@media (max-width:640px){.farrow::after{content:" ↓"}.hide-sm{display:none}.show-sm{display:inline}}
