@@ -122,9 +122,20 @@ export interface AppState {
   roster?: AgentContact[];
   /** Coaches you work with: contact info, their school and role, and a note. */
   coaches?: CoachContact[];
+  /** Pod leaders and the players in each one's pod (ten spots each). Owner only. */
+  pods?: PodLeader[];
 }
 
 export interface AgentContact { id: string; name: string; email: string; phone: string; pay: string }
 
 /** A coach you work with. schoolId links to the School map when the school is on our list. */
 export interface CoachContact { id: string; name: string; school: string; schoolId?: string; role: "HC" | "GM" | "ST" | "Other"; email: string; phone: string; notes: string; /** X (Twitter) handle, saved without the @. */ x?: string }
+
+/** How many players fit in one pod right now. */
+export const POD_SIZE = 10;
+
+/** One spot in a pod. Empty name = open spot. playerId links to the player's profile when they're in Athletes. */
+export interface PodSpot { name: string; school: string; playerId?: string }
+
+/** A pod leader: contact info and their spots (always POD_SIZE long). */
+export interface PodLeader { id: string; name: string; email: string; phone: string; spots: PodSpot[] }
