@@ -9,13 +9,14 @@ import { CreateFirm, SignIn } from "./Gate";
 /** The agency's areas, in the order you use them: Home, Licensing and Calendar (owner only) first, then athletes and Match Maker.
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
-  // Home, Licensing and Calendar are for the agency owner (z) only (homeOnly). Editors, viewers and agents start on School map instead.
+  // Home, Licensing, Pod leaders and Calendar are for the agency owner (z) only (homeOnly). Editors, viewers and agents start on School map instead.
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, homeOnly: true, match: (p: string) => p === "/", sub: [] },
   { href: "/licensing", label: "Licensing", id: "tab-map", ownerOnly: false, homeOnly: true, match: (p: string) => p.startsWith("/licensing"), sub: [
     { href: "/licensing", label: "Map", id: "sub-map", match: (p: string) => p === "/licensing" },
     { href: "/licensing/todo", label: "To-do", id: "tab-hub", match: (p: string) => p.startsWith("/licensing/todo") },
     { href: "/licensing/states", label: "All states", id: "sub-states", match: (p: string) => p.startsWith("/licensing/states") },
   ] },
+  { href: "/pods", label: "Pod leaders", id: "tab-pods", ownerOnly: false, homeOnly: true, match: (p: string) => p.startsWith("/pods"), sub: [] },
   { href: "/calendar", label: "Calendar", id: "tab-calendar", ownerOnly: false, homeOnly: true, match: (p: string) => /^\/(calendar|calls)/.test(p), sub: [
     { href: "/calendar", label: "Calendar", id: "sub-calendar", match: (p: string) => p.startsWith("/calendar") },
     { href: "/calls", label: "Call list", id: "sub-calls", match: (p: string) => p.startsWith("/calls") },
@@ -37,10 +38,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const viewOnly = state.me?.role === "viewer";
   const area = AREAS.find((a) => a.match(path));
   const router = useRouter();
-  // Only the real owner sees Home, Licensing (map, to-do, all states, state pages) and Calendar (calendar, call list).
+  // Only the real owner sees Home, Licensing (map, to-do, all states, state pages), Pod leaders and Calendar (calendar, call list).
   // Everyone else (editor, viewer, agent) is sent to School map, even from a direct link.
   const homeAllowed = mode === "demo" || state.me?.role === "owner";
-  const ownerOnlyPath = path === "/" || /^\/(licensing|state|todo|calendar|calls)(\/|$)/.test(path);
+  const ownerOnlyPath = path === "/" || /^\/(licensing|state|todo|pods|calendar|calls)(\/|$)/.test(path);
   const blockedHome = mode === "live" && !homeAllowed && ownerOnlyPath;
   const startHref = homeAllowed ? "/" : "/schools";
   useEffect(() => {
