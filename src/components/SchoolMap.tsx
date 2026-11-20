@@ -10,13 +10,23 @@ const STATES = US as Record<string, { n: string; d: string; c: number[] }>;
 const SPOTS = PLACES as unknown as Record<string, [number, number, string]>;
 // Same projection us-atlas used to draw us-states.json, so a school lands on the right spot.
 const project = geoAlbersUsa().scale(1300).translate([487.5, 305]);
+const DRAW = ["Other", "D3", "D2", "FCS", "FBS"];
 const SMALL = ["VT", "NH", "MA", "RI", "CT", "NJ", "DE", "MD", "DC"];
 
 export const cityOf = (id: string) => SPOTS[id]?.[2] ?? "";
 export const onMap = (id: string) => id in SPOTS;
 
-/** Whole country. Tap a state to open it. */
-export function SchoolsUsMap({ counts, onSelect }: { counts: Record<string, number>; onSelect: (code: string) => void }) {
+/** Whole country with a dot for every school. Tap a state to open it, or a dot to open that school. */
+export function SchoolsUsMap({ counts, onSelect, schools = [], withPlayers, onSchool }: {
+  counts: Record<string, number>; onSelect: (code: string) => void;
+  schools?: School[]; withPlayers?: Set<string>; onSchool?: (s: School) => void;
+}) {
+  const dots = useMemo(() => schools.filter((s) => onMap(s.id)).map((s) => {
+    const [lat, lon] = SPOTS[s.id];
+    const [x, y] = project([lon, lat]) ?? [0, 0];
+    return { s, x, y };
+  // FBS drawn last so the big programs sit on top.
+  }).sort((a, b) => DRAW.indexOf(a.s.division) - DRAW.indexOf(b.s.division)), [schools]);
   const props = (code: string) => ({
     className: "st pick",
     tabIndex: 0,
@@ -30,6 +40,10 @@ export function SchoolsUsMap({ counts, onSelect }: { counts: Record<string, numb
   return (
     <svg viewBox="0 0 1040 610" className="usmap" role="img" aria-label="Map of the United States">
       {Object.entries(STATES).map(([code, s]) => <path key={code} d={s.d} {...props(code)}><title>{s.n}</title></path>)}
+      {dots.map(({ s, x, y }) => (
+        <circle key={s.id} cx={x} cy={y} r={4} className={`dot ${s.division}${withPlayers?.has(s.id) ? " has" : ""}`}
+          onClick={() => (onSchool ? onSchool(s) : onSelect(s.state))}><title>{s.name}</title></circle>
+      ))}
       {Object.entries(STATES).filter(([c]) => !SMALL.includes(c)).map(([c, s]) => <text key={c} x={s.c[0]} y={s.c[1]} className="lbl">{c}</text>)}
       {SMALL.map((c, i) => {
         const y = 150 + i * 34, s = STATES[c];

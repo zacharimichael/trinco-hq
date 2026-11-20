@@ -314,6 +314,10 @@ textarea{font:inherit;color:var(--ink)}
 .flag.FBS .cloth{fill:var(--fbs)} .flag.FCS .cloth{fill:var(--fcs)} .flag.D2 .cloth{fill:var(--d2)} .flag.D3 .cloth{fill:var(--d3)} .flag.Other .cloth{fill:var(--oth)}
 .flag:hover .cloth,.flag:focus-visible .cloth,.flag.sel .cloth{stroke:var(--ink);stroke-width:.2}
 .flaglbl{font-family:var(--body);font-weight:800;fill:var(--ink);stroke:var(--surface);paint-order:stroke;text-anchor:middle;pointer-events:none}
+.usmap .dot{stroke:var(--surface);stroke-width:1;cursor:pointer;fill:var(--oth)}
+.usmap .dot.FBS{fill:var(--fbs)} .usmap .dot.FCS{fill:var(--fcs)} .usmap .dot.D2{fill:var(--d2)} .usmap .dot.D3{fill:var(--d3)}
+.usmap .dot.has{stroke:var(--ink);stroke-width:2}
+.usmap .dot:hover{stroke:var(--ink);stroke-width:2.5}
 .flagdot{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none;vertical-align:-1px;background:var(--oth)}
 .flagdot.FBS{background:var(--fbs)} .flagdot.FCS{background:var(--fcs)} .flagdot.D2{background:var(--d2)} .flagdot.D3{background:var(--d3)}
 .flagdot.has{background:var(--ink);border-radius:50%;width:10px;height:10px}

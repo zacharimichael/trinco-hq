@@ -46,13 +46,25 @@ export default function SchoolMapPage() {
   const toggle = (d: Division) => setHide((h) => (h.includes(d) ? h.filter((x) => x !== d) : [...h, d]));
 
   if (!st) {
+    const all = [...DIVISIONS, "Other" as const].filter((d) => schools.some((s) => s.division === d));
     return (
       <section className="view">
         <div>
           <h1>School map</h1>
-          <p className="muted" style={{ margin: "6px 0 0" }}>Tap a state to see its football schools.</p>
+          <p className="muted" style={{ margin: "6px 0 0" }}>{schools.length} football schools. Tap a dot to open a school, or a state to see all of its schools.</p>
         </div>
-        <div className="card"><div className="mapbox"><SchoolsUsMap counts={counts} onSelect={(c) => go(c, null)} /></div></div>
+        <div className="legend flagkey">
+          {all.map((d) => (
+            <button key={d} type="button" aria-pressed={!hide.includes(d)} onClick={() => toggle(d)}>
+              <span className={`flagdot ${d}`} />{DIV_LABEL[d]} <b>{schools.filter((s) => s.division === d).length}</b>
+            </button>
+          ))}
+          <span><span className="flagdot has" />Players tracked</span>
+        </div>
+        <div className="card"><div className="mapbox">
+          <SchoolsUsMap counts={counts} onSelect={(c) => go(c, null)} withPlayers={withPlayers}
+            schools={schools.filter((s) => !hide.includes(s.division))} onSchool={(s) => go(s.state, s.id)} />
+        </div></div>
       </section>
     );
   }
