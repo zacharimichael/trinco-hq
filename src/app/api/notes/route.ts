@@ -26,7 +26,7 @@ The agent just got off a call and typed what was said. Pull out every useful fac
 
 Return a list of changes. Each change has a "kind":
 - "set": fill one profile box for a player. Use "player" (id), "field" and "value" (as text).
-- "nil": NIL pay for one college year. Use "player", "year" (1 to 6, the player's year in college that the money is for) and "amount" (dollars per year, a number). Use the player's year in school and NIL history to pick the year. Money for next season goes in the year after the current one.
+- "nil": NIL pay for one college year. Use "player", "year" (1 to 5, the player's year in college that the money is for) and "amount" (dollars per year, a number). Use the player's year in school and NIL history to pick the year. Money for next season goes in the year after the current one.
 - "fact": anything useful that has no box: interest from schools, visits, injuries, grades, family, what they want, who represents them, rumors. Use "player", a short "label" (e.g. "Visiting", "Injury", "Wants") and "value".
 - "new_player": a long snapper the note mentions who isn't in otherPlayers. Use "player" as a new ref ("new1", "new2"), "name", "pos" and "school". If the name isn't given, describe them in "name", e.g. "Florida backup LS". Then use the same ref in other changes about them.
 - "call": someone the agent should call back. "name" (who), "phone" if given, "label" (why, short), "date" (YYYY-MM-DD) if a day was said, and "player" if it's about a player.
