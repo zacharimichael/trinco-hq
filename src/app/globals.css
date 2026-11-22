@@ -184,6 +184,14 @@ textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent);outl
 .rateline input[data-empty="true"]{opacity:.45}
 .rateline output{font-family:var(--display);font-weight:800;font-size:22px;min-width:2.2em;text-align:right;font-variant-numeric:tabular-nums}
 .bigname{font:800 clamp(24px,5vw,32px) var(--display);color:var(--ink);background:none;border:0;border-bottom:2px dashed var(--line);padding:4px 0;width:100%}
+.callrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.callrow .t{font-weight:500;font-size:15px}
+.callrow .d{color:var(--muted);font-size:13px}
+.callrow .mark{width:22px;height:22px;font-size:12px}
+.card.tight{gap:6px}
+.schooltag{font-weight:700;color:var(--accent);text-decoration:none;border-bottom:1px dotted currentColor}
+.chip.tag{text-decoration:none;color:var(--ink)}
+.glance{margin:6px 0 0;font-weight:700;color:var(--muted)}
 .bigname:focus-visible{outline:none;border-bottom-color:var(--accent)}
 .checks{display:flex;gap:20px;flex-wrap:wrap}
 .nilyears{display:grid;grid-template-columns:1fr;gap:10px}
@@ -314,6 +322,10 @@ textarea{font:inherit;color:var(--ink)}
 .flag.FBS .cloth{fill:var(--fbs)} .flag.FCS .cloth{fill:var(--fcs)} .flag.D2 .cloth{fill:var(--d2)} .flag.D3 .cloth{fill:var(--d3)} .flag.Other .cloth{fill:var(--oth)}
 .flag:hover .cloth,.flag:focus-visible .cloth,.flag.sel .cloth{stroke:var(--ink);stroke-width:.2}
 .flaglbl{font-family:var(--body);font-weight:800;fill:var(--ink);stroke:var(--surface);paint-order:stroke;text-anchor:middle;pointer-events:none}
+.usmap .dot{stroke:var(--surface);stroke-width:1;cursor:pointer;fill:var(--oth)}
+.usmap .dot.FBS{fill:var(--fbs)} .usmap .dot.FCS{fill:var(--fcs)} .usmap .dot.D2{fill:var(--d2)} .usmap .dot.D3{fill:var(--d3)}
+.usmap .dot.has{stroke:var(--ink);stroke-width:2}
+.usmap .dot:hover{stroke:var(--ink);stroke-width:2.5}
 .flagdot{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none;vertical-align:-1px;background:var(--oth)}
 .flagdot.FBS{background:var(--fbs)} .flagdot.FCS{background:var(--fcs)} .flagdot.D2{background:var(--d2)} .flagdot.D3{background:var(--d3)}
 .flagdot.has{background:var(--ink);border-radius:50%;width:10px;height:10px}
@@ -340,6 +352,17 @@ textarea{font:inherit;color:var(--ink)}
 .addrow2{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px}
 .addrow2>input,.addrow2>.field{flex:1 1 200px;min-width:0}
 .movesboard .moveacts select{max-width:100%}
+/* Match Maker: lists 1, 2 and 3 side by side on wide screens */
+.movesboard3{display:grid;gap:20px;align-items:start}
+@media (min-width:1000px){
+  .movesboard3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .wrap:has(.movesboard3){max-width:1400px}
+}
+.compact .spot{padding:8px 10px;gap:2px}
+.compact .moverow{padding:4px 0;gap:4px 8px;font-size:15px}
+.compact .moveacts{gap:6px}
+.compact .moveacts .btn{padding:4px 10px;font-size:13px}
+.compact .moveacts select{font:inherit;font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 6px}
 .topten{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .topten li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
 .topten li:first-child{border-top:0}
@@ -347,3 +370,63 @@ textarea{font:inherit;color:var(--ink)}
 .topten .grow{flex:1;min-width:0}
 .starbtn{border:0;background:none;font-size:22px;line-height:1;color:var(--wip);cursor:pointer;min-width:36px;min-height:36px}
 .starbtn:disabled{opacity:.3;cursor:default}
+
+/* Home: smaller to-do and area cards, then the business model flow. */
+.headrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.headrow .go-on{color:var(--accent);font-weight:700;font-size:14px;text-decoration:none}
+.card.compact{padding:14px 16px;gap:6px}
+.card.compact h2{font-size:17px}
+.card.compact .todo{padding:8px 12px}
+.card.compact .addtodo input{padding:8px 10px}
+.card.compact .addtodo .btn{padding:8px 14px}
+.homeareas{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.homeareas .card{padding:14px 16px;gap:8px}
+.homeareas h2{font-size:16px}
+.homeareas .pill{padding:4px 10px;font-size:13px}
+.homeareas .summary{gap:6px}
+.homeareas .muted,.homeareas .go-on,.homeareas .warnline{font-size:13px}
+.homeareas .tile2{padding:8px 10px;font-size:12px}
+.homeareas .tiles.two .big{font-size:18px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.fbox{flex:1 1 150px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:14px;color:var(--muted)}
+.fbox .big{font-family:var(--display);font-size:24px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.fbox small{font-weight:500;font-size:12px}
+.fbox.go{background:var(--go-soft);border-color:transparent;color:var(--ink)}
+.fbox.wip{background:var(--wip-soft);border-color:transparent;color:var(--ink)}
+.farrow{font-weight:700;color:var(--accent);font-size:14px;white-space:nowrap}
+.fsplit{flex:1 1 180px;display:flex;flex-direction:column;gap:8px}
+.splitbar{display:flex;height:30px;border-radius:999px;overflow:hidden;font-size:13px;font-weight:700}
+.splitbar i{font-style:normal;display:grid;place-items:center;white-space:nowrap}
+.splitbar i.go{background:var(--go);color:#fff}
+.splitbar i.wip{background:var(--wip);color:#2a1d00}
+@media (max-width:640px){.farrow{flex-basis:100%;text-align:center}}
+.fsplit .fbox{flex:none}
+.card.compact .todo .btn{padding:6px 12px}
+.show-sm{display:none}
+@media (max-width:640px){.farrow::after{content:" ↓"}.hide-sm{display:none}.show-sm{display:inline}}
+
+/* Athlete profile: tighter, smaller sections (z, 2026-11-20). Scoped to .profile so other pages keep their size. */
+.profile.view,.profile .view{gap:10px}
+.profile .card{padding:12px 14px;border-radius:12px}
+.profile .sec{gap:8px}
+.profile .sec h2,.profile h2{font-size:16px}
+.profile .bigname{font-size:clamp(20px,4vw,26px);padding:2px 0}
+.profile .glance{margin:2px 0 0;font-size:14px}
+.profile .field{gap:3px}
+.profile .field label,.profile .seg legend{font-size:13px}
+.profile .field input,.profile .field select,.profile .pair input,.profile textarea{padding:7px 9px;border-radius:8px;font-size:15px}
+.profile .field .prefixed input{padding:7px 0}
+.profile .prefixed{border-radius:8px}
+.profile .formgrid{gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))}
+.profile .nilyears{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:6px 10px}
+.profile .nilyears .field label{width:auto}
+.profile .lines .total{padding-top:6px}
+.profile .seg button{padding:4px 12px;min-height:34px;font-size:14px}
+.profile .btn{padding:7px 12px;font-size:14px}
+.profile .todo{padding:8px 12px}
+.profile .agree{font-size:13px}
+.profile .callrow{padding:6px 0}
+.profile details.fold{padding:0}
+.profile details.fold>summary{padding:10px 14px}
+.profile details.fold>summary h2{font-size:16px}
+.profile details.fold>.sec{padding:0 14px 12px}

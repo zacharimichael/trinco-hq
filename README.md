@@ -36,6 +36,13 @@ The site is private: everything needs sign-in, and only emails listed in Supabas
 - **Film uploads:** run `supabase/migrations/0002_film.sql` once so phone videos save to private storage. In demo mode they last until refresh.
 
 - **Sign-in and database:** Supabase (schema is ready in `supabase/migrations`).
+- **Athlete payments (Stripe):** a signed athlete's profile has a Payments card. Pick what it's for and the amount, then either tap "Make pay link" (copy it and text it) or pick "Email an invoice", type the athlete's email and tap "Email invoice" (Stripe emails the bill with a pay button and PDF, due in 14 days). When the profile opens, it asks Stripe which bills were paid. Sales tax is added on top automatically only when Stripe Tax has an active registration (see step 5); then the invoice form also asks for the athlete's address. The card shows "Test mode" while a test key is in use. Code: `src/components/Payments.tsx`, `src/app/api/pay/route.ts`. Setup:
+  1. In Stripe (dashboard.stripe.com), finish account activation (business details and bank account) so payouts can reach you.
+  2. Developers → API keys → Create restricted key. Give it **Write** on Payment Links, Products, Prices, Customers, Invoices and Invoice Items; **Read** on Checkout Sessions, Tax Settings and Tax Registrations. Everything else: None.
+  3. In Vercel → trinco-hq → Settings → Environment Variables, add `STRIPE_SECRET_KEY` with that key as a **Sensitive** variable (Production and Preview), then redeploy. Never put the key in code or chat.
+  4. Test first with a test-mode key (`rk_test_...`) and card 4242 4242 4242 4242, then swap in the live key. In test mode Stripe only emails invoices to your own Stripe team addresses, so invoice yourself to try it.
+  5. Sales tax (optional): Stripe → Tax → Settings, add the head office address and a preset tax code, then Tax → Locations → add each state where you are already registered to collect. Ask a tax advisor whether agency fees are taxable where your athletes live; adding a location in Stripe does not register you with the state.
+  6. Invoice reminders: Stripe → Settings → Billing → Invoices / Subscriptions and emails, turn on reminder emails for overdue invoices.
 - **Billing:** Stripe monthly subscription per firm.
 - **Real sending:** state filing, payments to the state, athletic director emails, and athlete contract signing (built-in e-sign or DocuSign).
 - **Legal review:** state rule files have `attorney_reviewed: false` until a lawyer signs off.

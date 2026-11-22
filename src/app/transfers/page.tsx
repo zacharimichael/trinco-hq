@@ -51,7 +51,7 @@ export default function MovesPage() {
         <div className="tile2"><span className="big">{committed.length}</span>Committed</div>
       </div>
 
-      <div className="grid2 movesboard">
+      <div className="movesboard movesboard3">
         {/* 1. Snappers going to transfer */}
         <div className="card sec" id="transferring">
           <h2>1. Going to transfer</h2>
@@ -112,25 +112,9 @@ export default function MovesPage() {
             </details>
           )}
         </div>
-      </div>
 
-      {/* 3. Connections */}
-      <div className="card sec" id="connections">
-        <h2>3. Connections</h2>
-        {conns.map((m) => <ConnRow key={m.id} m={m} />)}
-        {committed.map((p) => {
-          const to = committedTo(p, schools)!;
-          return (
-            <div key={p.id} className="moverow">
-              <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <span className="muted">{nameOf(p.school)} →</span> <b>{nameOf(to)}</b> <span className="chip mine">Committed ✓</span></span>
-              {canEdit && <span className="moveacts">
-                <button type="button" className="btn" onClick={() => edit((d) => finishMove(d, p.id, to))}>He&apos;s moved</button>
-                <button type="button" className="linkbtn" onClick={() => edit((d) => { const x = d.players.find((y) => y.id === p.id); if (x) { x.transferTo = null; x.transfer = "In the portal"; } })}>Undo</button>
-              </span>}
-            </div>
-          );
-        })}
-        {!conns.length && !committed.length && <p className="muted" style={{ margin: 0 }}>Connect a {word} from list 1 to a school in list 2.</p>}
+        {/* 3. Connections, sorted by school: each school a player said they'd like to go to, with those players under it */}
+        <BySchool pos={pos} conns={conns} committed={committed} />
       </div>
 
       {moved.length > 0 && (
@@ -148,27 +132,90 @@ export default function MovesPage() {
   );
 }
 
-/** One connection: player → school, how it's going, and Committed. */
-function ConnRow({ m }: { m: Match }) {
-  const { sc, school, canEdit, edit } = useScouting();
-  const p = sc.players.find((x) => x.id === m.player);
-  const s = school(m.school);
-  if (!p || !s) return null;
-  const stage = m.stage === "Interested" ? "Interested" : "Connected";
+/** Lower-case, single-spaced, so "Syracuse " and "syracuse" land in the same group. */
+const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+
+/**
+ * Section 3, sorted by school. A school is listed only when a player is interested in it:
+ * named it in "Schools they'd like to go to" (Player.wantSchools), was connected to it, or committed there.
+ * Each player row carries the connection controls (Connect, Interested, Committed, He's moved).
+ * Type a school to pull up just that school.
+ */
+function BySchool({ pos, conns, committed }: { pos: Pos; conns: Match[]; committed: Player[] }) {
+  const { sc, schools, school, canEdit, edit } = useScouting();
+  const [q, setQ] = useState("");
+  const groups = useMemo(() => {
+    const known = new Map(schools.map((s) => [norm(s.name), s]));
+    const by = new Map<string, { name: string; id?: string; state?: string; players: Player[] }>();
+    const add = (p: Player | undefined, raw: string) => {
+      const k = norm(raw);
+      if (!p || !k) return;
+      const s = known.get(k);
+      const g = by.get(k) ?? { name: s?.name ?? raw.trim(), id: s?.id, state: s?.state, players: [] };
+      if (!g.players.includes(p)) g.players.push(p);
+      by.set(k, g);
+    };
+    for (const p of sc.players) {
+      if (!p.name || p.pos !== pos) continue;
+      for (const raw of p.wantSchools ?? []) add(p, raw);
+    }
+    for (const m of conns) add(sc.players.find((x) => x.id === m.player), school(m.school)?.name ?? "");
+    for (const p of committed) add(p, school(committedTo(p, schools) ?? "")?.name ?? "");
+    for (const g of by.values()) g.players.sort((a, b) => a.name.localeCompare(b.name));
+    return [...by.values()].sort((a, b) => b.players.length - a.players.length || a.name.localeCompare(b.name));
+  }, [sc.players, schools, school, pos, conns, committed]);
+  const shown = q.trim() ? groups.filter((g) => norm(g.name).includes(norm(q))) : groups;
+
   return (
-    <div className="moverow">
-      <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <span className="muted">{school(p.school)?.name ?? "—"} →</span> <b>{s.name}</b></span>
-      {canEdit ? (
-        <span className="moveacts">
-          <span className="seg"><span style={{ display: "inline-flex", gap: 6 }}>
-            {(["Connected", "Interested"] as const).map((x) => (
-              <button key={x} type="button" aria-pressed={stage === x} onClick={() => edit((d) => setStage(d, m.id, x))}>{x === "Interested" ? "⭐ Interested" : x}</button>
-            ))}
-          </span></span>
-          <button type="button" className="btn" onClick={() => edit((d) => commit(d, p.id, s.id, s.name))}>Committed ✓</button>
-          <button type="button" className="linkbtn" aria-label={`Disconnect ${p.name} from ${s.name}`} onClick={() => edit((d) => unpair(d, m.id))}>✕</button>
-        </span>
-      ) : <span className="chip">{stage}</span>}
+    <div className="card sec compact" id="connections">
+      <h2>3. Connections by school</h2>
+      <small className="muted">Schools {POS_LABEL[pos].toLowerCase()}s are interested in. Add them on a player&apos;s page.</small>
+      {groups.length > 0 && <>
+        <input className="search" type="search" aria-label="Type a school" placeholder="Type a school, e.g. Syracuse" list="want-school-names"
+          autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
+        <datalist id="want-school-names">{groups.map((g) => <option key={g.name} value={g.name} />)}</datalist>
+      </>}
+      {shown.map((g) => (
+        <div key={g.name} className="spot avail">
+          <div className="spothead">
+            {g.id ? <Link href={`/schools?s=${g.state}&school=${g.id}`}><b>{g.name}</b></Link> : <b>{g.name}</b>}
+            <span className="chip">{g.players.length} interested</span>
+          </div>
+          {g.players.map((p) => {
+            const m = g.id ? conns.find((x) => x.player === p.id && x.school === g.id) : undefined;
+            const here = !!g.id && committed.includes(p) && committedTo(p, schools) === g.id;
+            const stage = here ? "Committed" : m?.stage === "Interested" ? "Interested" : m ? "Connected" : null;
+            return (
+              <div key={p.id} className="moverow">
+                <span><Link href={`/players/${p.id}`}><b>{p.name}</b></Link> <small className="muted">{school(p.school)?.name ?? (isHs(p) ? "HS" : "")}</small></span>
+                {canEdit && g.id ? (
+                  <span className="moveacts">
+                    {here ? <>
+                      <span className="chip mine">Committed ✓</span>
+                      <button type="button" className="btn" onClick={() => edit((d) => finishMove(d, p.id, g.id!))}>Moved</button>
+                      <button type="button" className="linkbtn" aria-label={`Undo ${p.name}'s commit`} onClick={() => edit((d) => { const x = d.players.find((y) => y.id === p.id); if (x) { x.transferTo = null; x.transfer = "In the portal"; } })}>Undo</button>
+                    </> : m ? <>
+                      <select aria-label={`How it's going with ${p.name} and ${g.name}`} value={stage!} onChange={(e) => {
+                        const v = e.target.value;
+                        edit((d) => v === "Committed" ? commit(d, p.id, g.id!, g.name) : setStage(d, m.id, v as Match["stage"]));
+                      }}>
+                        <option value="Connected">Connected</option>
+                        <option value="Interested">⭐ Interested</option>
+                        <option value="Committed">Committed ✓</option>
+                      </select>
+                      <button type="button" className="linkbtn" aria-label={`Disconnect ${p.name} from ${g.name}`} onClick={() => edit((d) => unpair(d, m.id))}>✕</button>
+                    </> : p.school !== g.id && !graduating(p) && (
+                      <button type="button" className="btn ghost" onClick={() => edit((d) => pair(d, p.id, g.id!))}>+ Connect</button>
+                    )}
+                  </span>
+                ) : stage && <span className="chip">{stage}</span>}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+      {!groups.length && <p className="muted" style={{ margin: 0 }}>No {POS_LABEL[pos].toLowerCase()} has named a school yet.</p>}
+      {groups.length > 0 && !shown.length && <p className="muted" style={{ margin: 0 }}>Nobody is interested in &ldquo;{q.trim()}&rdquo; yet.</p>}
     </div>
   );
 }

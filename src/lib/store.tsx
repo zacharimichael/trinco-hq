@@ -55,8 +55,8 @@ function seed(): AppState {
 
 
 /** The parts of AppState each member owns, stored in member_state.data. */
-type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events" | "schoolCalls" | "roster" | "coaches">;
-const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [], schoolCalls: s.schoolCalls ?? [], roster: s.roster ?? [], coaches: s.coaches ?? [] });
+type MemberData = Pick<AppState, "profile" | "done" | "athletes" | "docs" | "licensedOn" | "myTodos" | "calls" | "events" | "schoolCalls" | "roster" | "coaches" | "pods">;
+const memberData = (s: AppState): MemberData => ({ profile: s.profile, done: s.done, athletes: s.athletes, docs: s.docs, licensedOn: s.licensedOn ?? {}, myTodos: s.myTodos ?? [], calls: s.calls ?? [], events: s.events ?? [], schoolCalls: s.schoolCalls ?? [], roster: s.roster ?? [], coaches: s.coaches ?? [], pods: s.pods ?? [] });
 
 const ROSTER_POSITIONS = (["LS", "P", "K"] as const).filter((pos) => POSITIONS.includes(pos));
 const ROSTER_IDS = Object.fromEntries(ROSTER_POSITIONS.map((pos) => [pos, new Set(ROSTER_PLAYERS.filter((r) => r.pos === pos).map((r) => r.id))]));
@@ -112,16 +112,16 @@ function firmChanges(prev: FirmData, next: FirmData) {
   };
 }
 
-type MemberRow = { id: string; email: string; name: string; role: Me["role"]; stage: number; split: number | null; user_id: string | null };
+type MemberRow = { id: string; email: string; name: string; role: Me["role"]; stage: number; split: number | null; user_id: string | null; all_tabs?: boolean | null };
 
 async function loadLive(session: Session): Promise<AppState | null> {
   await supabase.rpc("claim_invite");
-  const { data: mine } = await supabase.from("members").select("id, firm_id, email, name, role, stage, split").eq("user_id", session.user.id).maybeSingle();
+  const { data: mine } = await supabase.from("members").select("*").eq("user_id", session.user.id).maybeSingle();
   if (!mine) return null;
 
   const [{ data: firm }, { data: members }, { data: states }, { data: films }] = await Promise.all([
     supabase.from("firms").select("name, default_split, data").eq("id", mine.firm_id).single(),
-    supabase.from("members").select("id, email, name, role, stage, split, user_id").eq("firm_id", mine.firm_id).order("created_at"),
+    supabase.from("members").select("*").eq("firm_id", mine.firm_id).order("created_at"),
     supabase.from("member_state").select("member_id, data"),
     supabase.from("shared_film").select("id, player_id, film, added_by").order("created_at"),
   ]);
@@ -143,10 +143,10 @@ async function loadLive(session: Session): Promise<AppState | null> {
             };
           })
       : [];
-  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer" || m.role === "editor").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id, viewOnly: m.role === "viewer" })) : [];
+  const shared = mine.role === "owner" ? rows.filter((m) => m.role === "viewer" || m.role === "editor").map((m) => ({ id: m.id, email: m.email, joined: !!m.user_id, viewOnly: m.role === "viewer", allTabs: !!m.all_tabs })) : [];
   const sharedFilm: SharedFilm[] = (films ?? []).map((r) => ({ id: r.id, player: r.player_id, film: r.film as Film, by: r.added_by }));
 
-  const me: Me = { memberId: base.id, role: mine.role, stage: base === mine ? mine.stage : 3 };
+  const me: Me = { memberId: base.id, role: mine.role, stage: base === mine ? mine.stage : 3, allTabs: !!mine.all_tabs };
   return {
     v: VERSION,
     me,
@@ -162,6 +162,7 @@ async function loadLive(session: Session): Promise<AppState | null> {
     schoolCalls: own.schoolCalls ?? [],
     roster: own.roster ?? [],
     coaches: own.coaches ?? [],
+    pods: own.pods ?? [],
     signatures: [],
     team,
     shared,
@@ -188,6 +189,8 @@ type Ctx = {
   /** Owner only: lets one more person sign in and do everything the owner can, except manage who has access. */
   share: (email: string, viewOnly?: boolean, password?: string) => Promise<string | null>;
   unshare: (id: string) => Promise<string | null>;
+  /** Owner only: lets someone they shared with also see Home, Licensing, Pod leaders and Calendar. */
+  setAllTabs: (id: string, on: boolean) => Promise<string | null>;
   /** Someone the owner shared with adds a clip to a player. */
   addSharedFilm: (playerId: string, film: Film) => Promise<string | null>;
   removeSharedFilm: (id: string) => Promise<string | null>;
@@ -360,6 +363,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.from("members").delete().eq("id", id).select("id");
       if (error || !data?.length) return error?.message ?? "The database didn't accept the change.";
       update((d) => { d.shared = (d.shared ?? []).filter((p) => p.id !== id); });
+      return null;
+    },
+    setAllTabs: async (id, on) => {
+      const { data, error } = await supabase.from("members").update({ all_tabs: on }).eq("id", id).select("id");
+      if (error) return /all_tabs/.test(error.message) ? "The database needs 0008_all_tabs.sql first." : error.message;
+      if (!data?.length) return "The database didn't accept the change.";
+      update((d) => { d.shared = (d.shared ?? []).map((p) => (p.id === id ? { ...p, allTabs: on } : p)); });
       return null;
     },
     addSharedFilm: async (playerId, film) => {
