@@ -268,7 +268,7 @@ function AgentList() {
 
 /** Let one more person sign in, with full access or view only. */
 function SharedAccess() {
-  const { state, share, unshare } = useStore();
+  const { state, share, unshare, setAllTabs } = useStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
@@ -297,7 +297,10 @@ function SharedAccess() {
       {msg && <p style={{ margin: 0 }} role="status">{msg}</p>}
       {(state.shared ?? []).map((p) => (
         <div className="todo" key={p.id}>
-          <span className="grow"><b>{p.email}</b> <small className="muted">{p.viewOnly ? "View only" : "Full access"} · {p.joined ? "Signed in" : "Hasn't signed in yet"}</small></span>
+          <span className="grow"><b>{p.email}</b> <small className="muted">{p.viewOnly ? "View only" : "Full access"}{p.allTabs ? " · All tabs" : ""} · {p.joined ? "Signed in" : "Hasn't signed in yet"}</small></span>
+          <label className="linkbtn" title="Also see Home, Licensing, Pod leaders and Calendar">
+            <input type="checkbox" checked={!!p.allTabs} onChange={(e) => void setAllTabs(p.id, e.target.checked).then((err) => err && setMsg(err))} /> All tabs
+          </label>
           <button type="button" className="linkbtn" onClick={() => { if (confirm(`Remove ${p.email}?`)) void unshare(p.id).then((e) => e && setMsg(e)); }}>Remove</button>
         </div>
       ))}

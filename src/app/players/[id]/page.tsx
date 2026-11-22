@@ -12,6 +12,7 @@ import {
   heightText, hsClassText, isHs, money, nilTotal, NIL_YEARS_SHOWN, SCHOOL_YEARS, yearsLeft, YEARS_LEFT, yearShort,
   type CoachRole, type Fact, type Player, type Talk,
 } from "@/lib/players";
+import { seesAllTabs } from "@/lib/model";
 import { useStore } from "@/lib/store";
 import { useScouting } from "@/lib/useScouting";
 import { findSchoolsIn, schoolHref, schoolsMentioned } from "@/lib/schoolTags";
@@ -158,8 +159,8 @@ function Facts({ facts, onChange }: { facts: Fact[]; onChange: (f: Fact[]) => vo
 /** Shows whether you've talked to this player and puts them on (or takes them off) "Players to talk to". */
 function ToTalkBar({ p }: { p: Player }) {
   const { onList, add, remove } = useToTalk();
-  // The call list (under Calendar) is owner only, so others see the list name without a link.
-  const owner = useStore().state.me?.role === "owner";
+  // The call list (under Calendar) is owner only (plus "All tabs" people), so others see the list name without a link.
+  const owner = seesAllTabs(useStore().state.me);
   if (!p.name.trim()) return null;
   const last = lastTalk(p);
   const on = onList(p.id);
