@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useStore } from "@/lib/store";
-import { supabase } from "@/lib/supabase";
+import { isPreviewSite, MAIN_SITE, supabase } from "@/lib/supabase";
 
 /** Shown instead of the app until someone is signed in. The site is private, so there's no demo. */
 export function SignIn() {
@@ -32,11 +32,17 @@ export function SignIn() {
 
   return (
     <section className="view" style={{ maxWidth: 460, margin: "40px auto" }}>
+      {isPreviewSite() && (
+        <div className="card sec" style={{ marginBottom: 16 }}>
+          <p style={{ margin: 0 }}><b>This is a preview link, not the main site.</b> Each preview is its own site, so it asks you to sign in again.</p>
+          <a className="btn" href={MAIN_SITE}>Go to the main site</a>
+        </div>
+      )}
       <div className="card sec">
         <h1>Sign in</h1>
         {sent ? (
           <>
-            <p style={{ margin: 0 }}>Check your email. We sent a sign-in link to <b>{email}</b>. Open it on this device.</p>
+            <p style={{ margin: 0 }}>Check your email. We sent a sign-in link to <b>{email}</b>. Use the newest email: each link works once.</p>
             <button className="linkbtn" type="button" onClick={() => setSent(false)}>Use a different email</button>
           </>
         ) : (
@@ -61,6 +67,41 @@ export function SignIn() {
         )}
       </div>
     </section>
+  );
+}
+
+/** Lets a signed-in person set a password, so next time they sign in right away instead of waiting for an email. */
+export function SetPassword() {
+  const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    setBusy(false);
+    if (error) return setMsg({ ok: false, text: /weak|short|at least/i.test(error.message) ? "Pick a longer password (at least 8 characters)." : error.message });
+    setPassword("");
+    setOpen(false);
+    setMsg({ ok: true, text: "Password saved. Next time tap \"Use a password instead\" to sign in." });
+  }
+
+  if (!open) return (
+    <>
+      <button className="linkbtn" type="button" id="set-password" onClick={() => { setOpen(true); setMsg(null); }}>Set a password</button>
+      {msg && <span style={{ color: msg.ok ? "var(--go)" : "var(--stop)" }}>{msg.text}</span>}
+    </>
+  );
+  return (
+    <form onSubmit={submit} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+      <label htmlFor="new-password">New password</label>
+      <input id="new-password" type="password" required minLength={8} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : "Save password"}</button>
+      <button className="linkbtn" type="button" onClick={() => setOpen(false)}>Cancel</button>
+      {msg && <span style={{ color: "var(--stop)" }}>{msg.text}</span>}
+    </form>
   );
 }
 

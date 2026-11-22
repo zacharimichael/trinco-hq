@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { seesAllTabs } from "@/lib/model";
-import { CreateFirm, SignIn } from "./Gate";
+import { CreateFirm, SetPassword, SignIn } from "./Gate";
 
 /** The agency's areas, in the order you use them: Home, Licensing and Calendar (owner only) first, then athletes and Match Maker.
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
@@ -84,6 +84,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <footer className="muted" style={{ marginTop: 32, fontSize: 14, display: "flex", gap: 12, flexWrap: "wrap" }}>
           <span>Signed in as {email}</span>
           <button className="linkbtn" onClick={signOut}>Sign out</button>
+          <SetPassword />
         </footer>
       )}
     </div>
