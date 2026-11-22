@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
+import { seesAllTabs } from "@/lib/model";
 import { CreateFirm, SignIn } from "./Gate";
 
 /** The agency's areas, in the order you use them: Home, Licensing and Calendar (owner only) first, then athletes and Match Maker.
  *  Home is the dashboard everything reports up to. Each area keeps to its own screens, listed in its sub-tabs. */
 const AREAS = [
-  // Home, Licensing, Pod leaders and Calendar are for the agency owner (z) only (homeOnly). Editors, viewers and agents start on School map instead.
+  // Home, Licensing, Pod leaders and Calendar are for the agency owner (z) only (homeOnly), plus anyone the owner turned "All tabs" on for.
+  // Everyone else starts on School map instead.
   { href: "/", label: "Home", id: "tab-home", ownerOnly: false, homeOnly: true, match: (p: string) => p === "/", sub: [] },
   { href: "/licensing", label: "Licensing", id: "tab-map", ownerOnly: false, homeOnly: true, match: (p: string) => p.startsWith("/licensing"), sub: [
     { href: "/licensing", label: "Map", id: "sub-map", match: (p: string) => p === "/licensing" },
@@ -38,9 +40,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const viewOnly = state.me?.role === "viewer";
   const area = AREAS.find((a) => a.match(path));
   const router = useRouter();
-  // Only the real owner sees Home, Licensing (map, to-do, all states, state pages), Pod leaders and Calendar (calendar, call list).
+  // Only the real owner, and people the owner turned "All tabs" on for (Agents > Shared access), see Home, Licensing
+  // (map, to-do, all states, state pages), Pod leaders and Calendar (calendar, call list).
   // Everyone else (editor, viewer, agent) is sent to School map, even from a direct link.
-  const homeAllowed = mode === "demo" || state.me?.role === "owner";
+  const homeAllowed = mode === "demo" || seesAllTabs(state.me);
   const ownerOnlyPath = path === "/" || /^\/(licensing|state|todo|pods|calendar|calls)(\/|$)/.test(path);
   const blockedHome = mode === "live" && !homeAllowed && ownerOnlyPath;
   const startHref = homeAllowed ? "/" : "/schools";

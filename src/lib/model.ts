@@ -83,10 +83,15 @@ export interface Me {
    */
   role: "owner" | "agent" | "viewer" | "editor";
   stage: number;
+  /** The owner turned on "All tabs" for this person: they also see Home, Licensing, Pod leaders and Calendar. */
+  allTabs?: boolean;
 }
 
+/** Whether someone sees the owner-only tabs (Home, Licensing, Pod leaders, Calendar). */
+export const seesAllTabs = (me?: Me | null) => me?.role === "owner" || (!!me?.allTabs && (me.role === "editor" || me.role === "viewer"));
+
 /** Someone the owner shared the agency with. */
-export interface SharedPerson { id: string; email: string; joined: boolean; viewOnly?: boolean }
+export interface SharedPerson { id: string; email: string; joined: boolean; viewOnly?: boolean; allTabs?: boolean }
 
 /** A film clip someone the owner shared with added to a player. */
 export interface SharedFilm { id: string; player: string; film: Film; by: string }
